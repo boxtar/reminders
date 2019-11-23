@@ -1,0 +1,9 @@
+{% if messages is iterable %}
+<div class="p-8 bg-gray-800">
+    <div class="px-4 py-8 bg-blue-200 text-blue-600 text-center border-2 border-blue-400 rounded">
+        {% for message in messages %}
+        {{ message }}
+        {% endfor %}
+    </div>
+</div>
+{% endif %}

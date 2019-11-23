@@ -1,0 +1,9 @@
+{% if errors is iterable %}
+<div class="p-8 bg-gray-800">
+    <div class="px-4 py-8 bg-red-200 text-red-600 text-center border-2 border-red-400 rounded">
+        {% for error in errors %}
+        {{ error }}
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
