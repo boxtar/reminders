@@ -1,21 +1,18 @@
 <?php
-// Required for session based flash messages
+// I would rather do this in a middleware
+session_start();
 
 use Slim\Middleware\MethodOverrideMiddleware;
-
-session_start();
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // Grab environment variables from .env
-try {
-    (new Dotenv\Dotenv(__DIR__ . '/../'))->load();
-} catch (Dotenv\Exception\InvalidPathException $e) {
-    //
-}
+(new Dotenv\Dotenv(__DIR__ . '/../'))->load();
 
+// Create new container
 $container = new DI\Container();
 
+// Instruct app factory to use the provided container
 Slim\Factory\AppFactory::setContainer($container);
 
 $app = Slim\Factory\AppFactory::create();
@@ -65,3 +62,5 @@ $capsule->bootEloquent();
 $errorMiddleware = $app->addErrorMiddleware(true, true, true);
 
 require_once __DIR__ . '/../routes/web.php';
+
+return $app;

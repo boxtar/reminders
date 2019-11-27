@@ -22,6 +22,11 @@ class Reminder extends Model
         'run_once' => 'boolean'
     ];
 
+    // public function send($channel)
+    // {
+    //     dump($channel);
+    // }
+
     /**
      * Accessor for frequency attribute
      * 

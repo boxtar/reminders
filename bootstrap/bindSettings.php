@@ -24,6 +24,19 @@ return function ($c) {
                 'prefix' => ''
             ],
 
+            'mail' => [
+                'driver' => getenv('MAIL_DRIVER') ?: 'smtp',
+                'host' => getenv('MAIL_HOST') ?: 'localhost',
+                'port' => getenv('MAIL_PORT') ?: 25,
+                'encryption' => getenv('MAIL_ENCRYPTION'),
+                'username' => getenv('MAIL_USERNAME'),
+                'password' => getenv('MAIL_PASSWORD'),
+                'from' => [
+                    'address' => getenv('MAIL_FROM_ADDRESS') ?: 'hello@example.com',
+                    'name' => getenv('MAIL_FROM_NAME') ?: 'Example'
+                ]
+            ],
+            
             'telegram' => [
                 'chat_id' => getenv('TELEGRAM_CHAT_ID'),
                 'secret' => getenv('TELEGRAM_SECRET')
