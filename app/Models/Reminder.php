@@ -19,13 +19,14 @@ class Reminder extends Model
     ];
 
     protected $casts = [
-        'run_once' => 'boolean'
+        'run_once' => 'boolean',
+        'channels' => 'array'
     ];
 
-    // public function send($channel)
-    // {
-    //     dump($channel);
-    // }
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 
     /**
      * Accessor for frequency attribute

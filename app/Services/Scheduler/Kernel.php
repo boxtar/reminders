@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Scheduler;
+namespace App\Services\Scheduler;
 
 use Carbon\Carbon;
 use DateTime;

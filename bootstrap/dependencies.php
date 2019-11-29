@@ -1,5 +1,7 @@
 <?php
 
+use App\Services\Notifications\Broadcaster;
+
 return function ($c) {
 
     // Flash Messages
@@ -7,46 +9,45 @@ return function ($c) {
         return new Slim\Flash\Messages();
     });
 
-    // Guzzle PHP Client
+    // Guzzle HTTP Client
     $c->set('http', function () {
         return new GuzzleHttp\Client;
     });
 
-    // Set Telegram as default notification channel
-    $c->set(
-        App\Contracts\Channel::class,
-        DI\autowire(App\NotificationChannels\Telegram::class)
-            ->method('settings', [
-                'secret' => $c->get('settings')['telegram']['secret'],
-                'chat_id' => $c->get('settings')['telegram']['chat_id']
-            ])
-    );
+    // Notification Broadcaster. This just Proxies to Channel implementations
+    // to do the hard work.
+    $c->set('notifications.broadcaster', function () use ($c) {
+        return new Broadcaster($c);
+    });
 
-    // Set Email as the default notification channel
-    // Uncomment to override the above
-    // $c->set(
-    //     App\Contracts\Channel::class,
-    //     DI\autowire(App\NotificationChannels\Email::class)
-    // );
+    $c->set('notifications.email', DI\autowire(\App\Services\Notifications\Channels\Email::class));
+    $c->set('notifications.telegram', DI\autowire(\App\Services\Notifications\Channels\Telegram::class));
 
     // Bind Mail Courier implementation
     $c->set(
-        App\Contracts\Mail\Courier::class,
+        App\Services\Mail\Contracts\Courier::class,
         function () use ($c) {
             $config = $c->get('settings')['mail'];
-            return new App\Mail\SwiftMailer(
+            return new App\Services\Mail\SwiftMailer(
                 $config['host'],
                 $config['port'],
                 $config['username'],
-                $config['password'],
-                $config['from']
+                $config['password']
             );
         }
     );
 
     // Bind Mail message implementation
     $c->set(
-        App\Contracts\Mail\Message::class,
-        DI\autowire(App\Mail\Message::class)
+        App\Services\Mail\Contracts\Message::class,
+        DI\autowire(App\Services\Mail\Message::class)
+            ->method(
+                'from',
+                $c->get('settings')['mail']['from']
+            )
+            ->method(
+                'subject',
+                $c->get('settings')['mail']['subject']
+            )
     );
 };

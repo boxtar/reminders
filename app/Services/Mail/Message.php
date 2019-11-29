@@ -1,19 +1,26 @@
 <?php
 
-namespace App\Mail;
+namespace App\Services\Mail;
 
-use App\Contracts\Mail\Courier;
 use Exception;
+use App\Services\Mail\Contracts\Courier;
 
-class Message implements \App\Contracts\Mail\Message
+class Message implements \App\Services\Mail\Contracts\Message
 {
-
     protected $courier;
 
     /**
      * Recipients of this mail message
      */
     protected $recipient;
+
+    /**
+     * Who is the Email from? Will default to settings in config.
+     */
+    protected $from = [
+        'name' => null,
+        'address' => null,
+    ];
 
     /**
      * Subject line of the mail message
@@ -44,6 +51,12 @@ class Message implements \App\Contracts\Mail\Message
     public function to($recipient)
     {
         $this->recipient = $recipient;
+        return $this;
+    }
+
+    public function from($from)
+    {
+        $this->from = array_merge($this->from, $from);
         return $this;
     }
 
@@ -96,6 +109,11 @@ class Message implements \App\Contracts\Mail\Message
     public function getRecipient()
     {
         return $this->recipient;
+    }
+
+    public function getFrom()
+    {
+        return $this->from;
     }
 
     /**

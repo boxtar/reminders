@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Scheduler;
+namespace App\Services\Scheduler;
 
 /**
  * This will hold all the cron frequency logic

@@ -1,31 +1,25 @@
 <?php
 
-namespace App\Mail;
+namespace App\Services\Mail;
 
-use App\Contracts\Mail\Courier;
-use App\Contracts\Mail\Message;
 use Swift_Mailer;
 use Swift_Message;
 use Swift_SmtpTransport;
+use App\Services\Mail\Contracts\Message;
 
-class SwiftMailer implements Courier
+class SwiftMailer implements \App\Services\Mail\Contracts\Courier
 {
     protected $host = null;
     protected $port = null;
     protected $username = null;
     protected $password = null;
-    protected $from = [
-        'address' => null,
-        'name' => null
-    ];
 
-    public function __construct($host, $port, $username, $password, $from = [])
+    public function __construct($host, $port, $username, $password)
     {
         $this->host = $host;
         $this->port = $port;
         $this->username = $username;
         $this->password = $password;
-        $this->from = array_merge($this->from, $from);
     }
 
     public function send(Message $message)
@@ -40,11 +34,23 @@ class SwiftMailer implements Courier
         // Create a message
         $swiftMessage = (new Swift_Message())
             ->setSubject($message->getSubject())
-            ->setFrom($this->from['address'], $this->from['name'])
+            ->setFrom(
+                ...$this->formatFromFields(
+                    $message->getFrom()
+                )
+            )
             ->addTo($message->getRecipient())
             ->setBody($message->getBody())
             ->addPart($message->getHtml(), 'text/html');
 
         return $mailer->send($swiftMessage);
+    }
+
+    protected function formatFromFields($fromFields)
+    {
+        return [
+            $fromFields['address'],
+            $fromFields['name'],
+        ];
     }
 }

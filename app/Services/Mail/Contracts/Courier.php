@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Contracts\Mail;
+namespace App\Services\Mail\Contracts;
 
 interface Courier {
     public function send(Message $message);

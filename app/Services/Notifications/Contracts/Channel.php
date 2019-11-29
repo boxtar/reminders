@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Contracts;
+namespace App\Services\Notifications\Contracts;
 
 interface Channel {
     public function message($message);

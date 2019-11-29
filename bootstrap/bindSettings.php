@@ -34,7 +34,8 @@ return function ($c) {
                 'from' => [
                     'address' => getenv('MAIL_FROM_ADDRESS') ?: 'hello@example.com',
                     'name' => getenv('MAIL_FROM_NAME') ?: 'Example'
-                ]
+                ],
+                'subject' => getenv('MAIL_SUBJECT') ?: getenv('APP_NAME') ?: '',
             ],
             
             'telegram' => [

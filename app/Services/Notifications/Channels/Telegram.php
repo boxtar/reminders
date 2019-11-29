@@ -1,9 +1,9 @@
 <?php
 
-namespace App\NotificationChannels;
+namespace App\Services\Notifications\Channels;
 
-use App\Contracts\Channel;
 use GuzzleHttp\Client;
+use App\Services\Notifications\Contracts\Channel;
 
 class Telegram implements Channel
 {
@@ -41,27 +41,11 @@ class Telegram implements Channel
 
     public function __construct()
     {
+        // Bad - Have this injected so that it can be mocked for testing in the future.
         $this->http = new Client;
-
-        // When auth is implemented set credentials here:
-        // $credentials = auth()->user()->channel('telegram')
-        // $credentials->secret;
-        // $credentials->chat_id;
         
         return $this;
     }
-
-    // public function setCredentials($credentials)
-    // {
-    //     if (array_key_exists('secret', $credentials)) {
-    //         $this->secret = $credentials['secret'];
-    //     }
-
-    //     if (array_key_exists('chat_id', $credentials)) {
-    //         $this->chatId = $credentials['chat_id'];
-    //     }
-    //     return $this;
-    // }
 
     public function settings($settings)
     {

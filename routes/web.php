@@ -6,8 +6,45 @@ use Psr\Http\Message\{
 };
 use App\Controllers\RemindersController;
 
+// class Mail
+// {
+//     public $message;
+//     public $settings = [];
+
+//     public function message($message)
+//     {
+//         $this->message = $message;
+//         return $this;
+//     }
+
+//     public function settings($settings)
+//     {
+//         $this->settings = $settings;
+//         return $this;
+//     }
+// }
+
+// class Telegram
+// {
+//     public $message;
+//     public $settings = [];
+
+//     public function message($message)
+//     {
+//         $this->message = $message;
+//         return $this;
+//     }
+
+//     public function settings($settings)
+//     {
+//         $this->settings = $settings;
+//         return $this;
+//     }
+// }
+
+
 $app->get('/test', function (Request $request, Response $response) {
-    dump($this->get(App\Contracts\Mail\Message::class));
+    
 
     die();
 });
