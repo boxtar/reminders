@@ -15,7 +15,8 @@ class Reminder extends Model
     protected $fillable = [
         'body', 'frequency',
         'day', 'date', 'time',
-        'expression', 'run_once'
+        'expression', 'run_once',
+        'channels'
     ];
 
     protected $casts = [

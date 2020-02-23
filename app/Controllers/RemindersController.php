@@ -33,7 +33,7 @@ class RemindersController extends Controller
     }
 
     /**
-     * Render the home page
+     * Deal with resource storage request.
      *
      * @param Request $request
      * @param Response $response
@@ -46,6 +46,9 @@ class RemindersController extends Controller
 
         // Grab the parsed request body and cast to a standard object
         $input = (object) $request->getParsedBody();
+
+        // TODO: Let user configure from the frontend which channels to use when sending reminder.
+        $input->channels = ["telegram", "mail"];
 
         // Validation
         if (!$this->customValidation($input)) {
