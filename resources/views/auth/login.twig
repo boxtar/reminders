@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="flex justify-center items-center min-h-screen">
-    <div class="w-1/2 flex flex-wrap justify-center items-center bg-white min-h-screen">
+    <div class="min-w-full md:min-w-0 md:w-1/2 flex flex-wrap justify-center items-center bg-white min-h-screen">
         <login :errors="{{ errors[0] | json_encode }}" :old="{{ old[0] | json_encode }}"
             :csrf="{{ csrf.data | json_encode }}"></login>
     </div>

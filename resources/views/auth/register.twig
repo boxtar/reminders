@@ -6,7 +6,7 @@
     <div class="w-1/2 h-screen">
         <img src="/storage/images/scenic.jpg" class="w-full h-full object-cover object-top">
     </div>
-    <div class="w-1/2 flex flex-wrap justify-center items-center bg-white min-h-screen">
+    <div class="min-w-full md:min-w-0 md:w-1/2 flex flex-wrap justify-center items-center bg-white min-h-screen">
         <register 
             :errors="{{ errors[0] | json_encode }}" 
             :old="{{ old[0] | json_encode }}"
