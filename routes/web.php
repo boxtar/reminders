@@ -1,67 +1,49 @@
 <?php
 
+use App\Controllers\Auth\LoginController;
+use App\Controllers\Auth\LogoutController;
+use App\Controllers\Auth\RegisterController;
 use Psr\Http\Message\{
     ServerRequestInterface as Request,
     ResponseInterface as Response,
 };
 use App\Controllers\RemindersController;
+use App\Middleware\AuthMiddleware;
+use App\Middleware\GuestMiddleware;
+use Slim\Routing\RouteCollectorProxy;
 
-// class Mail
-// {
-//     public $message;
-//     public $settings = [];
+$app->get('/test', function (Request $request, Response $response) { });
 
-//     public function message($message)
-//     {
-//         $this->message = $message;
-//         return $this;
-//     }
-
-//     public function settings($settings)
-//     {
-//         $this->settings = $settings;
-//         return $this;
-//     }
-// }
-
-// class Telegram
-// {
-//     public $message;
-//     public $settings = [];
-
-//     public function message($message)
-//     {
-//         $this->message = $message;
-//         return $this;
-//     }
-
-//     public function settings($settings)
-//     {
-//         $this->settings = $settings;
-//         return $this;
-//     }
-// }
-
-
-$app->get('/test', function (Request $request, Response $response) {
-    
-
-    die();
+// Home page (redirect to Login for now)
+$app->get('/', function (Request $request, Response $response) {
+    return $response->withHeader(
+        'Location',
+        $request->getAttribute('routeParser')->urlFor('login.index')
+    );
 });
 
-// Redirects to /reminders
-$app->get('/', function (ServerRequestInterface $request, Response $response) {
-    return $response->withHeader('Location', $request->getAttribute('routeParser')->urlFor('reminders.index'));
-});
+// Auth protected group
+$app->group('/reminders', function (RouteCollectorProxy $group) {
+    // Returns html showing all active reminders
+    $group->get('', RemindersController::class . ':index')->setName('reminders.index');
 
-// Returns html showing all active reminders
-$app->get('/reminders', RemindersController::class . ':index')->setName('reminders.index');
+    // Creates a new reminder
+    $group->post('', RemindersController::class . ':store')->setName('reminders.store');
 
-// Creates a new reminder
-$app->post('/reminders', RemindersController::class . ':store')->setName('reminders.store');
+    // Deletes the given reminder
+    $group->delete('/{id}', RemindersController::class . ':delete')->setName('reminders.delete');
 
-// Deletes the given reminder
-$app->delete('/reminders/{id}', RemindersController::class . ':delete')->setName('reminders.delete');
+    // Logout
+    $group->post('/logout', LogoutController::class . ':store')->setName('logout.store');
+})->add(new AuthMiddleware($app->getContainer()));
+
+// Guest only routes
+$app->group('', function (RouteCollectorProxy $group) {
+    $group->get('/register', RegisterController::class . ':index')->setName('register.index');
+    $group->post('/register', RegisterController::class . ':store')->setName('register.store');
+    $group->get('/login', LoginController::class . ':index')->setName('login.index');
+    $group->post('/login', LoginController::class . ':store')->setName('login.store');
+})->add(new GuestMiddleware($app->getContainer()));
 
 // Messing around with fake API
 $app->get('/api/reminders', function ($req, $res) {

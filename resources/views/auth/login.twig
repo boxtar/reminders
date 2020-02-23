@@ -1,0 +1,14 @@
+{% extends "app.twig" %}
+
+{% block content %}
+<div class="flex justify-center items-center min-h-screen">
+    <div class="w-1/2 flex flex-wrap justify-center items-center bg-white min-h-screen">
+        <login :errors="{{ errors[0] | json_encode }}" :old="{{ old[0] | json_encode }}"
+            :csrf="{{ csrf.data | json_encode }}"></login>
+    </div>
+    <div class="w-1/2 h-screen">
+        <img src="/storage/images/ocean-stones.jpg" class="w-full h-full object-cover object-right-bottom">
+    </div>
+
+</div>
+{% endblock content %}

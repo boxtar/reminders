@@ -29,7 +29,7 @@ abstract class TestCase extends PHPUnitTestCase
         if ($this->app) {
             $this->app = null;
         }
-        session_destroy();
+        // session_destroy();
         $this->setUpHasRun = false;
     }
 }

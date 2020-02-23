@@ -1,65 +1,38 @@
 <?php
-// I would rather do this in a middleware
-session_start();
 
-use Slim\Middleware\MethodOverrideMiddleware;
+use DI\Container;
+use Dotenv\Dotenv;
+use Slim\Factory\AppFactory;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-// Grab environment variables from .env
-(new Dotenv\Dotenv(__DIR__ . '/../'))->load();
+// Load environment variables from .env file.
+(new Dotenv(__DIR__ . '/../'))->load();
 
-// Create new container
-$container = new DI\Container();
+// Create Container
+$container = new Container();
+AppFactory::setContainer($container);
 
-// Instruct app factory to use the provided container
-Slim\Factory\AppFactory::setContainer($container);
-
-$app = Slim\Factory\AppFactory::create();
+// Create App
+$app = AppFactory::create();
 
 // Bind settings into container
-(require __DIR__ . '/bindSettings.php')($container);
+(require __DIR__ . '/settings.php')($app);
 
-// Bind other dependencies into container
-(require __DIR__ . '/dependencies.php')($container);
+// Bind dependencies into container
+(require __DIR__ . '/dependencies.php')($app);
 
-// Applies some handy route info to the $request attributes
-$app->addRoutingMiddleware();
-
-// Method overriding (put, patch, delete)
-$app->add(new MethodOverrideMiddleware);
-
-/**
- * Setup Twig View Templating Engine
- */
-$twig = new Slim\Views\Twig(__DIR__ . '/../resources/views', [
-    'cache' => $container->get('settings')['views']['cache']
-]);
-
-// Make the Dates helper available to all views
-$twig->getEnvironment()->addGlobal('dates', new \App\Helpers\Dates);
-// Make session messages available to all views
-$twig->getEnvironment()->addGlobal('messages', $container->get('flash')->getMessage('messages'));
-// Make session errors available to all views
-$twig->getEnvironment()->addGlobal('errors', $container->get('flash')->getMessage('errors'));
-
-$twigMiddleware = new Slim\Views\TwigMiddleware(
-    $twig,
-    $container,
-    $app->getRouteCollector()->getRouteParser()
-);
-
-$app->add($twigMiddleware);
+// Add Middlewares
+(require __DIR__ . '/middlewares.php')($app);
 
 /**
  * Setup Laravel Eloquent
+ * TODO: Move this into Dependencies?
  */
 $capsule = new \Illuminate\Database\Capsule\Manager;
 $capsule->addConnection($container->get('settings')['db']);
 $capsule->setAsGlobal();
 $capsule->bootEloquent();
-
-$errorMiddleware = $app->addErrorMiddleware(true, true, true);
 
 require_once __DIR__ . '/../routes/web.php';
 

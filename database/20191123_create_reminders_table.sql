@@ -1,4 +1,4 @@
-CREATE TABLE `reminders` (
+CREATE TABLE reminders (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `body` varchar(255) NOT NULL DEFAULT '',
   `frequency` varchar(255) NOT NULL DEFAULT '',

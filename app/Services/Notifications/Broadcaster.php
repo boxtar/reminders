@@ -12,9 +12,9 @@ class Broadcaster
 {
     /**
      * I do NOT like this. It ties this service to this implementation...
-     * This is required to resolve the channel implementations. If I can find
-     * a better way of registering the implementations then brilliant!
-     * TODO: Think of a better way of solving this problem.
+     * This is required to resolve the channel implementations.
+     * TODO: Find a general way of registering channel implementations with 
+     * this Broadcaster.
      */
     protected $container;
 
@@ -81,12 +81,17 @@ class Broadcaster
         return $this;
     }
 
+    /**
+     * Restores channels to the defaults.
+     * TODO: Is this indirection really required? Think about what benefits
+     * the method calls are providing over simply setting the channel prop
+     * to the defaultChannel prop directly within this method... 
+     */
     public function restoreDefaultChannels()
     {
-        $this->replaceChannels(
+        return $this->replaceChannels(
             $this->getDefaultChannels()
         );
-        return $this;
     }
 
     /**
@@ -108,7 +113,9 @@ class Broadcaster
     }
 
     /**
-     * Loop over each of the required channels (settings)
+     * Loop over each of the required channels (settings), resolve
+     * an instance of the required channel out of the container, set
+     * it up with message and necessary settings then send.
      */
     public function send()
     {

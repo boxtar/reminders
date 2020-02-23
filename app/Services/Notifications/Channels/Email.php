@@ -2,6 +2,7 @@
 
 namespace App\Services\Notifications\Channels;
 
+use App\Helpers\Utils;
 use App\Services\Mail\Contracts\Message;
 use App\Services\Notifications\Contracts\Channel;
 

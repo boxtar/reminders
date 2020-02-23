@@ -5,15 +5,21 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}Telegram Reminders{% endblock title %}</title>
+    <title>{% block title %}Jabit{% endblock title %}</title>
+    <link rel="shortcut icon" href="favicon.ico" />
     <link href="/css/app.css" rel="stylesheet">
     <script>
         window.App = {
             'routes': {
-                'reminders.store': "{{ url_for('reminders.store') }}"
+                'register.index': "{{ url_for('register.index') }}",
+                'register.store': "{{ url_for('register.store') }}",
+                'login.index': "{{ url_for('login.index') }}",
+                'login.store': "{{ url_for('login.store') }}",
+                'reminders.index': "{{ url_for('reminders.index') }}",
+                'reminders.store': "{{ url_for('reminders.store') }}",
             },
             'dates': {
-                'frequencies': {{ dates.frequencies|json_encode|raw }}
+                'frequencies': {{ dates.frequencies | json_encode | raw }}
             }
         };
     </script>

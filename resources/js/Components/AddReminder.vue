@@ -1,6 +1,18 @@
 <template>
     <form :action="this.form.action" class="w-full" method="POST">
         <div class="px-4 py-6 bg-gray-800">
+            <!-- Csrf -->
+            <input
+                type="hidden"
+                :name="csrf && csrf.name && csrf.name.key"
+                :value="csrf && csrf.name && csrf.name.value"
+            />
+            <input
+                type="hidden"
+                :name="csrf && csrf.token && csrf.token.key"
+                :value="csrf && csrf.token && csrf.token.value"
+            />
+
             <!-- Body -->
             <div class="px-4">
                 <label class="block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2" for="body"
@@ -199,7 +211,7 @@
 
 <script>
 export default {
-    props: ["dates"],
+    props: ["dates", "csrf"],
     data() {
         return {
             form: {

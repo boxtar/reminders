@@ -14,23 +14,23 @@ class Telegram implements Channel
     protected $http;
 
     /**
-     * Uri - configurable via setOptions
+     * Uri - configurable via settings
      */
     protected $uri = "https://api.telegram.org/bot";
 
 
     /**
-     * Action - configurable via setOptions
+     * Action - configurable via settings
      */
     protected $action = 'sendMessage';
 
     /**
-     * Telegram secret - Must be set via setCredentials
+     * Telegram secret - Must be set via settings
      */
     protected $secret;
 
     /**
-     * Telegram chat id - Must be set via setCredentials
+     * Telegram chat id - Must be set via settings
      */
     protected $chatId;
 

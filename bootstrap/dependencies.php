@@ -1,34 +1,68 @@
 <?php
 
+use Slim\Csrf\Guard;
+use Slim\Flash\Messages;
+use App\Services\Auth\Auth;
+use App\Services\Validation\Validator;
 use App\Services\Notifications\Broadcaster;
+use App\Services\Notifications\Channels\{
+    Email,
+    Telegram
+};
+use App\Services\Mail\{
+    SwiftMailer,
+    Message
+};
+use App\Services\Mail\Contracts\{
+    Courier,
+    Message as MessageContract
+};
+use function DI\{
+    create,
+    autowire
+};
 
-return function ($c) {
+return function ($app) {
 
-    // Flash Messages
-    $c->set('flash', function () {
-        return new Slim\Flash\Messages();
+    // Quicker container ref
+    $container = $app->getContainer();
+
+    // Convenience reference for Authentication Service
+    $container->set('auth', create(Auth::class));
+
+    // Convenience reference for Request Validator Service.
+    $container->set('validator', create(Validator::class));
+
+    // Slim CSRF (add to container for ease of reference in Controllers)
+    $container->set('csrf', function () use ($app) {
+        return new Guard($app->getResponseFactory());
     });
 
-    // Guzzle HTTP Client
-    $c->set('http', function () {
+    // Convenience reference to Flash service.
+    $container->set('flash', create(Messages::class));
+
+    // Convenience reference to http client service.
+    $container->set('http', function () {
         return new GuzzleHttp\Client;
     });
 
-    // Notification Broadcaster. This just Proxies to Channel implementations
-    // to do the hard work.
-    $c->set('notifications.broadcaster', function () use ($c) {
-        return new Broadcaster($c);
+    // Register the notifications broadcaster into the container.
+    $container->set('notifications.broadcaster', function () use ($container) {
+        return new Broadcaster($container);
     });
 
-    $c->set('notifications.email', DI\autowire(\App\Services\Notifications\Channels\Email::class));
-    $c->set('notifications.telegram', DI\autowire(\App\Services\Notifications\Channels\Telegram::class));
+    // Register the Email Channel into the container.
+    $container->set('notifications.email', autowire(Email::class));
 
-    // Bind Mail Courier implementation
-    $c->set(
-        App\Services\Mail\Contracts\Courier::class,
-        function () use ($c) {
-            $config = $c->get('settings')['mail'];
-            return new App\Services\Mail\SwiftMailer(
+    // Register the Telegram Channel into the container.
+    $container->set('notifications.telegram', autowire(Telegram::class));
+
+    // Register Mail Courier implementation into the container.
+    $container->set(
+        Courier::class,
+        function () use ($container) {
+            $config = $container->get('settings')['mail'];
+            return new SwiftMailer(
                 $config['host'],
                 $config['port'],
                 $config['username'],
@@ -37,17 +71,19 @@ return function ($c) {
         }
     );
 
-    // Bind Mail message implementation
-    $c->set(
-        App\Services\Mail\Contracts\Message::class,
-        DI\autowire(App\Services\Mail\Message::class)
+    // Bind Mail Message Interface to an Implementation into the container.
+    // Without this the container cannot inject a Mail Message instance into
+    // the Email channel.
+    $container->set(
+        MessageContract::class,
+        autowire(Message::class)
             ->method(
                 'from',
-                $c->get('settings')['mail']['from']
+                $container->get('settings')['mail']['from']
             )
             ->method(
                 'subject',
-                $c->get('settings')['mail']['subject']
+                $container->get('settings')['mail']['subject']
             )
     );
 };

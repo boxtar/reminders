@@ -1,7 +1,8 @@
 import Vue from "vue";
-import AddReminder from "./Components/AddReminder.vue";
 
-Vue.component("addReminder", AddReminder);
+Vue.component("addReminder", require('./Components/AddReminder.vue').default);
+Vue.component("register", require('./Components/Register.vue').default);
+Vue.component("login", require('./Components/Login.vue').default);
 
 new Vue({
     el: "#app",
@@ -22,15 +23,15 @@ new Vue({
             this.reminders.state = this.states.UNLOADED;
         },
     },
-    async mounted() {
-        this.init();
-        const response = await fetch("/api/reminders");
-        if (!response.ok) {
-            this.reminders.state = this.states.ERROR;
-        } else {
-            this.reminders.state = this.states.LOADING;
-            this.reminders.data = await response.json();
-            this.reminders.state = this.states.LOADED;
-        }
-    },
+    // async mounted() {
+    //     this.init();
+    //     const response = await fetch("/api/reminders");
+    //     if (!response.ok) {
+    //         this.reminders.state = this.states.ERROR;
+    //     } else {
+    //         this.reminders.state = this.states.LOADING;
+    //         this.reminders.data = await response.json();
+    //         this.reminders.state = this.states.LOADED;
+    //     }
+    // },
 });

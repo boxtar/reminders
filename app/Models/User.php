@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\Utils;
 use Illuminate\Database\Eloquent\Model;
 
 // Temporarily storing this here for info:
@@ -24,5 +25,10 @@ class User extends Model
     public function reminders()
     {
         return $this->hasMany(Reminder::class);
+    }
+
+    public function canUpdate(Reminder $reminder)
+    {
+        return $reminder->owner->is($this);
     }
 }

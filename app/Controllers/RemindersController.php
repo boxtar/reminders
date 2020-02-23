@@ -5,7 +5,9 @@ namespace App\Controllers;
 use App\Models\Reminder;
 use App\Controllers\Controller;
 use App\Helpers\Dates;
-use App\Scheduler\FrequencyBuilder;
+use App\Helpers\Utils;
+use App\Models\User;
+use App\Services\Scheduler\FrequencyBuilder;
 use Cron\CronExpression;
 use Psr\Http\Message\{
     ServerRequestInterface as Request,
@@ -24,9 +26,9 @@ class RemindersController extends Controller
      */
     public function index(Request $request, Response $response, $args)
     {
-        $reminders = Reminder::latest()->get();
+        $reminders = $this->auth->check() ? $this->auth->user()->reminders : [];
         return $this
-            ->view()
+            ->view
             ->render($response, 'reminders/index.twig', compact('reminders'));
     }
 
@@ -40,24 +42,26 @@ class RemindersController extends Controller
      */
     public function store(Request $request, Response $response, $args)
     {
+        $user = $this->auth->user();
+
         // Grab the parsed request body and cast to a standard object
         $input = (object) $request->getParsedBody();
 
         // Validation
-        if (!$this->validate($input)) {
-            // Redirect
-            return $this->redirect($response);
+        if (!$this->customValidation($input)) {
+            return $this->redirectToRoute($request, $response, 'reminders.index');
         }
 
-        // Get the cron expression based on user input and check it is valid
+        // Get the cron expression based on user input and check it is valid, then create reminder
+        // and associate with the authenticated user.
         if (CronExpression::isValidExpression($expression = $this->buildCronExpression($input))) {
             $input->expression = $expression;
-            $this->createReminder($input);
+            $user->reminders()->create((array) $input);
             $this->flash()->addMessage('messages', "Successfully added reminder '{$input->body}'");
         }
 
         // Redirect
-        return $this->redirect($response);
+        return $this->redirectToRoute($request, $response, 'reminders.index');
     }
 
     /**
@@ -70,24 +74,24 @@ class RemindersController extends Controller
      */
     public function delete(Request $request, Response $response, $args)
     {
+        // Find Reminder that user is trying to delete
         $reminder = Reminder::findOrFail($args['id']);
 
+        // Get the currently authenticated user
+        $user = $this->auth->user();
+
+        // Authorise the delete attempt
+        if (!$user->canUpdate($reminder)) {
+            $this->flash()->addMessage('errors', "Unauthorized");
+            return $this->redirectToRoute($request, $response, 'reminders.index');
+        }
+
+        // If we get here the user is authorised to delete the reminder
         $reminder->delete();
 
+        // Flash and redirect
         $this->flash()->addMessage('messages', "{$reminder->body} has been archived");
-        
         return $this->redirectToRoute($request, $response, 'reminders.index');
-    }
-
-    /**
-     * Stores a new reminder using the $data passed in.
-     * 
-     * @param object|array $data - All the required data for creating a reminder.
-     */
-    protected function createReminder($data)
-    {
-        $data = (array) $data;
-        Reminder::create($data);
     }
 
     /**
@@ -113,7 +117,7 @@ class RemindersController extends Controller
      * 
      * @param object $data - Reminder data to be validated.
      */
-    protected function validate($data)
+    protected function customValidation($data)
     {
         $errors = [];
 

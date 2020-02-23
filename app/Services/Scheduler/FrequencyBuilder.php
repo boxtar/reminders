@@ -2,6 +2,11 @@
 
 namespace App\Services\Scheduler;
 
+// TODO:
+// The fact that this package is using application specific functionality
+// says that there is a bad decision made here. This class should either
+// be moved to an application specific class or the Dates helper class
+// should be made part of this Scheduler Service.
 use App\Helpers\Dates;
 
 class FrequencyBuilder extends Task

@@ -1,7 +1,10 @@
 <?php
 
-return function ($c) {
-    $c->set('settings', function () {
+return function ($app) {
+    
+    $container = $app->getContainer();
+
+    $container->set('settings', function () {
         return [
             'displayErrorDetails' => getenv('APP_DEBUG') === 'true',
 
@@ -37,11 +40,6 @@ return function ($c) {
                 ],
                 'subject' => getenv('MAIL_SUBJECT') ?: getenv('APP_NAME') ?: '',
             ],
-            
-            'telegram' => [
-                'chat_id' => getenv('TELEGRAM_CHAT_ID'),
-                'secret' => getenv('TELEGRAM_SECRET')
-            ]
         ];
     });
 };

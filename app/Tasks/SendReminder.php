@@ -13,7 +13,13 @@ class SendReminder extends Task
      */
     protected $reminder;
 
-    // protected $channels = [];
+    /**
+     * The Broadcaster implementation that will handle the sending
+     * of the message/reminder to the required notification channels.
+     * 
+     * TODO: Think about whether a new Broadcaster instance is needed
+     * for each reminder or if we can pass in a Singleton instance.
+     */
     protected $broadcaster;
 
     public function __construct(Reminder $reminder, Broadcaster $broadcaster)
@@ -85,31 +91,4 @@ class SendReminder extends Task
     {
         return $this;
     }
-
-    // public function __construct(Reminder $reminder, Channel $defaultChannel)
-    // {
-    //     $this->reminder = $reminder;
-    //     $this->channels[] = $defaultChannel;
-    // }
-
-    /**
-     * This is called when the Task is due. Send reminder(s) out
-     */
-    // public function handle()
-    // {
-    //     // Hit the notification channels
-    //     foreach ($this->channels as $channel) {
-    //         $channel->message($this->reminder->body)->send();
-    //     }
-
-    //     // TODO: Create a log table to log this action
-    //     dump("Reminder sent: {$this->reminder->body}");
-
-    //     // Delete reminder if it should only be run once.
-    //     if ($this->reminder->shouldRunOnce()) {
-    //         $this->reminder->delete();
-    //         // TODO: Also need to log this action
-    //         dump("Reminder archived as should only be run once: {$this->reminder->id}");
-    //     }
-    // }
 }
