@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\Utils;
 use Slim\Csrf\Guard;
 use Slim\Flash\Messages;
 use App\Services\Auth\Auth;
@@ -7,6 +8,7 @@ use App\Services\Validation\Validator;
 use App\Services\Notifications\Broadcaster;
 use App\Services\Notifications\Channels\{
     Email,
+    SMS,
     Telegram
 };
 use App\Services\Mail\{
@@ -56,6 +58,19 @@ return function ($app) {
 
     // Register the Telegram Channel into the container.
     $container->set('notifications.telegram', autowire(Telegram::class));
+
+    // Register the SMS Channel into the container.
+    $container->set(
+        'notifications.sms',
+        function() use ($container) {
+            $config = $container->get('settings')['twilio'];
+            return (new SMS())->settings([
+                'sid' => $config['sid'],
+                'auth_token' => $config['auth_token'],
+                'sms_from' => $config['sms_from'],
+            ]);
+        }
+    );
 
     // Register Mail Courier implementation into the container.
     $container->set(

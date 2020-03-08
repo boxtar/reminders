@@ -40,6 +40,12 @@ return function ($app) {
                 ],
                 'subject' => getenv('MAIL_SUBJECT') ?: getenv('APP_NAME') ?: '',
             ],
+
+            'twilio' => [
+                'sid' => getenv('TWILIO_SID'),
+                'auth_token' => getenv('TWILIO_AUTH_TOKEN'),
+                'sms_from' => getenv('TWILIO_NUMBER'),
+            ]
         ];
     });
 };

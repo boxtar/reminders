@@ -2,9 +2,6 @@
 
 namespace App\Services\Notifications;
 
-use App\Services\Notifications\Channels\Email;
-use App\Services\Notifications\Channels\Telegram;
-
 // Need to register Channel implementations with Notifications Manager. Can then use
 // the registered channel keys to invoke a desired Notification Channel.
 
@@ -28,6 +25,7 @@ class Broadcaster
     protected $defaultChannels = [
         'mail' => 'notifications.email',
         'telegram' => 'notifications.telegram',
+        'sms' => 'notifications.sms'
     ];
 
     protected $channels = [];
