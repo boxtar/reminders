@@ -2,6 +2,7 @@
 
 namespace App\Middleware;
 
+use App\Domain\Recurrences\RecurrencesSupport;
 use App\Services\Auth\Auth;
 use Psr\Container\ContainerInterface;
 use Slim\Views\Twig;
@@ -74,6 +75,11 @@ class AddTwigGlobals extends Middleware
         $this->twig
             ->getEnvironment()
             ->addGlobal('dates', new \App\Helpers\Dates);
+
+        // Make the available recurrence frequencies available to all views
+        $this->twig
+            ->getEnvironment()
+            ->addGlobal('frequencies', RecurrencesSupport::frequencies());
 
         // Set the old input from the previous session (cached in session)
         $this->twig

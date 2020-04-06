@@ -2,21 +2,13 @@
 
 namespace App\Helpers;
 
+use App\Domain\Recurrences\RecurrencesSupport;
 use DateTime;
 use DatePeriod;
 use DateInterval;
 
 class Dates
 {
-    public static function frequencies()
-    {
-        return [
-            'daily' => 'Every Day',
-            'weekly' => 'Every Week',
-            'monthly' => 'Every Month'
-        ];
-    }
-
     public static function days()
     {
         return [
@@ -30,19 +22,49 @@ class Dates
         ];
     }
 
+    public static function months()
+    {
+        return [
+            0 => 'January',
+            1 => 'February',
+            2 => 'March',
+            3 => 'April',
+            4 => 'May',
+            5 => 'June',
+            6 => 'July',
+            7 => 'August',
+            8 => 'September',
+            9 => 'October',
+            10 => 'November',
+            11 => 'December',
+        ];
+    }
+
     /**
      * Returns true if provide day is valid. The valid day numbers and
      * their corresponding day are defined in the static days method.
      * 
-     * @param string|int $day - The number represeting the day of the week.
+     * @param string|int $day - The number representing the day of the week.
      */
     public static function isValidDay($day)
     {
         return isset(self::days()[(int) $day]);
     }
 
-    public static function dates() {
-        return array_map(function($date) {
+    /**
+     * Returns true if provide month is valid. The valid month numbers and
+     * their corresponding month are defined in the static months method.
+     * 
+     * @param string|int $month - The number representing the month.
+     */
+    public static function isValidMonth($month)
+    {
+        return isset(self::months()[(int) $month]);
+    }
+
+    public static function dates()
+    {
+        return array_map(function ($date) {
             return self::ordinal($date);
         }, range(1, 31));
     }
@@ -64,7 +86,8 @@ class Dates
      * 
      * @param string|int $date - The date to be checked
      */
-    public static function isValidDate($date) {
+    public static function isValidDate($date)
+    {
         return $date > 0 && $date < 32;
     }
 
@@ -86,7 +109,8 @@ class Dates
         );
     }
 
-    public static function times() {
+    public static function times()
+    {
         $times = [];
         foreach (self::timeRange("00:00", "24:00") as $timePeriod) {
             $times[] = date_format($timePeriod, "H:i");
@@ -94,9 +118,21 @@ class Dates
         return $times;
     }
 
-    public static function getAll() {
+    public static function isValidTime($time)
+    {
+        // Time will be in format "HH:MM". Split into Hour and Minute parts using colon.
+        // Then map over the resulting array and cast each string part to int.
+        [$hour, $minute] = array_map(function ($part) {
+            return (int) $part;
+        }, explode(":", $time));
+        if ($hour < 0 || $hour > 23 || $minute < 0 || $minute > 59) return false;
+        return true;
+    }
+
+    public static function getAll()
+    {
         return [
-            'frequencies' => self::frequencies(),
+            'frequencies' => RecurrencesSupport::frequencies(),
             'days' => self::days(),
             'dates' => self::dates(),
             'times' => self::times()

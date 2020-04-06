@@ -6,6 +6,7 @@ use Psr\Container\ContainerInterface;
 use Respect\Validation\Validator as v;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Routing\RouteContext;
 
 abstract class Controller
 {
@@ -24,11 +25,11 @@ abstract class Controller
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        
+
         // Tell Respect Validator where to find custom validation rules.
         v::with('App\\Services\\Validation\\Rules');
     }
-    
+
     // Performs validation on the given input using the given rules.
     protected function validate($input, array $rules)
     {
@@ -48,13 +49,21 @@ abstract class Controller
     protected function urlFor(Request $request, $routeName)
     {
         return $request
-            ->getAttribute('routeParser')
+            ->getAttribute(RouteContext::ROUTE_PARSER)
             ->urlFor($routeName);
+    }
+
+    protected function json(Response $response, $data = [], $status = 200)
+    {
+        $response->getBody()->write(
+            json_encode(['data' => (array) $data])
+        );
+        return $response->withHeader("Content-Type", "application/json")->withStatus($status);
     }
 
     protected function redirect(Response $response, $location = "/")
     {
-        return $response->withHeader('Location', $location);
+        return $response->withHeader('Location', $location)->withStatus(302);
     }
 
     protected function redirectToRoute(Request $request, Response $response, $routeName)

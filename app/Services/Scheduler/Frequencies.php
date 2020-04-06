@@ -2,6 +2,8 @@
 
 namespace App\Services\Scheduler;
 
+use App\Helpers\Utils;
+
 /**
  * This will hold all the cron frequency logic
  */
@@ -61,12 +63,12 @@ trait Frequencies
 
     /**
      * Sets instance to run every day at given time.
-     * Defaults to midnight (00:00)
+     * Defaults to 8am (08:00)
      * 
      * @param integer $hour
      * @param integer $minute
      */
-    public function dailyAt($hour = 0, $minute = 0)
+    public function dailyAt($hour = 8, $minute = 0)
     {
         return $this->setIntoExpression(1, [$minute, $hour]);
     }
@@ -85,12 +87,12 @@ trait Frequencies
 
     /**
      * Sets instance to run twice every day at the 0th minute of the given hours.
-     * Defaults to midnight(00:00) and noon (12:00).
+     * Defaults to 8am and 2pm, because these seem like sensible defaults.
      * 
      * @param integer $firstHour
      * @param integer $lastHour
      */
-    public function twiceDaily($firstHour = 0, $lastHour = 12)
+    public function twiceDaily($firstHour = 8, $lastHour = 14)
     {
         return $this->setIntoExpression(1, [0, "$firstHour,$lastHour"]);
     }
@@ -181,11 +183,39 @@ trait Frequencies
 
     /**
      * Sets instance to run on Weekdays only
-     * 
      */
     public function weekends()
     {
         return $this->days(6, 7);
+    }
+
+    /**
+     * Sets instance to run every 3 days starting from the
+     * given start day
+     */
+    public function halfWeekly($starts = 1)
+    {
+        $next = $starts + 3;
+        return $this->days($starts, $next == 7 ? $next : $next % 7);
+    }
+
+    /**
+     * Sets instance to run every week on the given day
+     */
+    public function weekly($day = 1)
+    {
+        return $this->days($day);
+    }
+
+    /**
+     * This is a difficult one. Went for a hardcoded schedule
+     * for simplicity:
+     * https://stackoverflow.com/questions/46109358/how-to-create-a-cron-expression-for-every-2-weeks
+     */
+    public function halfMonthly()
+    {
+        $this->dailyAt(9);
+        return $this->setIntoExpression(3, '1,15');
     }
 
     public function monthly()
@@ -193,9 +223,30 @@ trait Frequencies
         return $this->monthlyOn();
     }
 
-    public function monthlyOn($day = 1)
+    /**
+     * Sets expression to run once per month on the given day of the month.
+     * Defaults to the 1st.
+     */
+    public function monthlyOn($day = 1, $minute = 1, $hour = 8)
     {
-        return $this->setIntoExpression(1, [0, 0, $day]);
+        return $this->setIntoExpression(1, [$minute, $hour, $day]);
+    }
+
+    public function quarterly($starts = 1, $minute = 1, $hour = 8, $day = 1)
+    {
+        $next = $starts + 3;
+        $next = $next == 12 ? $next : $next % 12;
+        return $this->setIntoExpression(1, [$minute, $hour, $day, "$starts,$next"]);
+    }
+
+    public function yearlyOn($month = 1)
+    {
+        return $this->setIntoExpression(1, [0, 0, 1, $month]);
+    }
+
+    public function yearly()
+    {
+        $this->yearlyOn();
     }
 
     /**

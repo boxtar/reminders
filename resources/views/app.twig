@@ -16,11 +16,10 @@
                 'login.index': "{{ url_for('login.index') }}",
                 'login.store': "{{ url_for('login.store') }}",
                 'reminders.index': "{{ url_for('reminders.index') }}",
-                'reminders.store': "{{ url_for('reminders.store') }}",
+                'api.reminders.store': "{{ url_for('api.reminders.store') }}",
+                'api.reminders.get': "{{ url_for('api.reminders.get') }}",
+                'api.reminders.archive': "{{ url_for('api.reminders.get') }}",
             },
-            'dates': {
-                'frequencies': {{ dates.frequencies | json_encode | raw }}
-            }
         };
     </script>
 </head>

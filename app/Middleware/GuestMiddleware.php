@@ -21,7 +21,8 @@ class GuestMiddleware extends Middleware
         // If request is authenticated (user is logged in), redirect away.
         if ($auth->check()) {
             return (new Response())
-                ->withHeader('Location', $this->redirectTo);
+                ->withHeader('Location', $this->redirectTo)
+                ->withStatus(302);
         }
 
         return $handler->handle($request);

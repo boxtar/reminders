@@ -10,9 +10,9 @@
     "type": "project",
     "require": {
         "php": ">=7.0.0",
-        "slim/slim": "4.0.0",
+        "slim/slim": "4.*",
         "slim/twig-view": "3.0.0-alpha",
-        "symfony/var-dumper": "^3.2",
+        "symfony/var-dumper": "^4.3",
         "vlucas/phpdotenv": "^2.4",
         "slim/psr7": "^0.6.0",
         "php-di/php-di": "^6.0",

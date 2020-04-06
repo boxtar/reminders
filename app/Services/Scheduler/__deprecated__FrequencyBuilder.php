@@ -29,7 +29,6 @@ class FrequencyBuilder extends Task
         if (method_exists($this, $frequency)) {
             $this->{$frequency}();
         }
-
         return $this;
     }
 
@@ -58,6 +57,19 @@ class FrequencyBuilder extends Task
             $this->monthlyOn($date);
         }
 
+        return $this;
+    }
+
+    /**
+     * The month on which the reminder should run.
+     * 
+     * @param string $date.
+     */
+    public function month($month)
+    {
+        if ($month && Dates::isValidMonth($month)) {
+            $this->yearlyOn($month);
+        }
         return $this;
     }
 

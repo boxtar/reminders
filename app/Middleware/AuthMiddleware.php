@@ -21,7 +21,8 @@ class AuthMiddleware extends Middleware
         // If request is not authenticated (i.e. is a guest), redirect.
         if ($auth->guest()) {
             return (new Response())
-                ->withHeader('Location', $this->redirectTo);
+                ->withHeader('Location', $this->redirectTo)
+                ->withStatus(302);
         }
 
         return $handler->handle($request);

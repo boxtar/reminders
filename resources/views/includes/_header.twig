@@ -1,0 +1,17 @@
+<header>
+    <div class="flex justify-between items-center bg-gray-900 px-12 py-6 text-white">
+        <div class="text-2xl tracking-tighter">
+            Jabit
+        </div>
+        <div>
+            {% if auth.check %}
+            <form action="{{ url_for('logout.store') }}" method="post">
+                {{ csrf.html | raw }}
+                <input class="bg-transparent focus:outline-none focus:shadow-outline" type="submit" value="Logout">
+            </form>
+            {% else %}
+                <a href="{{ url_for('login.index') }}">Login</a>
+            {% endif %}
+        </div>
+    </div>
+</header>

@@ -9,7 +9,7 @@ use Slim\Views\{
 };
 
 return function ($app) {
-    
+
     // ----- Start Twig Setup -----
     $twig = new Twig(__DIR__ . '/../resources/views', [
         'cache' => $app->getContainer()->get('settings')['views']['cache']
@@ -28,14 +28,19 @@ return function ($app) {
     ));
     // ----- End Twig Setup -----
 
-    // Applies the Slim Csrf Guard middleware.
-    $app->add('csrf');
+    // Applies the Slim Csrf Guard middleware (if not running test...)
+    if (getenv('APP_ENV') !== 'testing') {
+        $app->add('csrf');
+    }
 
     // Applies some handy route info to the $request attributes
     $app->addRoutingMiddleware();
 
     // Method overriding (put, patch, delete)
     $app->add(new MethodOverrideMiddleware);
+
+    // Body parsing Middleware is required for JSON/XML
+    $app->addBodyParsingMiddleware();
 
     // Slim error handling
     $app->addErrorMiddleware(true, true, true);

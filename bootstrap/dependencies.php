@@ -1,6 +1,5 @@
 <?php
 
-use App\Helpers\Utils;
 use Slim\Csrf\Guard;
 use Slim\Flash\Messages;
 use App\Services\Auth\Auth;
@@ -37,7 +36,9 @@ return function ($app) {
 
     // Slim CSRF (add to container for ease of reference in Controllers)
     $container->set('csrf', function () use ($app) {
-        return new Guard($app->getResponseFactory());
+        $csrf = new Guard($app->getResponseFactory());
+        $csrf->setPersistentTokenMode(true);
+        return $csrf;
     });
 
     // Convenience reference to Flash service.
@@ -62,7 +63,7 @@ return function ($app) {
     // Register the SMS Channel into the container.
     $container->set(
         'notifications.sms',
-        function() use ($container) {
+        function () use ($container) {
             $config = $container->get('settings')['twilio'];
             return (new SMS())->settings([
                 'sid' => $config['sid'],

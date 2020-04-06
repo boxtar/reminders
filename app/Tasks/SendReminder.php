@@ -10,15 +10,14 @@ class SendReminder extends Task
 {
     /**
      * The instance that we're sending a reminder for (if it's due).
+     * @var Reminder
      */
     protected $reminder;
 
     /**
      * The Broadcaster implementation that will handle the sending
      * of the message/reminder to the required notification channels.
-     * 
-     * TODO: Think about whether a new Broadcaster instance is needed
-     * for each reminder or if we can pass in a Singleton instance.
+     * @var Broadcaster
      */
     protected $broadcaster;
 
@@ -75,10 +74,9 @@ class SendReminder extends Task
 
     protected function reminderMaintenance()
     {
-        // Delete reminder if it should only be run once.
-        if ($this->reminder->shouldRunOnce()) {
-            $this->reminder->delete();
-            $this->logReminderDeleted();
+        if (!$this->reminder->hasInitialReminderRun()) {
+            $this->reminder->markInitialReminderComplete();
+            $this->logInitialReminderHasRun();
         }
     }
 
@@ -87,7 +85,7 @@ class SendReminder extends Task
         return $this;
     }
 
-    public function logReminderDeleted()
+    public function logInitialReminderHasRun()
     {
         return $this;
     }

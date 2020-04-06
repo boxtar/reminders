@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Domain\Recurrences\RecurrencesSupport;
 use App\Helpers\Dates;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -14,13 +16,15 @@ class Reminder extends Model
      */
     protected $fillable = [
         'body', 'frequency',
-        'day', 'date', 'time',
-        'expression', 'run_once',
-        'channels'
+        'day', 'date', 'month',
+        'year', 'hour', 'minute',
+        'expression', 'recurrence_expression',
+        'channels', 'is_recurring',
     ];
 
     protected $casts = [
-        'run_once' => 'boolean',
+        'initial_reminder_run' => 'boolean',
+        'is_recurring' => 'boolean',
         'channels' => 'array'
     ];
 
@@ -36,7 +40,10 @@ class Reminder extends Model
      */
     public function getFrequencyAttribute($frequency)
     {
-        return Dates::frequencies()[$frequency];
+        if ($this->is_recurring) {
+            return RecurrencesSupport::frequencies()[$frequency];
+        }
+        return $frequency;
     }
 
     /**
@@ -47,26 +54,81 @@ class Reminder extends Model
     public function getDayAttribute($day)
     {
         if (!$day)
-            return;
+            return false;
 
         return Dates::days()[$day];
     }
 
     /**
-     * Accessor for day attribute
+     * Accessor for date attribute
      * 
      * @param string $frequency
      */
     public function getDateAttribute($date)
     {
         if (!$date)
-            return;
+            return false;
 
         return Dates::ordinal($date);
     }
 
-    public function shouldRunOnce()
+    /**
+     * Accessor for month attribute
+     * 
+     * @param string $frequency
+     */
+    public function getMonthAttribute($month)
     {
-        return $this->run_once;
+        if (!$month)
+            return false;
+
+        return Dates::months()[$month];
+    }
+
+    /**
+     * Returns the Carbon instance of the Reminder date.
+     * TODO: Look into using different timezones
+     * 
+     * @return Carbon
+     */
+    // public function getCarbonDate()
+    // {
+    //     return Carbon::create($this->year, $this->month + 1, $this->date, $this->hour, $this->minute, 'Europe/London');
+    // }
+
+    /**
+     * Uses Carbon api: https://carbon.nesbot.com/docs/#api-getters
+     * 0 (Sun) to 6 (Sat)
+     */
+    // public function getDayOfWeek()
+    // {
+    //     return ($this->getCarbonDate())->dayOfWeek;
+    // }
+
+    public function hasInitialReminderRun()
+    {
+        return $this->initial_reminder_run;
+    }
+
+    public function markInitialReminderComplete()
+    {
+        $this->initial_reminder_run = true;
+        $this->save();
+    }
+
+    public function isRecurring()
+    {
+        return $this->is_recurring;
+    }
+
+    public function getCronExpression()
+    {
+        if (!$this->hasInitialReminderRun()) {
+            return $this->expression;
+        } else if ($this->isRecurring()) {
+            return $this->recurrence_expression;
+        } else {
+            return false;
+        }
     }
 }

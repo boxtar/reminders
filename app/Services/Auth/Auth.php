@@ -157,6 +157,6 @@ class Auth
 
     protected function getSecurityHash()
     {
-        return md5($_SERVER['HTTP_USER_AGENT']);
+        return md5($_SERVER['HTTP_USER_AGENT'] ?? 'JabitReminders');
     }
 }

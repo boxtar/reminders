@@ -3,7 +3,7 @@
 return function ($app) {
     
     $container = $app->getContainer();
-
+    
     $container->set('settings', function () {
         return [
             'displayErrorDetails' => getenv('APP_DEBUG') === 'true',
