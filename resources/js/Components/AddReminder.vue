@@ -1,5 +1,5 @@
 <template>
-    <form :action="this.form.action" class="w-full" method="POST" @submit="processForm">
+    <form :action="this.form.action" class="w-full" method="POST" @submit.prevent="processForm">
         <div class="px-4 py-6 bg-gray-800">
             <!-- Csrf -->
             <div class="hidden">
@@ -48,12 +48,6 @@
                     <date-picker @datePicked="setDate"></date-picker>
                 </div>
 
-                <!-- Month input (Hidden as controlled by Date picker) -->
-                <div class="hidden">
-                    <input type="text" name="month" id="month" class="hidden" v-model="form.month" />
-                </div>
-
-                <!-- Time -->
                 <div class="px-4 py-2 md:w-1/2 lg:w-1/3">
                     <label
                         class="block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2"
@@ -61,35 +55,13 @@
                     >
                         Reminder Time
                     </label>
-                    <div class="relative">
-                        <select
-                            class="block appearance-none w-full bg-gray-700 text-white py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline"
-                            id="time"
-                            name="time"
-                            v-model="form.time"
-                        >
-                            <option v-for="time in dates.times" :value="time" :key="time">{{ time }}</option>
-                        </select>
-                        <div
-                            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500"
-                        >
-                            <svg
-                                class="fill-current h-4 w-4"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 20 20"
-                            >
-                                <path
-                                    d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
-                                />
-                            </svg>
-                        </div>
-                    </div>
+                    <time-picker @input="setTime" />
                 </div>
 
                 <!-- Recurrence -->
                 <div class="px-4 py-2 md:w-1/2 lg:w-1/3">
                     <label
-                        class="block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2"
+                        class="block  mb-2 uppercase tracking-wide text-gray-500 text-xs font-bold"
                         for="frequency"
                     >
                         Reminder Recurrence
@@ -122,23 +94,6 @@
                                 />
                             </svg>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Run Once? -->
-                <div class="hidden px-4 py-2 md:w-1/3">
-                    <label
-                        class="hidden md:invisible md:block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2"
-                        for="run_once"
-                        >Run Once?</label
-                    >
-                    <div class="py-3 flex items-center">
-                        <input type="checkbox" name="run_once" id="run_once" class="form-checkbox" checked />
-                        <label
-                            class="uppercase tracking-wide text-gray-500 text-xs font-bold ml-4"
-                            for="run_once"
-                            >Run Once?</label
-                        >
                     </div>
                 </div>
             </div>
@@ -176,15 +131,17 @@ export default {
             errors: new Errors(),
         };
     },
-    mounted() {
-        this.form.time = "09:00";
-    },
+    mounted() {},
     methods: {
         setDate(args) {
             const [day, month, year] = args;
             this.form.date = day;
             this.form.month = month;
             this.form.year = year;
+        },
+        setTime(time) {
+            console.log(time);
+            this.form.time = time;
         },
         getError(key) {
             return this.errors.get(key);
@@ -195,8 +152,7 @@ export default {
         clearError(key) {
             this.errors.clear(key);
         },
-        processForm(e) {
-            e.preventDefault();
+        processForm() {
             if (this.validateForm()) {
                 this.sendForm(this.form.action, this.setupForm()).then(({ data }) => {
                     this.form.body.value = "";

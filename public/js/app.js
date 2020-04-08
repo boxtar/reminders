@@ -269,18 +269,6 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 var Errors = __webpack_require__(/*! ../Utils/Errors */ "./resources/js/Utils/Errors.js");
 
 var FormInput = __webpack_require__(/*! ../Utils/FormInput */ "./resources/js/Utils/FormInput.js");
@@ -300,9 +288,7 @@ var FormInput = __webpack_require__(/*! ../Utils/FormInput */ "./resources/js/Ut
       errors: new Errors()
     };
   },
-  mounted: function mounted() {
-    this.form.time = "09:00";
-  },
+  mounted: function mounted() {},
   methods: {
     setDate: function setDate(args) {
       var _args = _slicedToArray(args, 3),
@@ -314,6 +300,10 @@ var FormInput = __webpack_require__(/*! ../Utils/FormInput */ "./resources/js/Ut
       this.form.month = month;
       this.form.year = year;
     },
+    setTime: function setTime(time) {
+      console.log(time);
+      this.form.time = time;
+    },
     getError: function getError(key) {
       return this.errors.get(key);
     },
@@ -323,10 +313,8 @@ var FormInput = __webpack_require__(/*! ../Utils/FormInput */ "./resources/js/Ut
     clearError: function clearError(key) {
       this.errors.clear(key);
     },
-    processForm: function processForm(e) {
+    processForm: function processForm() {
       var _this = this;
-
-      e.preventDefault();
 
       if (this.validateForm()) {
         this.sendForm(this.form.action, this.setupForm()).then(function (_ref) {
@@ -405,15 +393,6 @@ var FormInput = __webpack_require__(/*! ../Utils/FormInput */ "./resources/js/Ut
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -1071,6 +1050,147 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/Components/TimePicker/TimePicker.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/Components/TimePicker/TimePicker.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      hour: 12,
+      minute: 0,
+      // Steps to increase hours in
+      hourStep: 1,
+      // Steps to increase minutes in
+      minuteStep: 1
+    };
+  },
+  mounted: function mounted() {
+    var now = new Date();
+    this.hour = now.getHours();
+    this.minute = now.getMinutes();
+    this.emitTime();
+  },
+  methods: {
+    // Handle change to hour (@input event)
+    onHourChange: function onHourChange(evt) {
+      this.hour = parseInt(evt.target.value);
+      this.constrainHour();
+      this.emitTime();
+    },
+    // Handle change to minute (@input event)
+    onMinuteChange: function onMinuteChange(evt) {
+      this.minute = parseInt(evt.target.value);
+      this.constrainMinute();
+      this.emitTime();
+    },
+    decreaseHour: function decreaseHour() {
+      this.hour = parseInt(this.hour);
+      this.hour -= this.hourStep;
+      this.constrainHour();
+      this.emitTime();
+    },
+    increaseHour: function increaseHour() {
+      this.hour = parseInt(this.hour);
+      this.hour += this.hourStep;
+      this.constrainHour();
+      this.emitTime();
+    },
+    decreaseMinute: function decreaseMinute() {
+      this.minute = parseInt(this.minute);
+      this.minute -= this.minuteStep;
+      this.constrainMinute();
+      this.emitTime();
+    },
+    increaseMinute: function increaseMinute() {
+      this.minute = parseInt(this.minute);
+      this.minute += this.minuteStep;
+      this.constrainMinute();
+      this.emitTime();
+    },
+    constrainHour: function constrainHour() {
+      if (this.hour < 0) this.hour = 0;else if (this.hour > 23) this.hour = 23;
+    },
+    constrainMinute: function constrainMinute() {
+      if (this.minute < 0) this.minute = 0;else if (this.minute >= 60) this.minute = 59;
+    },
+    emitTime: function emitTime() {
+      var hour = this.padToTwoDigits(this.hour);
+      var minute = this.padToTwoDigits(this.minute);
+      this.$emit("input", "".concat(hour, ":").concat(minute));
+    },
+    padToTwoDigits: function padToTwoDigits(num) {
+      return num < 10 ? "0".concat(num) : num;
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/Components/DatePicker/DatePicker.vue?vue&type=style&index=0&lang=css&":
 /*!***************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/Components/DatePicker/DatePicker.vue?vue&type=style&index=0&lang=css& ***!
@@ -1083,7 +1203,26 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "/* Container */\n.date-picker {\n  position: relative;\n  background-color: white;\n  /* width: 350px; */\n  width: 100%;\n}\n\n/* Toggles the active state of the date picker */\n.date-picker .selected-date {\n  /* text-align: center; */\n  /* font-weight: 300; */\n  cursor: pointer;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  -webkit-transition: all 0.2s ease-out;\n  transition: all 0.2s ease-out;\n}\n\n/* The month picker. Only visible when date picker is active */\n.date-picker .month-picker {\n  display: -webkit-box;\n  display: flex;\n  -webkit-box-pack: justify;\n          justify-content: space-between;\n  -webkit-box-align: center;\n          align-items: center;\n  /* border-bottom: 2px solid #eee; */\n}\n.date-picker .month-picker .arrows {\n  width: 50px;\n  height: 50px;\n  display: -webkit-box;\n  display: flex;\n  -webkit-box-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n          align-items: center;\n  color: #313131;\n  font-size: 20px;\n  cursor: pointer;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n.date-picker .month-picker .arrows:active {\n  background-color: #9ae6b4;\n}\n\n/* The day of the month picker. Only visible when the date picker is active */\n.date-picker .day-picker {\n  display: grid;\n  grid-template-columns: repeat(7, 1fr);\n  grid-template-rows: repeat(5, 1fr);\n  /* 7 days at 50px each */\n  /* width: 350px; */\n  /* 5 rows of days at 50px each */\n  /* height: 250px; */\n}\n.date-picker .day-picker .day {\n  display: -webkit-box;\n  display: flex;\n  -webkit-box-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n          align-items: center;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n/* Hack to maintain square grid items */\n\n/* https://css-tricks.com/aspect-ratios-grid-items/#article-header-id-1 */\n.date-picker .day-picker > [style^=\"--aspect-ratio\"]::before {\n  content: \"\";\n  display: inline-block;\n  width: 1px;\n  height: 0;\n  padding-bottom: calc(100% / (var(--aspect-ratio)));\n}\n", ""]);
+exports.push([module.i, "/* Container */\n.date-picker {\n  position: relative;\n  background-color: transparent;\n  /* width: 350px; */\n  width: 100%;\n}\n\n/* Toggles the active state of the date picker */\n.date-picker .selected-date {\n  /* text-align: center; */\n  /* font-weight: 300; */\n  cursor: pointer;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  -webkit-transition: all 0.2s ease-out;\n  transition: all 0.2s ease-out;\n}\n\n/* The month picker. Only visible when date picker is active */\n.date-picker .month-picker {\n  display: -webkit-box;\n  display: flex;\n  -webkit-box-pack: justify;\n          justify-content: space-between;\n  -webkit-box-align: center;\n          align-items: center;\n  /* border-bottom: 2px solid #eee; */\n}\n.date-picker .month-picker .arrows {\n  width: 50px;\n  height: 50px;\n  display: -webkit-box;\n  display: flex;\n  -webkit-box-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n          align-items: center;\n  color: #313131;\n  font-size: 20px;\n  cursor: pointer;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n.date-picker .month-picker .arrows:active {\n  background-color: #9ae6b4;\n}\n\n/* The day of the month picker. Only visible when the date picker is active */\n.date-picker .day-picker {\n  display: grid;\n  grid-template-columns: repeat(7, 1fr);\n  grid-template-rows: repeat(5, 1fr);\n  /* 7 days at 50px each */\n  /* width: 350px; */\n  /* 5 rows of days at 50px each */\n  /* height: 250px; */\n}\n.date-picker .day-picker .day {\n  display: -webkit-box;\n  display: flex;\n  -webkit-box-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n          align-items: center;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n/* Hack to maintain square grid items */\n\n/* https://css-tricks.com/aspect-ratios-grid-items/#article-header-id-1 */\n.date-picker .day-picker > [style^=\"--aspect-ratio\"]::before {\n  content: \"\";\n  display: inline-block;\n  width: 1px;\n  height: 0;\n  padding-bottom: calc(100% / (var(--aspect-ratio)));\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/Components/TimePicker/TimePicker.vue?vue&type=style&index=0&lang=css&":
+/*!***************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/Components/TimePicker/TimePicker.vue?vue&type=style&index=0&lang=css& ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "/* Hide number type input spinners (increment and decrement buttons) */\n.time-component-container input[type=\"number\"]::-webkit-inner-spin-button,\n.time-component-container input[type=\"number\"]::-webkit-outer-spin-button {\n  -webkit-appearance: none;\n  margin: 0;\n}\n.time-component-container .increase,\n.time-component-container .decrease {\n  fill: #1a202c;\n  cursor: pointer;\n  opacity: 0.38;\n  -webkit-transition: all 0.2s ease-out;\n  transition: all 0.2s ease-out;\n}\n.time-component-container .increase:hover,\n.time-component-container .decrease:hover {\n  opacity: 1;\n  fill: #4fd1c5;\n}\n.time-component-container .increase svg,\n.time-component-container .decrease svg {\n  margin: 0 auto;\n}\n", ""]);
 
 // exports
 
@@ -2337,6 +2476,36 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/Components/TimePicker/TimePicker.vue?vue&type=style&index=0&lang=css&":
+/*!*******************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/Components/TimePicker/TimePicker.vue?vue&type=style&index=0&lang=css& ***!
+  \*******************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./TimePicker.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/Components/TimePicker/TimePicker.vue?vue&type=style&index=0&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/lib/addStyles.js":
 /*!****************************************************!*\
   !*** ./node_modules/style-loader/lib/addStyles.js ***!
@@ -2941,7 +3110,12 @@ var render = function() {
     {
       staticClass: "w-full",
       attrs: { action: this.form.action, method: "POST" },
-      on: { submit: _vm.processForm }
+      on: {
+        submit: function($event) {
+          $event.preventDefault()
+          return _vm.processForm($event)
+        }
+      }
     },
     [
       _c("div", { staticClass: "px-4 py-6 bg-gray-800" }, [
@@ -3059,122 +3233,35 @@ var render = function() {
             1
           ),
           _vm._v(" "),
-          _c("div", { staticClass: "hidden" }, [
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.form.month,
-                  expression: "form.month"
-                }
-              ],
-              staticClass: "hidden",
-              attrs: { type: "text", name: "month", id: "month" },
-              domProps: { value: _vm.form.month },
-              on: {
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.$set(_vm.form, "month", $event.target.value)
-                }
-              }
-            })
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "px-4 py-2 md:w-1/2 lg:w-1/3" }, [
-            _c(
-              "label",
-              {
-                staticClass:
-                  "block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2",
-                attrs: { for: "time" }
-              },
-              [_vm._v("\n                    Reminder Time\n                ")]
-            ),
-            _vm._v(" "),
-            _c("div", { staticClass: "relative" }, [
+          _c(
+            "div",
+            { staticClass: "px-4 py-2 md:w-1/2 lg:w-1/3" },
+            [
               _c(
-                "select",
-                {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.form.time,
-                      expression: "form.time"
-                    }
-                  ],
-                  staticClass:
-                    "block appearance-none w-full bg-gray-700 text-white py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline",
-                  attrs: { id: "time", name: "time" },
-                  on: {
-                    change: function($event) {
-                      var $$selectedVal = Array.prototype.filter
-                        .call($event.target.options, function(o) {
-                          return o.selected
-                        })
-                        .map(function(o) {
-                          var val = "_value" in o ? o._value : o.value
-                          return val
-                        })
-                      _vm.$set(
-                        _vm.form,
-                        "time",
-                        $event.target.multiple
-                          ? $$selectedVal
-                          : $$selectedVal[0]
-                      )
-                    }
-                  }
-                },
-                _vm._l(_vm.dates.times, function(time) {
-                  return _c(
-                    "option",
-                    { key: time, domProps: { value: time } },
-                    [_vm._v(_vm._s(time))]
-                  )
-                }),
-                0
-              ),
-              _vm._v(" "),
-              _c(
-                "div",
+                "label",
                 {
                   staticClass:
-                    "pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500"
+                    "block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2",
+                  attrs: { for: "time" }
                 },
                 [
-                  _c(
-                    "svg",
-                    {
-                      staticClass: "fill-current h-4 w-4",
-                      attrs: {
-                        xmlns: "http://www.w3.org/2000/svg",
-                        viewBox: "0 0 20 20"
-                      }
-                    },
-                    [
-                      _c("path", {
-                        attrs: {
-                          d:
-                            "M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
-                        }
-                      })
-                    ]
+                  _vm._v(
+                    "\n                    Reminder Time\n                "
                   )
                 ]
-              )
-            ])
-          ]),
+              ),
+              _vm._v(" "),
+              _c("time-picker", { on: { input: _vm.setTime } })
+            ],
+            1
+          ),
           _vm._v(" "),
           _c("div", { staticClass: "px-4 py-2 md:w-1/2 lg:w-1/3" }, [
             _c(
               "label",
               {
                 staticClass:
-                  "block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2",
+                  "block  mb-2 uppercase tracking-wide text-gray-500 text-xs font-bold",
                 attrs: { for: "frequency" }
               },
               [
@@ -3263,55 +3350,15 @@ var render = function() {
                 ]
               )
             ])
-          ]),
-          _vm._v(" "),
-          _vm._m(0)
+          ])
         ]),
         _vm._v(" "),
-        _vm._m(1)
+        _vm._m(0)
       ])
     ]
   )
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "hidden px-4 py-2 md:w-1/3" }, [
-      _c(
-        "label",
-        {
-          staticClass:
-            "hidden md:invisible md:block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2",
-          attrs: { for: "run_once" }
-        },
-        [_vm._v("Run Once?")]
-      ),
-      _vm._v(" "),
-      _c("div", { staticClass: "py-3 flex items-center" }, [
-        _c("input", {
-          staticClass: "form-checkbox",
-          attrs: {
-            type: "checkbox",
-            name: "run_once",
-            id: "run_once",
-            checked: ""
-          }
-        }),
-        _vm._v(" "),
-        _c(
-          "label",
-          {
-            staticClass:
-              "uppercase tracking-wide text-gray-500 text-xs font-bold ml-4",
-            attrs: { for: "run_once" }
-          },
-          [_vm._v("Run Once?")]
-        )
-      ])
-    ])
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -3359,196 +3406,203 @@ var render = function() {
       class: { "shadow-outline": _vm.isActive }
     },
     [
-      _c("input", {
-        staticClass:
-          "selected-date px-4 py-3 w-full leading-tight tracking-widest bg-gray-700 text-gray-100",
-        class: {
-          rounded: !_vm.isActive,
-          "rounded-t": _vm.isActive,
-          "bg-teal-400": _vm.isActive
-        },
-        attrs: {
-          type: "text",
-          name: "date-picker-formatted-date",
-          id: "date-picker-formatted-date"
-        },
-        domProps: { value: _vm.formattedDate },
-        on: {
-          click: function($event) {
-            _vm.isActive = !_vm.isActive
+      _c(
+        "div",
+        {
+          staticClass:
+            "selected-date px-4 py-3 w-full leading-tight tracking-widest bg-gray-700 text-gray-100",
+          class: {
+            rounded: !_vm.isActive,
+            "rounded-t": _vm.isActive,
+            "bg-teal-400": _vm.isActive
+          },
+          attrs: { id: "date-picker-formatted-date" },
+          on: {
+            click: function($event) {
+              _vm.isActive = !_vm.isActive
+            }
           }
-        }
-      }),
+        },
+        [_vm._v(_vm._s(_vm.formattedDate))]
+      ),
       _vm._v(" "),
-      _c("div", { staticClass: "dates", class: { hidden: !_vm.isActive } }, [
-        _c("div", { staticClass: "month-picker" }, [
-          _c(
-            "div",
-            {
-              staticClass:
-                "arrows prev-month hover:bg-teal-200 hover:text-white",
-              on: {
-                click: function($event) {
-                  return _vm.goToPreviousMonth()
-                }
-              }
-            },
-            [
-              _c(
-                "svg",
-                {
-                  attrs: {
-                    xmlns: "http://www.w3.org/2000/svg",
-                    height: "24",
-                    viewBox: "0 0 24 24",
-                    width: "24"
+      _c(
+        "div",
+        {
+          staticClass: "dates rounded-b bg-white",
+          class: { hidden: !_vm.isActive }
+        },
+        [
+          _c("div", { staticClass: "month-picker" }, [
+            _c(
+              "div",
+              {
+                staticClass:
+                  "arrows prev-month hover:bg-teal-200 hover:text-white",
+                on: {
+                  click: function($event) {
+                    return _vm.goToPreviousMonth()
                   }
-                },
-                [
-                  _c("path", {
+                }
+              },
+              [
+                _c(
+                  "svg",
+                  {
                     attrs: {
-                      d: "M0 0h24v24H0V0z",
-                      fill: "none",
-                      opacity: ".87"
+                      xmlns: "http://www.w3.org/2000/svg",
+                      height: "24",
+                      viewBox: "0 0 24 24",
+                      width: "24"
                     }
-                  }),
-                  _vm._v(" "),
-                  _c("path", {
+                  },
+                  [
+                    _c("path", {
+                      attrs: {
+                        d: "M0 0h24v24H0V0z",
+                        fill: "none",
+                        opacity: ".87"
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("path", {
+                      attrs: {
+                        d:
+                          "M17.51 3.87L15.73 2.1 5.84 12l9.9 9.9 1.77-1.77L9.38 12l8.13-8.13z"
+                      }
+                    })
+                  ]
+                )
+              ]
+            ),
+            _vm._v(" "),
+            _c("div", { staticClass: "month" }, [
+              _vm._v(_vm._s(_vm.month + " " + _vm.year))
+            ]),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass:
+                  "arrows next-month hover:bg-teal-200 hover:text-white",
+                on: {
+                  click: function($event) {
+                    return _vm.goToNextMonth()
+                  }
+                }
+              },
+              [
+                _c(
+                  "svg",
+                  {
                     attrs: {
-                      d:
-                        "M17.51 3.87L15.73 2.1 5.84 12l9.9 9.9 1.77-1.77L9.38 12l8.13-8.13z"
+                      xmlns: "http://www.w3.org/2000/svg",
+                      height: "24",
+                      viewBox: "0 0 24 24",
+                      width: "24"
                     }
-                  })
-                ]
-              )
-            ]
-          ),
-          _vm._v(" "),
-          _c("div", { staticClass: "month" }, [
-            _vm._v(_vm._s(_vm.month + " " + _vm.year))
+                  },
+                  [
+                    _c("path", {
+                      attrs: {
+                        d: "M24 24H0V0h24v24z",
+                        fill: "none",
+                        opacity: ".87"
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("path", {
+                      attrs: {
+                        d:
+                          "M6.49 20.13l1.77 1.77 9.9-9.9-9.9-9.9-1.77 1.77L14.62 12l-8.13 8.13z"
+                      }
+                    })
+                  ]
+                )
+              ]
+            )
           ]),
           _vm._v(" "),
           _c(
             "div",
-            {
-              staticClass:
-                "arrows next-month hover:bg-teal-200 hover:text-white",
-              on: {
-                click: function($event) {
-                  return _vm.goToNextMonth()
-                }
-              }
-            },
+            { staticClass: "day-picker" },
             [
-              _c(
-                "svg",
-                {
-                  attrs: {
-                    xmlns: "http://www.w3.org/2000/svg",
-                    height: "24",
-                    viewBox: "0 0 24 24",
-                    width: "24"
-                  }
-                },
-                [
-                  _c("path", {
-                    attrs: {
-                      d: "M24 24H0V0h24v24z",
-                      fill: "none",
-                      opacity: ".87"
-                    }
-                  }),
-                  _vm._v(" "),
-                  _c("path", {
-                    attrs: {
-                      d:
-                        "M6.49 20.13l1.77 1.77 9.9-9.9-9.9-9.9-1.77 1.77L14.62 12l-8.13 8.13z"
-                    }
-                  })
-                ]
-              )
-            ]
-          )
-        ]),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "day-picker" },
-          [
-            _vm._l(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"], function(
-              day
-            ) {
-              return _c(
-                "div",
-                {
-                  key: day,
-                  staticClass: "day bg-gray-300 text-gray-600",
-                  staticStyle: { "--aspect-ratio": "1/1" }
-                },
-                [
-                  _vm._v(
-                    "\n                " +
-                      _vm._s(day.substr(0, 1)) +
-                      "\n            "
-                  )
-                ]
-              )
-            }),
-            _vm._v(" "),
-            _vm._l(_vm.dayOffset, function(offset) {
-              return _c("div", {
-                key: "offset-" + offset,
-                staticClass: "day bg-gray-100 cursor-not-allowed",
-                staticStyle: { "--aspect-ratio": "1/1" }
-              })
-            }),
-            _vm._v(" "),
-            _vm._l(
-              _vm.getDaysInMonth(_vm.visibleMonth, _vm.visibleYear),
-              function(day) {
-                return _c(
-                  "div",
-                  {
-                    key: day,
-                    staticClass:
-                      "day border border-transparent cursor-pointer ",
-                    class: {
-                      "bg-teal-300 border-teal-500":
-                        day == _vm.selectedDay &&
-                        _vm.selectedMonth == _vm.visibleMonth &&
-                        _vm.selectedYear == _vm.visibleYear,
-
-                      "m-1 rounded-full hover:bg-teal-200 hover:border-teal-300": !_vm.dateInPast(
-                        day,
-                        _vm.visibleMonth,
-                        _vm.visibleYear
-                      ),
-
-                      "bg-gray-100 text-gray-500 border-0 cursor-not-allowed": _vm.dateInPast(
-                        day,
-                        _vm.visibleMonth,
-                        _vm.visibleYear
-                      )
+              _vm._l(
+                ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+                function(day) {
+                  return _c(
+                    "div",
+                    {
+                      key: day,
+                      staticClass: "day bg-gray-300 text-gray-600",
+                      staticStyle: { "--aspect-ratio": "1/1" }
                     },
-                    staticStyle: { "--aspect-ratio": "1/1" },
-                    on: {
-                      click: function($event) {
-                        return _vm.selectDate(day)
+                    [
+                      _vm._v(
+                        "\n                " +
+                          _vm._s(day.substr(0, 1)) +
+                          "\n            "
+                      )
+                    ]
+                  )
+                }
+              ),
+              _vm._v(" "),
+              _vm._l(_vm.dayOffset, function(offset) {
+                return _c("div", {
+                  key: "offset-" + offset,
+                  staticClass: "day bg-gray-100 cursor-not-allowed",
+                  staticStyle: { "--aspect-ratio": "1/1" }
+                })
+              }),
+              _vm._v(" "),
+              _vm._l(
+                _vm.getDaysInMonth(_vm.visibleMonth, _vm.visibleYear),
+                function(day) {
+                  return _c(
+                    "div",
+                    {
+                      key: day,
+                      staticClass:
+                        "day border border-transparent cursor-pointer ",
+                      class: {
+                        "bg-teal-300 border-teal-500":
+                          day == _vm.selectedDay &&
+                          _vm.selectedMonth == _vm.visibleMonth &&
+                          _vm.selectedYear == _vm.visibleYear,
+
+                        "m-1 rounded-full hover:bg-teal-200 hover:border-teal-300": !_vm.dateInPast(
+                          day,
+                          _vm.visibleMonth,
+                          _vm.visibleYear
+                        ),
+
+                        "bg-gray-100 text-gray-500 border-0 cursor-not-allowed": _vm.dateInPast(
+                          day,
+                          _vm.visibleMonth,
+                          _vm.visibleYear
+                        )
+                      },
+                      staticStyle: { "--aspect-ratio": "1/1" },
+                      on: {
+                        click: function($event) {
+                          return _vm.selectDate(day)
+                        }
                       }
-                    }
-                  },
-                  [
-                    _vm._v(
-                      "\n                " + _vm._s(day) + "\n            "
-                    )
-                  ]
-                )
-              }
-            )
-          ],
-          2
-        )
-      ])
+                    },
+                    [
+                      _vm._v(
+                        "\n                " + _vm._s(day) + "\n            "
+                      )
+                    ]
+                  )
+                }
+              )
+            ],
+            2
+          )
+        ]
+      )
     ]
   )
 }
@@ -4097,6 +4151,248 @@ var render = function() {
     ],
     1
   )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/Components/TimePicker/TimePicker.vue?vue&type=template&id=fa14c418&":
+/*!************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/Components/TimePicker/TimePicker.vue?vue&type=template&id=fa14c418& ***!
+  \************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "flex items-center" }, [
+    _c(
+      "div",
+      {
+        staticClass:
+          "time-component-container flex items-center justify-center flex-1 bg-gray-700 rounded"
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "decrease flex-1 px-4 py-3 select-none",
+            on: { click: _vm.decreaseHour }
+          },
+          [
+            _c(
+              "svg",
+              {
+                attrs: {
+                  xmlns: "http://www.w3.org/2000/svg",
+                  viewBox: "0 0 24 24",
+                  width: "20px",
+                  height: "20px"
+                }
+              },
+              [
+                _c("path", {
+                  attrs: { d: "M0 0h24v24H0V0z", fill: "none", opacity: ".87" }
+                }),
+                _vm._v(" "),
+                _c("path", {
+                  attrs: {
+                    d:
+                      "M17.51 3.87L15.73 2.1 5.84 12l9.9 9.9 1.77-1.77L9.38 12l8.13-8.13z"
+                  }
+                })
+              ]
+            )
+          ]
+        ),
+        _vm._v(" "),
+        _c("input", {
+          staticClass:
+            "appearance-none block w-full bg-gray-700 text-white text-center rounded py-3 px-4 leading-tight select-none focus:outline-none focus:shadow-outline",
+          attrs: { type: "number" },
+          domProps: { value: _vm.hour },
+          on: {
+            input: _vm.onHourChange,
+            keydown: function($event) {
+              if (
+                !$event.type.indexOf("key") &&
+                _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+              ) {
+                return null
+              }
+              $event.preventDefault()
+            }
+          }
+        }),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            staticClass: "increase flex-1 px-4 py-3 select-none",
+            on: { click: _vm.increaseHour }
+          },
+          [
+            _c(
+              "svg",
+              {
+                attrs: {
+                  xmlns: "http://www.w3.org/2000/svg",
+                  viewBox: "0 0 24 24",
+                  width: "20px",
+                  height: "20px"
+                }
+              },
+              [
+                _c("path", {
+                  attrs: {
+                    d: "M24 24H0V0h24v24z",
+                    fill: "none",
+                    opacity: ".87"
+                  }
+                }),
+                _vm._v(" "),
+                _c("path", {
+                  attrs: {
+                    d:
+                      "M6.49 20.13l1.77 1.77 9.9-9.9-9.9-9.9-1.77 1.77L14.62 12l-8.13 8.13z"
+                  }
+                })
+              ]
+            )
+          ]
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "px-2 text-gray-600 text-xl font-bold select-none" },
+      [_vm._v(":")]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass:
+          "time-component-container flex items-center justify-center flex-1 bg-gray-700 rounded"
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "decrease flex-1 px-4 py-3 select-none",
+            on: { click: _vm.decreaseMinute }
+          },
+          [
+            _c(
+              "svg",
+              {
+                attrs: {
+                  xmlns: "http://www.w3.org/2000/svg",
+                  viewBox: "0 0 24 24",
+                  width: "20px",
+                  height: "20px"
+                }
+              },
+              [
+                _c("path", {
+                  attrs: { d: "M0 0h24v24H0V0z", fill: "none", opacity: ".87" }
+                }),
+                _vm._v(" "),
+                _c("path", {
+                  attrs: {
+                    d:
+                      "M17.51 3.87L15.73 2.1 5.84 12l9.9 9.9 1.77-1.77L9.38 12l8.13-8.13z"
+                  }
+                })
+              ]
+            )
+          ]
+        ),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.minute,
+              expression: "minute"
+            }
+          ],
+          staticClass:
+            "appearance-none block w-full bg-gray-700 text-white text-center rounded py-3 px-4 leading-tight select-none focus:outline-none focus:shadow-outline",
+          attrs: { type: "number" },
+          domProps: { value: _vm.minute },
+          on: {
+            input: [
+              function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.minute = $event.target.value
+              },
+              _vm.onMinuteChange
+            ],
+            keydown: function($event) {
+              if (
+                !$event.type.indexOf("key") &&
+                _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+              ) {
+                return null
+              }
+              $event.preventDefault()
+            }
+          }
+        }),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            staticClass: "increase flex-1 px-4 py-3 select-none",
+            on: { click: _vm.increaseMinute }
+          },
+          [
+            _c(
+              "svg",
+              {
+                attrs: {
+                  xmlns: "http://www.w3.org/2000/svg",
+                  viewBox: "0 0 24 24",
+                  width: "20px",
+                  height: "20px"
+                }
+              },
+              [
+                _c("path", {
+                  attrs: {
+                    d: "M24 24H0V0h24v24z",
+                    fill: "none",
+                    opacity: ".87"
+                  }
+                }),
+                _vm._v(" "),
+                _c("path", {
+                  attrs: {
+                    d:
+                      "M6.49 20.13l1.77 1.77 9.9-9.9-9.9-9.9-1.77 1.77L14.62 12l-8.13 8.13z"
+                  }
+                })
+              ]
+            )
+          ]
+        )
+      ]
+    )
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -16853,6 +17149,93 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/Components/TimePicker/TimePicker.vue":
+/*!***********************************************************!*\
+  !*** ./resources/js/Components/TimePicker/TimePicker.vue ***!
+  \***********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _TimePicker_vue_vue_type_template_id_fa14c418___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TimePicker.vue?vue&type=template&id=fa14c418& */ "./resources/js/Components/TimePicker/TimePicker.vue?vue&type=template&id=fa14c418&");
+/* harmony import */ var _TimePicker_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TimePicker.vue?vue&type=script&lang=js& */ "./resources/js/Components/TimePicker/TimePicker.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _TimePicker_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TimePicker.vue?vue&type=style&index=0&lang=css& */ "./resources/js/Components/TimePicker/TimePicker.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _TimePicker_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _TimePicker_vue_vue_type_template_id_fa14c418___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _TimePicker_vue_vue_type_template_id_fa14c418___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/Components/TimePicker/TimePicker.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/Components/TimePicker/TimePicker.vue?vue&type=script&lang=js&":
+/*!************************************************************************************!*\
+  !*** ./resources/js/Components/TimePicker/TimePicker.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TimePicker_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./TimePicker.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/Components/TimePicker/TimePicker.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TimePicker_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/Components/TimePicker/TimePicker.vue?vue&type=style&index=0&lang=css&":
+/*!********************************************************************************************!*\
+  !*** ./resources/js/Components/TimePicker/TimePicker.vue?vue&type=style&index=0&lang=css& ***!
+  \********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TimePicker_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader!../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./TimePicker.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/Components/TimePicker/TimePicker.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TimePicker_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TimePicker_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TimePicker_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TimePicker_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TimePicker_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "./resources/js/Components/TimePicker/TimePicker.vue?vue&type=template&id=fa14c418&":
+/*!******************************************************************************************!*\
+  !*** ./resources/js/Components/TimePicker/TimePicker.vue?vue&type=template&id=fa14c418& ***!
+  \******************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TimePicker_vue_vue_type_template_id_fa14c418___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./TimePicker.vue?vue&type=template&id=fa14c418& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/Components/TimePicker/TimePicker.vue?vue&type=template&id=fa14c418&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TimePicker_vue_vue_type_template_id_fa14c418___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TimePicker_vue_vue_type_template_id_fa14c418___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/Utils/Errors.js":
 /*!**************************************!*\
   !*** ./resources/js/Utils/Errors.js ***!
@@ -16989,6 +17372,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.component("addReminder", __webpack_re
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.component("register", __webpack_require__(/*! ./Components/Register.vue */ "./resources/js/Components/Register.vue")["default"]);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.component("login", __webpack_require__(/*! ./Components/Login.vue */ "./resources/js/Components/Login.vue")["default"]);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.component("datePicker", __webpack_require__(/*! ./Components/DatePicker/DatePicker.vue */ "./resources/js/Components/DatePicker/DatePicker.vue")["default"]);
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.component("timePicker", __webpack_require__(/*! ./Components/TimePicker/TimePicker.vue */ "./resources/js/Components/TimePicker/TimePicker.vue")["default"]);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.component("notifications", __webpack_require__(/*! ./Components/Notifications/NotificationsList.vue */ "./resources/js/Components/Notifications/NotificationsList.vue")["default"]);
 new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
   el: "#app",

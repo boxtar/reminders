@@ -1,22 +1,13 @@
 <template>
     <div class="date-picker rounded " :class="{ 'shadow-outline': isActive }">
-        <!-- <div
-            class="selected-date px-4 py-3 w-full leading-tight tracking-widest bg-gray-700 text-gray-100"
-            :class="{ rounded: !isActive, 'rounded-t': isActive, 'bg-teal-400': isActive }"
-            @click="isActive = !isActive"
-            v-text="formattedDate"
-        ></div> -->
-        <input
-            type="text"
-            name="date-picker-formatted-date"
+        <div
             id="date-picker-formatted-date"
             class="selected-date px-4 py-3 w-full leading-tight tracking-widest bg-gray-700 text-gray-100"
             :class="{ rounded: !isActive, 'rounded-t': isActive, 'bg-teal-400': isActive }"
             @click="isActive = !isActive"
-            :value="formattedDate"
-        />
+        >{{ formattedDate }}</div>
 
-        <div class="dates" :class="{ hidden: !isActive }">
+        <div class="dates rounded-b bg-white" :class="{ hidden: !isActive }">
             <!-- Months -->
             <div class="month-picker">
                 <!-- Previous month arrow -->
@@ -241,7 +232,7 @@ export default {
 /* Container */
 .date-picker {
     position: relative;
-    background-color: white;
+    background-color: transparent;
     /* width: 350px; */
     width: 100%;
 }
