@@ -2,7 +2,7 @@
 
 namespace App\Tasks;
 
-use App\Models\Reminder;
+use App\Domain\Reminders\Models\Reminder;
 use App\Services\Scheduler\Task;
 use App\Services\Notifications\Broadcaster;
 

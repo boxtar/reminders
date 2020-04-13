@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Reminder;
+use App\Domain\Reminders\Models\Reminder;
 use App\Tasks\SendReminder;
 use App\Services\Scheduler\Kernel;
 
