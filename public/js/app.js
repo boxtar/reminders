@@ -236,45 +236,12 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 var Errors = __webpack_require__(/*! ../Utils/Errors */ "./resources/js/Utils/Errors.js");
 
 var FormInput = __webpack_require__(/*! ../Utils/FormInput */ "./resources/js/Utils/FormInput.js");
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ["dates", "csrf"],
+  props: ["frequencies", "csrf"],
   data: function data() {
     return {
       form: {
@@ -491,7 +458,9 @@ var dateFunctions = __webpack_require__(/*! ./functions */ "./resources/js/Compo
       selectedDay: null,
       selectedMonth: null,
       selectedYear: null,
+      // Represents the month currently visible on the date picker (changed using arrows)
       visibleMonth: null,
+      // Represents the year currently visible on the date picker (changed by cycling through months and lapping into prev/next year)
       visibleYear: null,
       isActive: false,
       months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
@@ -576,7 +545,7 @@ var dateFunctions = __webpack_require__(/*! ./functions */ "./resources/js/Compo
      * Returns a string representing the selected date for display on the UI.
      */
     formattedDate: function formattedDate() {
-      return "".concat(this.days[this.selectedDate.getDay()].substr(0, 3), ", ").concat(this.ordinalDay(this.selectedDate.getDate()), " ").concat(this.months[this.selectedDate.getMonth()]);
+      return "".concat(this.days[this.selectedDate.getDay()].substr(0, 3), ", ").concat(this.ordinalDay(this.selectedDate.getDate()), " ").concat(this.months[this.selectedDate.getMonth()], " ").concat(this.selectedYear);
     },
 
     /**
@@ -940,9 +909,59 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ["dates", "csrf"],
+  props: ["frequencies", "csrf"],
   data: function data() {
     return {
       reminders: {
@@ -3182,7 +3201,16 @@ var render = function() {
                 function($event) {
                   return _vm.clearError("body")
                 }
-              ]
+              ],
+              keydown: function($event) {
+                if (
+                  !$event.type.indexOf("key") &&
+                  _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                ) {
+                  return null
+                }
+                $event.preventDefault()
+              }
             }
           }),
           _vm._v(" "),
@@ -3287,6 +3315,15 @@ var render = function() {
                     "block appearance-none w-full bg-gray-700 text-white py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline",
                   attrs: { id: "frequency", name: "frequency" },
                   on: {
+                    keydown: function($event) {
+                      if (
+                        !$event.type.indexOf("key") &&
+                        _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                      ) {
+                        return null
+                      }
+                      $event.preventDefault()
+                    },
                     change: function($event) {
                       var $$selectedVal = Array.prototype.filter
                         .call($event.target.options, function(o) {
@@ -3311,11 +3348,11 @@ var render = function() {
                     _vm._v("Don't Recur")
                   ]),
                   _vm._v(" "),
-                  _vm._l(_vm.dates.frequencies, function(frequency, value) {
+                  _vm._l(_vm.frequencies, function(frequency, value) {
                     return _c(
                       "option",
                       { key: value, domProps: { value: value } },
-                      [_vm._v(_vm._s(frequency))]
+                      [_vm._v(_vm._s(frequency) + "\n                        ")]
                     )
                   })
                 ],
@@ -4034,7 +4071,7 @@ var render = function() {
       }),
       _vm._v(" "),
       _c("add-reminder", {
-        attrs: { dates: _vm.dates, csrf: _vm.csrf },
+        attrs: { frequencies: _vm.frequencies, csrf: _vm.csrf },
         on: { reminderAdded: _vm.addReminder }
       }),
       _vm._v(" "),
@@ -4051,9 +4088,12 @@ var render = function() {
             [
               _c(
                 "div",
-                { staticClass: "px-4 py-6 h-full bg-white rounded shadow" },
+                {
+                  staticClass:
+                    "px-4 py-6 h-full bg-white rounded shadow flex flex-col justify-between"
+                },
                 [
-                  _c("div", { staticClass: "px-4" }, [
+                  _c("div", { staticClass: "px-4 w-full" }, [
                     _c(
                       "span",
                       {
@@ -4063,83 +4103,162 @@ var render = function() {
                       [_vm._v("Body")]
                     ),
                     _vm._v(" "),
-                    _c("span", { staticClass: "text-2xl text-gray-800" }, [
+                    _c("span", { staticClass: "text-xl text-gray-800" }, [
                       _vm._v(_vm._s(reminder.body))
                     ])
                   ]),
                   _vm._v(" "),
-                  _c("div", { staticClass: "md:flex flex-wrap" }, [
-                    _c("div", { staticClass: "px-4 mt-2" }, [
-                      _c(
-                        "span",
-                        {
-                          staticClass:
-                            "block tracking-wider text-xs text-gray-500"
-                        },
-                        [
-                          _vm._v(
-                            "\n                            Reminder:\n                            "
+                  _c("div", { staticClass: "w-full mt-4" }, [
+                    _c("div", { staticClass: "md:flex flex-wrap" }, [
+                      _c("div", { staticClass: "px-4 mt-2" }, [
+                        _c("div", { staticClass: "flex items-center" }, [
+                          _c(
+                            "svg",
+                            {
+                              attrs: {
+                                xmlns: "http://www.w3.org/2000/svg",
+                                viewBox: "0 0 24 24",
+                                fill: "#a0aec0",
+                                width: "24px",
+                                height: "24px"
+                              }
+                            },
+                            [
+                              _c("path", {
+                                attrs: { d: "M0 0h24v24H0V0z", fill: "none" }
+                              }),
+                              _vm._v(" "),
+                              _c("path", {
+                                attrs: {
+                                  d:
+                                    "M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6zM7.58 4.08L6.15 2.65C3.75 4.48 2.17 7.3 2.03 10.5h2c.15-2.65 1.51-4.97 3.55-6.42zm12.39 6.42h2c-.15-3.2-1.73-6.02-4.12-7.85l-1.42 1.43c2.02 1.45 3.39 3.77 3.54 6.42z"
+                                }
+                              })
+                            ]
                           ),
-                          _c("span", { staticClass: "text-teal-400" }, [
-                            _vm._v(
-                              _vm._s(
-                                reminder.date +
-                                  " " +
-                                  reminder.month +
-                                  " " +
-                                  reminder.year +
-                                  " @ " +
-                                  _vm.pad(reminder.hour || 0) +
-                                  ":" +
-                                  _vm.pad(reminder.minute || 0)
+                          _vm._v(" "),
+                          _c(
+                            "span",
+                            {
+                              staticClass: "block ml-2 tracking-wider text-sm"
+                            },
+                            [
+                              _c("span", { staticClass: "text-teal-400" }, [
+                                _vm._v(
+                                  _vm._s(
+                                    reminder.day.substr(0, 3) +
+                                      " " +
+                                      reminder.date +
+                                      " " +
+                                      reminder.month.substr(0, 3) +
+                                      " " +
+                                      reminder.year +
+                                      " at " +
+                                      _vm.pad(reminder.hour || 0) +
+                                      ":" +
+                                      _vm.pad(reminder.minute || 0)
+                                  )
+                                )
+                              ])
+                            ]
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "mt-2 flex items-center" }, [
+                          _c(
+                            "svg",
+                            {
+                              attrs: {
+                                xmlns: "http://www.w3.org/2000/svg",
+                                viewBox: "0 0 24 24",
+                                fill: "#a0aec0",
+                                width: "24px",
+                                height: "24px"
+                              }
+                            },
+                            [
+                              _c("path", {
+                                attrs: { d: "M0 0h24v24H0V0z", fill: "none" }
+                              }),
+                              _vm._v(" "),
+                              _c("path", {
+                                attrs: {
+                                  d:
+                                    "M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z"
+                                }
+                              })
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "span",
+                            {
+                              staticClass: "block ml-2 tracking-wider text-sm"
+                            },
+                            [
+                              _c("span", { staticClass: "text-teal-400" }, [
+                                _vm._v(_vm._s(reminder.frequency))
+                              ])
+                            ]
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "mt-2 flex items-center" }, [
+                          _c(
+                            "svg",
+                            {
+                              attrs: {
+                                xmlns: "http://www.w3.org/2000/svg",
+                                viewBox: "0 0 24 24",
+                                fill: "#a0aec0",
+                                width: "24px",
+                                height: "24px"
+                              }
+                            },
+                            [
+                              _c("path", {
+                                attrs: { d: "M0 0h24v24H0V0z", fill: "none" }
+                              }),
+                              _vm._v(" "),
+                              _c("path", {
+                                attrs: {
+                                  d:
+                                    "M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z"
+                                }
+                              })
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "form",
+                            {
+                              attrs: {
+                                action:
+                                  _vm.reminders.archiveAction +
+                                  "/" +
+                                  reminder.id
+                              },
+                              on: { submit: _vm.archiveReminder }
+                            },
+                            [
+                              _c(
+                                "button",
+                                {
+                                  staticClass:
+                                    "block ml-2 tracking-wider text-sm text-red-300 hover:text-red-400",
+                                  attrs: { type: "submit" }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                                        Archive\n                                    "
+                                  )
+                                ]
                               )
-                            )
-                          ])
-                        ]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "span",
-                        {
-                          staticClass:
-                            "block tracking-wider text-xs text-gray-500"
-                        },
-                        [
-                          _vm._v("\n                            Recurrence: "),
-                          _c("span", { staticClass: "text-teal-400" }, [
-                            _vm._v(_vm._s(reminder.frequency))
-                          ])
-                        ]
-                      )
+                            ]
+                          )
+                        ])
+                      ])
                     ])
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "flex justify-end items-center" }, [
-                    _c(
-                      "form",
-                      {
-                        attrs: {
-                          action:
-                            _vm.reminders.archiveAction + "/" + reminder.id
-                        },
-                        on: { submit: _vm.archiveReminder }
-                      },
-                      [
-                        _c(
-                          "button",
-                          {
-                            staticClass:
-                              "px-4 py-1 uppercase text-xs tracking-wider text-red-400 focus:outline-none focus:shadow-outline",
-                            attrs: { type: "submit" }
-                          },
-                          [
-                            _vm._v(
-                              "\n                            Archive\n                        "
-                            )
-                          ]
-                        )
-                      ]
-                    )
                   ])
                 ]
               )
@@ -4185,7 +4304,7 @@ var render = function() {
         _c(
           "div",
           {
-            staticClass: "decrease flex-1 px-4 py-3 select-none",
+            staticClass: "decrease flex-1 px-2 md:px-4 py-3 select-none",
             on: { click: _vm.decreaseHour }
           },
           [
@@ -4217,7 +4336,7 @@ var render = function() {
         _vm._v(" "),
         _c("input", {
           staticClass:
-            "appearance-none block w-full bg-gray-700 text-white text-center rounded py-3 px-4 leading-tight select-none focus:outline-none focus:shadow-outline",
+            "appearance-none block w-full bg-gray-700 text-white text-center rounded px-2 py-3 leading-tight select-none focus:outline-none focus:shadow-outline",
           attrs: { type: "number" },
           domProps: { value: _vm.hour },
           on: {
@@ -4237,7 +4356,7 @@ var render = function() {
         _c(
           "div",
           {
-            staticClass: "increase flex-1 px-4 py-3 select-none",
+            staticClass: "increase flex-1 px-2 md:px-4 py-3 select-none",
             on: { click: _vm.increaseHour }
           },
           [
@@ -4289,7 +4408,7 @@ var render = function() {
         _c(
           "div",
           {
-            staticClass: "decrease flex-1 px-4 py-3 select-none",
+            staticClass: "decrease flex-1 px-2 md:px-4 py-3 select-none",
             on: { click: _vm.decreaseMinute }
           },
           [
@@ -4329,7 +4448,7 @@ var render = function() {
             }
           ],
           staticClass:
-            "appearance-none block w-full bg-gray-700 text-white text-center rounded py-3 px-4 leading-tight select-none focus:outline-none focus:shadow-outline",
+            "appearance-none block w-full bg-gray-700 text-white text-center rounded px-2 py-3 leading-tight select-none focus:outline-none focus:shadow-outline",
           attrs: { type: "number" },
           domProps: { value: _vm.minute },
           on: {
@@ -4357,7 +4476,7 @@ var render = function() {
         _c(
           "div",
           {
-            staticClass: "increase flex-1 px-4 py-3 select-none",
+            staticClass: "increase flex-1 px-2 md:px-4 py-3 select-none",
             on: { click: _vm.increaseMinute }
           },
           [

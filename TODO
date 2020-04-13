@@ -1,10 +1,27 @@
-AUTHENTICATION
-AUTHORISATION
-CSRF
-LOGGING SERVICE (SendReminder)
+LOGGING SERVICE:
+    Bring in a logging service to log when reminders are sent and updated etc. in SendReminders.
 
-SCHEDULE A JOB TO ARCHIVE DELETED REMINDERS:
-    DELETE FROM reminders WHERE deleted_at IS NOT NULL
+UPDATE:
+    Implement updating of reminders including body, reminder date and recurrence.
+
+DELETE & RESTORE:
+    Allow users to view a list of archived reminders and restore or completely delete them (ireversible).
+
+DATESSUPPORT:
+    Domain\Dates\DatesSupport just doesn't seem right. All those static functions can't be good. Perhaps break out into DaysSupport, DatesSupport, MonthsSupport, YearsSupport and TimesSupport and remove the static-ness of the functions.
+
+SORTING:
+    Make default sorting of reminders by reminder date: YYYYMMDD.
+    Implement custom sorting on front-end.
+
+ADD LINK TO REMINDER:
+    When sending out reminder, perhaps add a link to open up the reminder in the app too? This will rely on saving destination to the session as will most likely be redirected to Login page so will want to redirect to the Reminder on successful login.
+
+REDIRECT TO INTENDED PAGE:
+    If user tries to view a specific page, but is redirected (e.g. to login) then I would like to be able to redirect them back to their intended page after performing the required action (e.g. log in).
+
+REMEMBER ME:
+    Keep a user logged in. See how Laravel does this.
 
 ALLOW A REMINDER TO BE SENT TO A CUSTOM EMAIL ADDRESS:
-    E.g. Setup a reminder to remind colleague to do things.
+    E.g. Setup a reminder to remind colleague to do things. Potentially very dangerous! Probably not going to implement this.

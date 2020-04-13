@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Domain\Reminders\Models\Reminder;
 use App\Helpers\Utils;
 use Illuminate\Database\Eloquent\Model;
 

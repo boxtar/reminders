@@ -26,7 +26,7 @@ class ReminderFrequencyBuilder
             'hour' => $hour,
             'day' => $reminder->day,
             'date' => $reminder->date,
-            'month' => $reminder->month + 1, // Income month is zero-based
+            'month' => $reminder->month + 1, // month is zero-based
             'year' => $reminder->year,
         ];
     }

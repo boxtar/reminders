@@ -96,7 +96,9 @@ export default {
             selectedDay: null,
             selectedMonth: null,
             selectedYear: null,
+            // Represents the month currently visible on the date picker (changed using arrows)
             visibleMonth: null,
+            // Represents the year currently visible on the date picker (changed by cycling through months and lapping into prev/next year)
             visibleYear: null,
             isActive: false,
             months: [
@@ -198,7 +200,7 @@ export default {
         formattedDate: function() {
             return `${this.days[this.selectedDate.getDay()].substr(0, 3)}, ${this.ordinalDay(
                 this.selectedDate.getDate()
-            )} ${this.months[this.selectedDate.getMonth()]}`;
+            )} ${this.months[this.selectedDate.getMonth()]} ${this.selectedYear}`;
         },
 
         /**

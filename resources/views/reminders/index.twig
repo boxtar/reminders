@@ -4,6 +4,6 @@
 
 <div id="root">
     {% include "includes/_header.twig" %}
-    <reminder-list :dates="{{ dates.getAll | json_encode }}" :csrf="{{ csrf.data | json_encode }}"></reminder-list>
+    <reminder-list :frequencies="{{ frequencies | json_encode }}" :csrf="{{ csrf.data | json_encode }}"></reminder-list>
 </div>
 {% endblock %}
