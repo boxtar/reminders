@@ -1,5 +1,8 @@
-LOGGING SERVICE:
-    Bring in a logging service to log when reminders are sent and updated etc. in SendReminders.
+FRONT-END BUG:
+    Can't type into time fields on mobile. I think this might be because I disabled user-select. Look into fixing this.
+
+SCHEDULER SERVICE:
+    This urgently needs tests in place. I refactored the Reminder model into a DDD style folder structure which broke the scheduler, but I never noticed until I pulled onto live server and tested using a live example.
 
 UPDATE:
     Implement updating of reminders including body, reminder date and recurrence.
@@ -22,6 +25,9 @@ REDIRECT TO INTENDED PAGE:
 
 REMEMBER ME:
     Keep a user logged in. See how Laravel does this.
+
+LOGGING SERVICE:
+    Bring in a logging service to log when reminders are sent and updated etc. in SendReminders.
 
 ALLOW A REMINDER TO BE SENT TO A CUSTOM EMAIL ADDRESS:
     E.g. Setup a reminder to remind colleague to do things. Potentially very dangerous! Probably not going to implement this.

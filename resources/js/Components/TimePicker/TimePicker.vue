@@ -15,7 +15,7 @@
                 :value="hour"
                 @input="onHourChange"
                 @keydown.enter.prevent
-                class="appearance-none block w-full bg-gray-700 text-white text-center rounded px-2 py-3 leading-tight select-none focus:outline-none focus:shadow-outline"
+                class="appearance-none block w-full bg-gray-700 text-white text-center rounded px-2 py-3 leading-tight focus:outline-none focus:shadow-outline"
             />
             <!-- Decrease hour button -->
             <div class="increase flex-1 px-2 md:px-4 py-3 select-none" @click="increaseHour">
@@ -44,7 +44,7 @@
                 v-model="minute"
                 @input="onMinuteChange"
                 @keydown.enter.prevent
-                class="appearance-none block w-full bg-gray-700 text-white text-center rounded px-2 py-3 leading-tight select-none focus:outline-none focus:shadow-outline"
+                class="appearance-none block w-full bg-gray-700 text-white text-center rounded px-2 py-3 leading-tight focus:outline-none focus:shadow-outline"
             />
             <!-- Decrease minute button -->
             <div class="increase flex-1 px-2 md:px-4 py-3 select-none" @click="increaseMinute">

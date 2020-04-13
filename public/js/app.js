@@ -4336,7 +4336,7 @@ var render = function() {
         _vm._v(" "),
         _c("input", {
           staticClass:
-            "appearance-none block w-full bg-gray-700 text-white text-center rounded px-2 py-3 leading-tight select-none focus:outline-none focus:shadow-outline",
+            "appearance-none block w-full bg-gray-700 text-white text-center rounded px-2 py-3 leading-tight focus:outline-none focus:shadow-outline",
           attrs: { type: "number" },
           domProps: { value: _vm.hour },
           on: {
@@ -4448,7 +4448,7 @@ var render = function() {
             }
           ],
           staticClass:
-            "appearance-none block w-full bg-gray-700 text-white text-center rounded px-2 py-3 leading-tight select-none focus:outline-none focus:shadow-outline",
+            "appearance-none block w-full bg-gray-700 text-white text-center rounded px-2 py-3 leading-tight focus:outline-none focus:shadow-outline",
           attrs: { type: "number" },
           domProps: { value: _vm.minute },
           on: {
