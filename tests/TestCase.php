@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Tests;
 
+use App\Domain\Reminders\Models\Reminder;
+use App\Domain\Reminders\ReminderData;
 use Slim\App;
 use DI\Container;
 use Dotenv\Dotenv;
@@ -50,6 +52,26 @@ abstract class TestCase extends PHPUnitTestCase
         }
 
         $this->setUpHasRun = true;
+    }
+
+    protected function makeReminderData()
+    {
+        $date = \Carbon\Carbon::now(new \DateTimeZone('Europe/London'));
+        return new ReminderData([
+            'body' => 'Test Reminder',
+            'date' => $date->day,
+            // Carbon is not zero based for months, JS is so this accurately reflects
+            // how ReminderData will be instantiated from the API request.
+            'month' => $date->month - 1,
+            'year' => $date->year,
+            'time' => "{$date->hour}:{$date->minute}",
+            'frequency' => "none",
+        ]);
+    }
+
+    protected function makeReminder()
+    {
+        return new Reminder($this->makeReminderData()->toArray());
     }
 
     /**

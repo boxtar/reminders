@@ -72,9 +72,9 @@ class AddTwigGlobals extends Middleware
             ->addGlobal('errors', $this->sessionFlash->getMessage('errors'));
 
         // Make the Dates helper available to all views
-        $this->twig
-            ->getEnvironment()
-            ->addGlobal('dates', new \App\Helpers\Dates);
+        // $this->twig
+        //     ->getEnvironment()
+        //     ->addGlobal('dates', new \App\Helpers\Dates);
 
         // Make the available recurrence frequencies available to all views
         $this->twig

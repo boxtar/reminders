@@ -3,11 +3,11 @@
 namespace App\Controllers\Reminders;
 
 use App\Controllers\Controller;
+use App\Domain\Reminders\ReminderData;
 use App\Domain\Recurrences\RecurrenceBuilder;
 use App\Domain\Recurrences\RecurrencesSupport;
-use App\Domain\Reminders\ReminderData;
 use App\Domain\Reminders\ReminderFrequencyBuilder;
-use App\Domain\Reminders\Rules\isValid;
+use App\Domain\Reminders\Rules\CreateReminderValidation;
 use Psr\Http\Message\{
     ServerRequestInterface as Request,
     ResponseInterface as Response
@@ -37,7 +37,7 @@ class CreateReminderController extends Controller
         $data = new ReminderData($request->getParsedBody());
 
         // Validate Request
-        $validator = (new isValid($data))->validate();
+        $validator = (new CreateReminderValidation($data))->validate();
         if ($validator->fails()) {
             return $this->json($response, ['errors' => $validator->getErrors()], 422);
         }

@@ -53,7 +53,7 @@ class RecurrenceBuilderTest extends TestCase
     /** @test */
     public function quarterly_frequency_returns_correct_expression()
     {
-        $reminder = $this->getTestReminderData();
+        $reminder = $this->makeReminderData();
         $reminder->date = 31; // 31st
         $reminder->month = 0; // January
         $reminder->year = 2020;
@@ -61,11 +61,23 @@ class RecurrenceBuilderTest extends TestCase
         // capped at 30th because April
         $this->assertEquals("{$reminder->minute} {$reminder->hour} 30 1,4,7,10 *", $builder->build());
 
-        // Test with February:
+        // Test with February
         $reminder->month = 1;
         $builder = new RecurrenceBuilder($reminder, 'quarterly');
         // capped at 28th because February
         $this->assertEquals("{$reminder->minute} {$reminder->hour} 28 2,5,8,11 *", $builder->build());
+
+        // Test with a month that will cross over into the next year
+        $reminder->month = 10; // November
+        $builder = new RecurrenceBuilder($reminder, 'quarterly');
+        // Date should be capped at 28 because February is one of the quarterly months
+        $this->assertEquals("{$reminder->minute} {$reminder->hour} 28 11,2,5,8 *", $builder->build());
+
+        // Another test for sanity
+        $reminder->month = 5; // June
+        $reminder->date = 12;
+        $builder = new RecurrenceBuilder($reminder, 'quarterly');
+        $this->assertEquals("{$reminder->minute} {$reminder->hour} 12 6,9,12,3 *", $builder->build());
     }
 
     /** @test */

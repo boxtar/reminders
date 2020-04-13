@@ -28,6 +28,7 @@
                     name="body"
                     v-model="form.body.value"
                     @input="clearError('body')"
+                    @keydown.enter.prevent
                     placeholder="Do the things..."
                 />
                 <p class="mt-2 text-red-600 text-xs italic" v-show="hasError('body')">
@@ -48,6 +49,7 @@
                     <date-picker @datePicked="setDate"></date-picker>
                 </div>
 
+                <!-- Time Picker -->
                 <div class="px-4 py-2 md:w-1/2 lg:w-1/3">
                     <label
                         class="block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2"
@@ -72,14 +74,12 @@
                             id="frequency"
                             name="frequency"
                             v-model="form.frequency"
+                            @keydown.enter.prevent
                         >
                             <option value="none">Don't Recur</option>
-                            <option
-                                v-for="(frequency, value) in dates.frequencies"
-                                :value="value"
-                                :key="value"
-                                >{{ frequency }}</option
-                            >
+                            <option v-for="(frequency, value) in frequencies" :value="value" :key="value"
+                                >{{ frequency }}
+                            </option>
                         </select>
                         <div
                             class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500"
@@ -117,7 +117,7 @@
 const Errors = require("../Utils/Errors");
 const FormInput = require("../Utils/FormInput");
 export default {
-    props: ["dates", "csrf"],
+    props: ["frequencies", "csrf"],
     data() {
         return {
             form: {

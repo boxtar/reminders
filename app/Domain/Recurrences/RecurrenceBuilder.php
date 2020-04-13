@@ -29,7 +29,7 @@ class RecurrenceBuilder
             'hour' => $reminder->hour,
             'day' => $reminder->day,
             'date' => $reminder->date,
-            'month' => $reminder->month + 1, // Income month is zero-based
+            'month' => $reminder->month, // NOTE: month is zero-based
             'year' => $reminder->year,
         ];
 
@@ -87,6 +87,13 @@ class RecurrenceBuilder
         ]);
     }
 
+    /**
+     * Builds a quarterly recurrence cron expression. The date on which
+     * the cron is due is capped at the last day of the month with
+     * the shortest number of days.
+     * 
+     * @return string
+     */
     protected function quarterly()
     {
         $date = $this->reminderData->date;
@@ -94,10 +101,22 @@ class RecurrenceBuilder
         // months to recur on
         $recurringMonths = [];
         for ($i = 0; $i < 4; $i++) {
-            $recurringMonths[] = $this->reminderData->month + (3 * $i);
+            // Calculate the next month in the quarterly pattern.
+            $nextMonth = $this->reminderData->month + (3 * $i);
+            // If we've went over the last month in a year (11 - DEC), wrap it around using modulus.
+            // Need to reduce modulus result by 1 as we're using 0 based month index.
+            $nextMonth = ($nextMonth / 11) > 1 ? ($nextMonth % 11) - 1 : $nextMonth;
+            $recurringMonths[] = $nextMonth;
             // Cap date if it exceeds the max for one of the months to recur on
-            $date = DatesSupport::isDateValidForMonth($date, $recurringMonths[$i]) ? $date : DatesSupport::getLastDateForMonth($recurringMonths[$i]);
+            $date = DatesSupport::isDateValidForMonth($date, $recurringMonths[$i]) ?
+                $date :
+                DatesSupport::getLastDateForMonth($recurringMonths[$i]);
         }
+
+        // Need to bump the months up by 1 for cron expression.
+        $recurringMonths = array_map(function ($month) {
+            return $month + 1;
+        }, $recurringMonths);
 
         return implode(" ", [
             $this->reminderData->minute,
@@ -114,7 +133,7 @@ class RecurrenceBuilder
             $this->reminderData->minute,
             $this->reminderData->hour,
             $this->reminderData->date,
-            $this->reminderData->month,
+            $this->reminderData->month + 1, // Month is zero based
             "*"
         ]);
     }

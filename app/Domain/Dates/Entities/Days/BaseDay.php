@@ -1,17 +1,18 @@
 <?php
 
-namespace App\Domain\Days;
+namespace App\Domain\Dates\Entities\Days;
 
-class Thursday {
+class BaseDay
+{
     /**
      * @var integer - Day number
      */
-    protected $day = 4;
+    protected $day;
 
     /**
      * @var string - Day name
      */
-    protected $name = "thursday";
+    protected $name;
 
     public function __invoke()
     {

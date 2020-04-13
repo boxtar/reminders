@@ -3,7 +3,7 @@
 namespace App\Controllers\Reminders;
 
 use App\Controllers\Controller;
-use App\Models\Reminder;
+use App\Domain\Reminders\Models\Reminder;
 use Psr\Http\Message\{
     ServerRequestInterface as Request,
     ResponseInterface as Response

@@ -50,4 +50,12 @@ class ReminderDataTest extends TestCase
         ]);
         $this->assertArrayHasKey('body', $data->toArray());
     }
+
+    /** @test */
+    public function can_set_is_recurring_flag()
+    {
+        $reminder = $this->makeReminderData();
+        $reminder->is_recurring = true;
+        $this->assertTrue($reminder->is_recurring);
+    }
 }

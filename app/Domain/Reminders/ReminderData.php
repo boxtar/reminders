@@ -25,10 +25,11 @@ class ReminderData
         $this->data['month'] = $input['month'] ?? '';
         $this->data['year'] = $input['year'] ?? '';
         $this->data['time'] = $input['time'] ?? '';
-        $this->data['expression'] = $input['expression'] ?? '';
         $this->data['frequency'] = $input['frequency'] ?? '';
 
-        // This won't be part of API request. It's built on backend.
+        // These won't be part of API request as they are built in domain
+        $this->data['expression'] = '';
+        $this->data['is_recurring'] = '';
         $this->data['recurrence_expression'] = '';
 
         // Hardcoded to all available channels for now
@@ -56,10 +57,10 @@ class ReminderData
 
     public function __set($name, $value)
     {
-        $this->data[$name] = $value;
-        // if (array_key_exists($name, $this->data)) {
-        //     $this->data[$name] = $value;
-        // }
+        // $this->data[$name] = $value;
+        if (array_key_exists($name, $this->data)) {
+            $this->data[$name] = $value;
+        }
     }
 
     public function toArray()
