@@ -1,11 +1,11 @@
-LOGGING SERVICE:
-    Bring in a logging service to log when reminders are sent and updated etc. in SendReminders.
-
 UPDATE:
     Implement updating of reminders including body, reminder date and recurrence.
 
 DELETE & RESTORE:
     Allow users to view a list of archived reminders and restore or completely delete them (ireversible).
+
+REMINDER DATES IN THE PAST:
+    If initial reminder date/time is in the past then set initial_reminder_run to true so that recurrence takes over.
 
 DATESSUPPORT:
     Domain\Dates\DatesSupport just doesn't seem right. All those static functions can't be good. Perhaps break out into DaysSupport, DatesSupport, MonthsSupport, YearsSupport and TimesSupport and remove the static-ness of the functions.
@@ -22,6 +22,9 @@ REDIRECT TO INTENDED PAGE:
 
 REMEMBER ME:
     Keep a user logged in. See how Laravel does this.
+
+LOGGING SERVICE:
+    Bring in a logging service to log when reminders are sent and updated etc. in SendReminders.
 
 ALLOW A REMINDER TO BE SENT TO A CUSTOM EMAIL ADDRESS:
     E.g. Setup a reminder to remind colleague to do things. Potentially very dangerous! Probably not going to implement this.

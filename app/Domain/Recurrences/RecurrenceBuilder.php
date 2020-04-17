@@ -39,8 +39,6 @@ class RecurrenceBuilder
     /**
      * Builds and returns a cron expression
      * 
-     * @param ReminderData
-     * @param string
      * @return string
      */
     public function build()

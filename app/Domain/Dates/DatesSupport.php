@@ -22,27 +22,10 @@ use App\Domain\Dates\Entities\Months\May;
 use App\Domain\Dates\Entities\Months\November;
 use App\Domain\Dates\Entities\Months\October;
 use App\Domain\Dates\Entities\Months\September;
+use DateTimeZone;
 
 class DatesSupport
 {
-    // public static function months()
-    // {
-    //     return [
-    //         0 => 'January',
-    //         1 => 'February',
-    //         2 => 'March',
-    //         3 => 'April',
-    //         4 => 'May',
-    //         5 => 'June',
-    //         6 => 'July',
-    //         7 => 'August',
-    //         8 => 'September',
-    //         9 => 'October',
-    //         10 => 'November',
-    //         11 => 'December',
-    //     ];
-    // }
-
     /**
      * Returns true if provide day is valid. The valid day numbers and
      * their corresponding day are defined in the static days method.
@@ -249,5 +232,14 @@ class DatesSupport
         $hour = (int) $hour;
         $minute = (int) $minute;
         return [$hour, $minute];
+    }
+
+    public static function isDateAndTimeInThePast($year, $month, $date, $time = "0:0")
+    {
+        [$hour, $minute] = self::extractTimeValues($time);
+        $month += 1; // Change from 0-based to 1-based months
+        // Create DateTime that is being checked for being in the past.
+        $date = date_create("{$year}-{$month}-{$date} {$hour}:{$minute}", new DateTimeZone('Europe/London'));
+        return $date < date_create();
     }
 }

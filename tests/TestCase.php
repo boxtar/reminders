@@ -54,9 +54,11 @@ abstract class TestCase extends PHPUnitTestCase
         $this->setUpHasRun = true;
     }
 
-    protected function makeReminderData()
+    protected function makeReminderData($date = null)
     {
-        $date = \Carbon\Carbon::now(new \DateTimeZone('Europe/London'));
+        if (!$date)
+            $date = \Carbon\Carbon::now(new \DateTimeZone('Europe/London'));
+            
         return new ReminderData([
             'body' => 'Test Reminder',
             'date' => $date->day,

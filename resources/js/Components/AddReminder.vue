@@ -1,116 +1,120 @@
 <template>
-    <form :action="this.form.action" class="w-full" method="POST" @submit.prevent="processForm">
-        <div class="px-4 py-6 bg-gray-800">
-            <!-- Csrf -->
-            <div class="hidden">
-                <input
-                    type="hidden"
-                    :name="csrf && csrf.name && csrf.name.key"
-                    :value="csrf && csrf.name && csrf.name.value"
-                />
-                <input
-                    type="hidden"
-                    :name="csrf && csrf.token && csrf.token.key"
-                    :value="csrf && csrf.token && csrf.token.value"
-                />
-            </div>
-
-            <!-- Body -->
-            <div class="px-4">
-                <label class="block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2" for="body"
-                    >Add a new Reminder</label
-                >
-                <input
-                    class="appearance-none block w-full bg-gray-700 text-white rounded py-3 px-4 leading-tight focus:outline-none focus:shadow-outline"
-                    :class="{ 'border border-red-600': hasError('body') }"
-                    id="body"
-                    type="text"
-                    name="body"
-                    v-model="form.body.value"
-                    @input="clearError('body')"
-                    @keydown.enter.prevent
-                    placeholder="Do the things..."
-                />
-                <p class="mt-2 text-red-600 text-xs italic" v-show="hasError('body')">
-                    {{ getError("body") }}
-                </p>
-            </div>
-
-            <!-- Reminder Date, Time & Frequency -->
-            <div class="mt-3 md:flex flex-wrap">
-                <!-- Date Picker -->
-                <div class="px-4 py-2 md:w-1/2 lg:w-1/3">
-                    <label
-                        class="block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2"
-                        for="date-picker"
-                    >
-                        Reminder Date
-                    </label>
-                    <date-picker @datePicked="setDate"></date-picker>
+    <div>
+        <form :action="this.form.action" class="w-full" method="POST" @submit.prevent="processForm">
+            <div class="px-4 py-6 bg-gray-800">
+                <!-- Csrf -->
+                <div class="hidden">
+                    <input
+                        type="hidden"
+                        :name="csrf && csrf.name && csrf.name.key"
+                        :value="csrf && csrf.name && csrf.name.value"
+                    />
+                    <input
+                        type="hidden"
+                        :name="csrf && csrf.token && csrf.token.key"
+                        :value="csrf && csrf.token && csrf.token.value"
+                    />
                 </div>
 
-                <!-- Time Picker -->
-                <div class="px-4 py-2 md:w-1/2 lg:w-1/3">
+                <!-- Body -->
+                <div class="px-4">
                     <label
                         class="block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2"
-                        for="time"
+                        for="body"
+                        >Body</label
                     >
-                        Reminder Time
-                    </label>
-                    <time-picker @input="setTime" />
+                    <input
+                        class="appearance-none block w-full bg-gray-700 text-white rounded py-3 px-4 leading-tight focus:outline-none focus:shadow-outline"
+                        :class="{ 'border border-red-600': hasError('body') }"
+                        id="body"
+                        type="text"
+                        name="body"
+                        v-model="form.body.value"
+                        @input="clearError('body')"
+                        @keydown.enter.prevent
+                        placeholder="Do the things..."
+                    />
+                    <p class="mt-2 text-red-600 text-xs italic" v-show="hasError('body')">
+                        {{ getError("body") }}
+                    </p>
                 </div>
 
-                <!-- Recurrence -->
-                <div class="px-4 py-2 md:w-1/2 lg:w-1/3">
-                    <label
-                        class="block  mb-2 uppercase tracking-wide text-gray-500 text-xs font-bold"
-                        for="frequency"
-                    >
-                        Reminder Recurrence
-                    </label>
-                    <div class="relative">
-                        <select
-                            class="block appearance-none w-full bg-gray-700 text-white py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline"
-                            id="frequency"
-                            name="frequency"
-                            v-model="form.frequency"
-                            @keydown.enter.prevent
+                <!-- Reminder Date, Time & Frequency -->
+                <div class="mt-3 md:flex flex-wrap">
+                    <!-- Date Picker -->
+                    <div class="px-4 py-2 md:w-1/2 lg:w-1/3">
+                        <label
+                            class="block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2"
+                            for="date-picker"
                         >
-                            <option value="none">Don't Recur</option>
-                            <option v-for="(frequency, value) in frequencies" :value="value" :key="value"
-                                >{{ frequency }}
-                            </option>
-                        </select>
-                        <div
-                            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500"
+                            Reminder Date
+                        </label>
+                        <date-picker @datePicked="setDate"></date-picker>
+                    </div>
+
+                    <!-- Time Picker -->
+                    <div class="px-4 py-2 md:w-1/2 lg:w-1/3">
+                        <label
+                            class="block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2"
+                            for="time"
                         >
-                            <svg
-                                class="fill-current h-4 w-4"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 20 20"
+                            Reminder Time
+                        </label>
+                        <time-picker @input="setTime" />
+                    </div>
+
+                    <!-- Recurrence -->
+                    <div class="px-4 py-2 md:w-1/2 lg:w-1/3">
+                        <label
+                            class="block  mb-2 uppercase tracking-wide text-gray-500 text-xs font-bold"
+                            for="frequency"
+                        >
+                            Reminder Recurrence
+                        </label>
+                        <div class="relative">
+                            <select
+                                class="block appearance-none w-full bg-gray-700 text-white py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline"
+                                id="frequency"
+                                name="frequency"
+                                v-model="form.frequency"
+                                @keydown.enter.prevent
                             >
-                                <path
-                                    d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
-                                />
-                            </svg>
+                                <option value="none">Don't Recur</option>
+                                <option v-for="(frequency, value) in frequencies" :value="value" :key="value"
+                                    >{{ frequency }}
+                                </option>
+                            </select>
+                            <div
+                                class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500"
+                            >
+                                <svg
+                                    class="fill-current h-4 w-4"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 20 20"
+                                >
+                                    <path
+                                        d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
+                                    />
+                                </svg>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Submit Button -->
-            <div class="flex justify-end items-center">
-                <div class="mt-4 mr-4">
-                    <button
-                        type="submit"
-                        class="px-6 py-3 bg-teal-400 leading-tight text-teal-100 text-sm font-medium tracking-wider uppercase rounded focus:outline-none focus:shadow-outline"
-                    >
-                        Create
-                    </button>
+                <!-- Submit Button -->
+                <div class="flex justify-end items-center">
+                    <div class="mt-4 mr-4">
+                        <button
+                            type="submit"
+                            class="px-6 py-3 bg-teal-400 leading-tight text-teal-100 text-sm font-medium tracking-wider uppercase rounded focus:outline-none focus:shadow-outline"
+                        >
+                            Create
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-    </form>
+        </form>
+    </div>
 </template>
 
 <script>
@@ -140,7 +144,6 @@ export default {
             this.form.year = year;
         },
         setTime(time) {
-            console.log(time);
             this.form.time = time;
         },
         getError(key) {
@@ -166,7 +169,10 @@ export default {
 
             // Body validation
             if (this.form.body.value.length == 0) {
-                this.errors.set(this.form.body.name, "C'mon, throw me a bone...");
+                this.errors.set(
+                    this.form.body.name,
+                    "You must provide a body (e.g. Retrieve hobbits from Isengard)"
+                );
             }
 
             // Return true if no validation errors, false otherwise.
