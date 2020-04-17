@@ -22,6 +22,7 @@ use App\Domain\Dates\Entities\Months\May;
 use App\Domain\Dates\Entities\Months\November;
 use App\Domain\Dates\Entities\Months\October;
 use App\Domain\Dates\Entities\Months\September;
+use DateTimeZone;
 
 class DatesSupport
 {
@@ -249,5 +250,14 @@ class DatesSupport
         $hour = (int) $hour;
         $minute = (int) $minute;
         return [$hour, $minute];
+    }
+
+    public static function isDateAndTimeInThePast($year, $month, $date, $time = "0:0")
+    {
+        [$hour, $minute] = self::extractTimeValues($time);
+        $month += 1; // Change from 0-based to 1-based months
+        // Create DateTime that is being checked for being in the past.
+        $date = date_create("{$year}-{$month}-{$date} {$hour}:{$minute}", new DateTimeZone('Europe/London'));
+        return $date < date_create();
     }
 }

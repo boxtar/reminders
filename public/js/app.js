@@ -236,6 +236,10 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 //
 //
 //
+//
+//
+//
+//
 var Errors = __webpack_require__(/*! ../Utils/Errors */ "./resources/js/Utils/Errors.js");
 
 var FormInput = __webpack_require__(/*! ../Utils/FormInput */ "./resources/js/Utils/FormInput.js");
@@ -268,7 +272,6 @@ var FormInput = __webpack_require__(/*! ../Utils/FormInput */ "./resources/js/Ut
       this.form.year = year;
     },
     setTime: function setTime(time) {
-      console.log(time);
       this.form.time = time;
     },
     getError: function getError(key) {
@@ -297,7 +300,7 @@ var FormInput = __webpack_require__(/*! ../Utils/FormInput */ "./resources/js/Ut
       this.errors.clear(); // Body validation
 
       if (this.form.body.value.length == 0) {
-        this.errors.set(this.form.body.name, "C'mon, throw me a bone...");
+        this.errors.set(this.form.body.name, "You must provide a body (e.g. Retrieve hobbits from Isengard)");
       } // Return true if no validation errors, false otherwise.
 
 
@@ -3124,276 +3127,288 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "form",
-    {
-      staticClass: "w-full",
-      attrs: { action: this.form.action, method: "POST" },
-      on: {
-        submit: function($event) {
-          $event.preventDefault()
-          return _vm.processForm($event)
+  return _c("div", [
+    _c(
+      "form",
+      {
+        staticClass: "w-full",
+        attrs: { action: this.form.action, method: "POST" },
+        on: {
+          submit: function($event) {
+            $event.preventDefault()
+            return _vm.processForm($event)
+          }
         }
-      }
-    },
-    [
-      _c("div", { staticClass: "px-4 py-6 bg-gray-800" }, [
-        _c("div", { staticClass: "hidden" }, [
-          _c("input", {
-            attrs: {
-              type: "hidden",
-              name: _vm.csrf && _vm.csrf.name && _vm.csrf.name.key
-            },
-            domProps: {
-              value: _vm.csrf && _vm.csrf.name && _vm.csrf.name.value
-            }
-          }),
-          _vm._v(" "),
-          _c("input", {
-            attrs: {
-              type: "hidden",
-              name: _vm.csrf && _vm.csrf.token && _vm.csrf.token.key
-            },
-            domProps: {
-              value: _vm.csrf && _vm.csrf.token && _vm.csrf.token.value
-            }
-          })
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "px-4" }, [
-          _c(
-            "label",
-            {
-              staticClass:
-                "block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2",
-              attrs: { for: "body" }
-            },
-            [_vm._v("Add a new Reminder")]
-          ),
-          _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.form.body.value,
-                expression: "form.body.value"
+      },
+      [
+        _c("div", { staticClass: "px-4 py-6 bg-gray-800" }, [
+          _c("div", { staticClass: "hidden" }, [
+            _c("input", {
+              attrs: {
+                type: "hidden",
+                name: _vm.csrf && _vm.csrf.name && _vm.csrf.name.key
+              },
+              domProps: {
+                value: _vm.csrf && _vm.csrf.name && _vm.csrf.name.value
               }
-            ],
-            staticClass:
-              "appearance-none block w-full bg-gray-700 text-white rounded py-3 px-4 leading-tight focus:outline-none focus:shadow-outline",
-            class: { "border border-red-600": _vm.hasError("body") },
-            attrs: {
-              id: "body",
-              type: "text",
-              name: "body",
-              placeholder: "Do the things..."
-            },
-            domProps: { value: _vm.form.body.value },
-            on: {
-              input: [
-                function($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.$set(_vm.form.body, "value", $event.target.value)
-                },
-                function($event) {
-                  return _vm.clearError("body")
-                }
-              ],
-              keydown: function($event) {
-                if (
-                  !$event.type.indexOf("key") &&
-                  _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
-                ) {
-                  return null
-                }
-                $event.preventDefault()
+            }),
+            _vm._v(" "),
+            _c("input", {
+              attrs: {
+                type: "hidden",
+                name: _vm.csrf && _vm.csrf.token && _vm.csrf.token.key
+              },
+              domProps: {
+                value: _vm.csrf && _vm.csrf.token && _vm.csrf.token.value
               }
-            }
-          }),
+            })
+          ]),
           _vm._v(" "),
-          _c(
-            "p",
-            {
-              directives: [
-                {
-                  name: "show",
-                  rawName: "v-show",
-                  value: _vm.hasError("body"),
-                  expression: "hasError('body')"
-                }
-              ],
-              staticClass: "mt-2 text-red-600 text-xs italic"
-            },
-            [
-              _vm._v(
-                "\n                " +
-                  _vm._s(_vm.getError("body")) +
-                  "\n            "
-              )
-            ]
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "mt-3 md:flex flex-wrap" }, [
-          _c(
-            "div",
-            { staticClass: "px-4 py-2 md:w-1/2 lg:w-1/3" },
-            [
-              _c(
-                "label",
-                {
-                  staticClass:
-                    "block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2",
-                  attrs: { for: "date-picker" }
-                },
-                [
-                  _vm._v(
-                    "\n                    Reminder Date\n                "
-                  )
-                ]
-              ),
-              _vm._v(" "),
-              _c("date-picker", { on: { datePicked: _vm.setDate } })
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "div",
-            { staticClass: "px-4 py-2 md:w-1/2 lg:w-1/3" },
-            [
-              _c(
-                "label",
-                {
-                  staticClass:
-                    "block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2",
-                  attrs: { for: "time" }
-                },
-                [
-                  _vm._v(
-                    "\n                    Reminder Time\n                "
-                  )
-                ]
-              ),
-              _vm._v(" "),
-              _c("time-picker", { on: { input: _vm.setTime } })
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c("div", { staticClass: "px-4 py-2 md:w-1/2 lg:w-1/3" }, [
+          _c("div", { staticClass: "px-4" }, [
             _c(
               "label",
               {
                 staticClass:
-                  "block  mb-2 uppercase tracking-wide text-gray-500 text-xs font-bold",
-                attrs: { for: "frequency" }
+                  "block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2",
+                attrs: { for: "body" }
+              },
+              [_vm._v("Body")]
+            ),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.form.body.value,
+                  expression: "form.body.value"
+                }
+              ],
+              staticClass:
+                "appearance-none block w-full bg-gray-700 text-white rounded py-3 px-4 leading-tight focus:outline-none focus:shadow-outline",
+              class: { "border border-red-600": _vm.hasError("body") },
+              attrs: {
+                id: "body",
+                type: "text",
+                name: "body",
+                placeholder: "Do the things..."
+              },
+              domProps: { value: _vm.form.body.value },
+              on: {
+                input: [
+                  function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.form.body, "value", $event.target.value)
+                  },
+                  function($event) {
+                    return _vm.clearError("body")
+                  }
+                ],
+                keydown: function($event) {
+                  if (
+                    !$event.type.indexOf("key") &&
+                    _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                  ) {
+                    return null
+                  }
+                  $event.preventDefault()
+                }
+              }
+            }),
+            _vm._v(" "),
+            _c(
+              "p",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: _vm.hasError("body"),
+                    expression: "hasError('body')"
+                  }
+                ],
+                staticClass: "mt-2 text-red-600 text-xs italic"
               },
               [
                 _vm._v(
-                  "\n                    Reminder Recurrence\n                "
+                  "\n                    " +
+                    _vm._s(_vm.getError("body")) +
+                    "\n                "
                 )
               ]
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "mt-3 md:flex flex-wrap" }, [
+            _c(
+              "div",
+              { staticClass: "px-4 py-2 md:w-1/2 lg:w-1/3" },
+              [
+                _c(
+                  "label",
+                  {
+                    staticClass:
+                      "block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2",
+                    attrs: { for: "date-picker" }
+                  },
+                  [
+                    _vm._v(
+                      "\n                        Reminder Date\n                    "
+                    )
+                  ]
+                ),
+                _vm._v(" "),
+                _c("date-picker", { on: { datePicked: _vm.setDate } })
+              ],
+              1
             ),
             _vm._v(" "),
-            _c("div", { staticClass: "relative" }, [
-              _c(
-                "select",
-                {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.form.frequency,
-                      expression: "form.frequency"
-                    }
-                  ],
-                  staticClass:
-                    "block appearance-none w-full bg-gray-700 text-white py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline",
-                  attrs: { id: "frequency", name: "frequency" },
-                  on: {
-                    keydown: function($event) {
-                      if (
-                        !$event.type.indexOf("key") &&
-                        _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
-                      ) {
-                        return null
-                      }
-                      $event.preventDefault()
-                    },
-                    change: function($event) {
-                      var $$selectedVal = Array.prototype.filter
-                        .call($event.target.options, function(o) {
-                          return o.selected
-                        })
-                        .map(function(o) {
-                          var val = "_value" in o ? o._value : o.value
-                          return val
-                        })
-                      _vm.$set(
-                        _vm.form,
-                        "frequency",
-                        $event.target.multiple
-                          ? $$selectedVal
-                          : $$selectedVal[0]
-                      )
-                    }
-                  }
-                },
-                [
-                  _c("option", { attrs: { value: "none" } }, [
-                    _vm._v("Don't Recur")
-                  ]),
-                  _vm._v(" "),
-                  _vm._l(_vm.frequencies, function(frequency, value) {
-                    return _c(
-                      "option",
-                      { key: value, domProps: { value: value } },
-                      [_vm._v(_vm._s(frequency) + "\n                        ")]
+            _c(
+              "div",
+              { staticClass: "px-4 py-2 md:w-1/2 lg:w-1/3" },
+              [
+                _c(
+                  "label",
+                  {
+                    staticClass:
+                      "block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2",
+                    attrs: { for: "time" }
+                  },
+                  [
+                    _vm._v(
+                      "\n                        Reminder Time\n                    "
                     )
-                  })
-                ],
-                2
-              ),
-              _vm._v(" "),
+                  ]
+                ),
+                _vm._v(" "),
+                _c("time-picker", { on: { input: _vm.setTime } })
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c("div", { staticClass: "px-4 py-2 md:w-1/2 lg:w-1/3" }, [
               _c(
-                "div",
+                "label",
                 {
                   staticClass:
-                    "pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500"
+                    "block  mb-2 uppercase tracking-wide text-gray-500 text-xs font-bold",
+                  attrs: { for: "frequency" }
                 },
                 [
-                  _c(
-                    "svg",
-                    {
-                      staticClass: "fill-current h-4 w-4",
-                      attrs: {
-                        xmlns: "http://www.w3.org/2000/svg",
-                        viewBox: "0 0 20 20"
-                      }
-                    },
-                    [
-                      _c("path", {
-                        attrs: {
-                          d:
-                            "M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
-                        }
-                      })
-                    ]
+                  _vm._v(
+                    "\n                        Reminder Recurrence\n                    "
                   )
                 ]
-              )
+              ),
+              _vm._v(" "),
+              _c("div", { staticClass: "relative" }, [
+                _c(
+                  "select",
+                  {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.form.frequency,
+                        expression: "form.frequency"
+                      }
+                    ],
+                    staticClass:
+                      "block appearance-none w-full bg-gray-700 text-white py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline",
+                    attrs: { id: "frequency", name: "frequency" },
+                    on: {
+                      keydown: function($event) {
+                        if (
+                          !$event.type.indexOf("key") &&
+                          _vm._k(
+                            $event.keyCode,
+                            "enter",
+                            13,
+                            $event.key,
+                            "Enter"
+                          )
+                        ) {
+                          return null
+                        }
+                        $event.preventDefault()
+                      },
+                      change: function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.$set(
+                          _vm.form,
+                          "frequency",
+                          $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        )
+                      }
+                    }
+                  },
+                  [
+                    _c("option", { attrs: { value: "none" } }, [
+                      _vm._v("Don't Recur")
+                    ]),
+                    _vm._v(" "),
+                    _vm._l(_vm.frequencies, function(frequency, value) {
+                      return _c(
+                        "option",
+                        { key: value, domProps: { value: value } },
+                        [
+                          _vm._v(
+                            _vm._s(frequency) + "\n                            "
+                          )
+                        ]
+                      )
+                    })
+                  ],
+                  2
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    staticClass:
+                      "pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500"
+                  },
+                  [
+                    _c(
+                      "svg",
+                      {
+                        staticClass: "fill-current h-4 w-4",
+                        attrs: {
+                          xmlns: "http://www.w3.org/2000/svg",
+                          viewBox: "0 0 20 20"
+                        }
+                      },
+                      [
+                        _c("path", {
+                          attrs: {
+                            d:
+                              "M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
+                          }
+                        })
+                      ]
+                    )
+                  ]
+                )
+              ])
             ])
-          ])
-        ]),
-        _vm._v(" "),
-        _vm._m(0)
-      ])
-    ]
-  )
+          ]),
+          _vm._v(" "),
+          _vm._m(0)
+        ])
+      ]
+    )
+  ])
 }
 var staticRenderFns = [
   function() {
@@ -3409,7 +3424,7 @@ var staticRenderFns = [
               "px-6 py-3 bg-teal-400 leading-tight text-teal-100 text-sm font-medium tracking-wider uppercase rounded focus:outline-none focus:shadow-outline",
             attrs: { type: "submit" }
           },
-          [_vm._v("\n                    Create\n                ")]
+          [_vm._v("\n                        Create\n                    ")]
         )
       ])
     ])
