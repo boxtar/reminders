@@ -652,6 +652,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["errors", "old", "csrf"],
   data: function data() {
@@ -754,6 +759,9 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
 //
 //
 //
@@ -3681,6 +3689,8 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "w-full max-w-xs" }, [
+    _vm._m(0),
+    _vm._v(" "),
     _c(
       "form",
       {
@@ -3777,18 +3787,34 @@ var render = function() {
           })
         ]),
         _vm._v(" "),
-        _vm._m(0)
+        _vm._m(1)
       ]
     ),
     _vm._v(" "),
     _c("p", { staticClass: "text-center text-gray-500 text-xs" }, [
-      _vm._v("Need an account? Register "),
-      _c("a", { attrs: { href: _vm.form.registerLink } }, [_vm._v("here")]),
-      _vm._v(".")
+      _c(
+        "a",
+        {
+          staticClass: "hover:text-blue-500",
+          attrs: { href: _vm.form.registerLink }
+        },
+        [_vm._v("Need an account? Register here")]
+      ),
+      _vm._v(".\n    ")
     ])
   ])
 }
 var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "text-center text-gray-700" }, [
+      _c("span", { staticClass: "brand-font text-2xl tracking-tighter" }, [
+        _vm._v("Jabit")
+      ])
+    ])
+  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -3927,6 +3953,8 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "w-full max-w-xs" }, [
+    _vm._m(0),
+    _vm._v(" "),
     _c(
       "form",
       {
@@ -4023,18 +4051,31 @@ var render = function() {
           })
         ]),
         _vm._v(" "),
-        _vm._m(0)
+        _vm._m(1)
       ]
     ),
     _vm._v(" "),
     _c("p", { staticClass: "text-center text-gray-500 text-xs" }, [
-      _vm._v("\n        Already have an account? Login "),
-      _c("a", { attrs: { href: _vm.loginLink } }, [_vm._v("here")]),
+      _c(
+        "a",
+        { staticClass: "hover:text-blue-500", attrs: { href: _vm.loginLink } },
+        [_vm._v("Already have an account? Login here")]
+      ),
       _vm._v(".\n    ")
     ])
   ])
 }
 var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "text-center text-gray-700" }, [
+      _c("span", { staticClass: "brand-font text-2xl tracking-tighter" }, [
+        _vm._v("Jabit")
+      ])
+    ])
+  },
   function() {
     var _vm = this
     var _h = _vm.$createElement

@@ -1,5 +1,8 @@
 <template>
     <div class="w-full max-w-xs">
+        <div class="text-center text-gray-700">
+            <span class="brand-font text-2xl tracking-tighter">Jabit</span>
+        </div>
         <form :action="form.action" class="bg-white rounded px-8 pt-6 pb-8 mb-4" method="post">
             <!-- Csrf -->
             <input
@@ -61,7 +64,9 @@
                 </button>
             </div>
         </form>
-        <p class="text-center text-gray-500 text-xs">Need an account? Register <a :href="form.registerLink">here</a>.</p>
+        <p class="text-center text-gray-500 text-xs">
+            <a :href="form.registerLink" class="hover:text-blue-500">Need an account? Register here</a>.
+        </p>
     </div>
 </template>
 
@@ -72,7 +77,7 @@ export default {
         return {
             form: {
                 action: undefined,
-                registerLink: undefined
+                registerLink: undefined,
             },
         };
     },

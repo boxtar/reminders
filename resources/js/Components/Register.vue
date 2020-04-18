@@ -1,5 +1,8 @@
 <template>
     <div class="w-full max-w-xs">
+        <div class="text-center text-gray-700">
+            <span class="brand-font text-2xl tracking-tighter">Jabit</span>
+        </div>
         <form :action="form.action" class="bg-white rounded px-8 pt-6 pb-8 mb-4" method="post">
             <!-- Csrf -->
             <input
@@ -62,7 +65,7 @@
             </div>
         </form>
         <p class="text-center text-gray-500 text-xs">
-            Already have an account? Login <a :href="loginLink">here</a>.
+            <a :href="loginLink" class="hover:text-blue-500">Already have an account? Login here</a>.
         </p>
     </div>
 </template>
@@ -75,7 +78,7 @@ export default {
             form: {
                 action: null,
             },
-            loginLink: null
+            loginLink: null,
         };
     },
     mounted() {

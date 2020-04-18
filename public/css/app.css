@@ -11658,6 +11658,10 @@ video {
   z-index: auto;
 }
 
+.brand-font {
+  font-family: "Lobster Two", cursive;
+}
+
 @media (min-width: 640px) {
   .sm\:sr-only {
     position: absolute;
