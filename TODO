@@ -4,6 +4,13 @@ FRONT-END BUG:
 SCHEDULER SERVICE:
     This urgently needs tests in place. I refactored the Reminder model into a DDD style folder structure which broke the scheduler, but I never noticed until I pulled onto live server and tested using a live example.
 
+LOOK INTO QUEUEING TASKS:
+    I think this is needed urgently so that the process doesn't need to wait on lengthy processes like sending email.
+    Beanstalkd seems to be good: 
+    Main site: https://beanstalkd.github.io/
+    Client list: https://github.com/beanstalkd/beanstalkd/wiki/Client-Libraries
+    Simple client: https://github.com/mariuswilms/beanstalk/blob/master/src/Client.php
+
 UPDATE:
     Implement updating of reminders including body, reminder date and recurrence.
 
