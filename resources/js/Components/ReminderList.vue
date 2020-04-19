@@ -4,7 +4,7 @@
         <notifications :data="notifications.getAll()" @closeNotification="closeNotification" />
 
         <!-- Add Reminder Component -->
-        <add-reminder :frequencies="frequencies" :csrf="csrf" @reminderAdded="addReminder" />
+        <add-reminder :frequencies="frequencies" :csrf="csrf" @reminderAdded="addReminder" @reminderError="errorAddingReminder" />
 
         <!-- Reminder List -->
         <div class="p-4 pt-0 pl-0 md:flex md:flex-wrap justify-start">
@@ -153,6 +153,10 @@ export default {
             this.reminders.data.push(reminder);
             this.notifications.add("Reminder added", types.success);
             this.sortReminders();
+        },
+
+        errorAddingReminder(error) {
+            this.notifications.add(error, types.error, true);
         },
 
         // Sort reminders

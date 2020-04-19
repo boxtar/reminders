@@ -1,3 +1,6 @@
+DEBUG AND ERROR INFORMATION:
+    Make sure this isn't exposed on production. Right now it is.
+    
 SCHEDULER SERVICE:
     This urgently needs tests in place. I refactored the Reminder model into a DDD style folder structure which broke the scheduler, but I never noticed until I pulled onto live server and tested using a live example.
 

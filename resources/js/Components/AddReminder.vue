@@ -163,7 +163,9 @@ export default {
                     this.form.body.value = "";
                     this.$refs.body.style.height = "auto";
                     this.$emit("reminderAdded", data);
-                });
+                }).catch(() => {
+                    this.$emit("reminderError", "Sorry, there was a problem.");
+                })
             }
         },
         validateForm() {
