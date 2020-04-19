@@ -23,17 +23,16 @@
                         for="body"
                         >Body</label
                     >
-                    <input
-                        class="appearance-none block w-full bg-gray-700 text-white rounded py-3 px-4 leading-tight focus:outline-none focus:shadow-outline"
-                        :class="{ 'border border-red-600': hasError('body') }"
-                        id="body"
-                        type="text"
+                    <textarea
                         name="body"
+                        id="body"
+                        rows="1"
+                        class="py-3 px-4 block w-full bg-gray-700 text-white appearance-none rounded overflow-hidden leading-tight focus:outline-none focus:shadow-outline"
+                        :class="{ 'border border-red-600': hasError('body') }"
                         v-model="form.body.value"
                         @input="clearError('body')"
-                        @keydown.enter.prevent
-                        placeholder="Do the things..."
-                    />
+                        ref="body"
+                    ></textarea>
                     <p class="mt-2 text-red-600 text-xs italic" v-show="hasError('body')">
                         {{ getError("body") }}
                     </p>
@@ -135,7 +134,10 @@ export default {
             errors: new Errors(),
         };
     },
-    mounted() {},
+    mounted() {
+        // Auto resizing textarea
+        this.setupAutoSizingBodyElement();
+    },
     methods: {
         setDate(args) {
             const [day, month, year] = args;
@@ -159,6 +161,7 @@ export default {
             if (this.validateForm()) {
                 this.sendForm(this.form.action, this.setupForm()).then(({ data }) => {
                     this.form.body.value = "";
+                    this.$refs.body.style.height = "auto";
                     this.$emit("reminderAdded", data);
                 });
             }
@@ -200,6 +203,24 @@ export default {
                 redirect: "follow",
             });
             return await response.json();
+        },
+
+        setupAutoSizingBodyElement() {
+            // https://stackoverflow.com/a/5346855
+            const body = this.$refs.body;
+            function resize() {
+                body.style.height = "auto"; // Dunno why this is needed?
+                body.style.height = body.scrollHeight + "px";
+            }
+            /* 0-timeout to get the already changed text */
+            function delayedResize() {
+                setTimeout(resize, 0);
+            }
+            body.addEventListener("change", resize);
+            body.addEventListener("keydown", delayedResize);
+            body.addEventListener("paste", delayedResize);
+            body.addEventListener("cut", delayedResize);
+            body.addEventListener("drop", delayedResize);
         },
     },
 };

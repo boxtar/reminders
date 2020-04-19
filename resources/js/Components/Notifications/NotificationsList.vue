@@ -1,5 +1,5 @@
 <template>
-    <div class="px-2 pt-2 fixed top-0 right-0 w-full z-50 lg:w-1/3">
+    <div class="notifications px-2 pt-2 fixed top-0 right-0 w-full z-50 lg:w-1/3">
         <div
             v-for="notification in data"
             :key="notification.id"
@@ -62,4 +62,9 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.notifications {
+    /* Force hardware acceleration so that fixed position doesn't jitter and stick */
+    transform: translate3d(0, 0, 0);
+}
+</style>
