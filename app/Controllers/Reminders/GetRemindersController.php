@@ -20,8 +20,9 @@ class GetRemindersController extends Controller
      */
     public function __invoke(Request $request, Response $response, $args)
     {
+        // Sort by custom accessor getReminderDateAccessor (YYYYMMDDHHMM)
         $reminders = $this->auth->check() ?
-            $this->auth->user()->reminders->sortByDesc('updated_at')->values()->toArray() :
+            $this->auth->user()->reminders->sortBy('reminder_date')->values()->toArray() :
             [];
         return $this->json($response, $reminders);
     }

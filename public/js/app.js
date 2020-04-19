@@ -1058,8 +1058,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     // Add provided reminder to list
     addReminder: function addReminder(reminder) {
-      this.reminders.data.unshift(reminder);
+      this.reminders.data.push(reminder);
       this.notifications.add("Reminder added", _Notifications_Notifications__WEBPACK_IMPORTED_MODULE_1__["types"].success);
+      this.sortReminders();
+    },
+    // Sort reminders
+    sortReminders: function sortReminders() {
+      this.reminders.data = this.reminders.data.sort(function (first, second) {
+        return parseInt(first.reminder_date) - parseInt(second.reminder_date);
+      });
     },
     // Remove the reminder with the provided id
     removeReminder: function removeReminder(id) {

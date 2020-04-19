@@ -1,6 +1,3 @@
-FRONT-END BUG:
-    Can't type into time fields on mobile. I think this might be because I disabled user-select. Look into fixing this.
-
 SCHEDULER SERVICE:
     This urgently needs tests in place. I refactored the Reminder model into a DDD style folder structure which broke the scheduler, but I never noticed until I pulled onto live server and tested using a live example.
 
@@ -24,7 +21,6 @@ DATESSUPPORT:
     Domain\Dates\DatesSupport just doesn't seem right. All those static functions can't be good. Perhaps break out into DaysSupport, DatesSupport, MonthsSupport, YearsSupport and TimesSupport and remove the static-ness of the functions.
 
 SORTING:
-    Make default sorting of reminders by reminder date: YYYYMMDD.
     Implement custom sorting on front-end.
 
 ADD LINK TO REMINDER:

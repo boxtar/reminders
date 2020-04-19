@@ -9,8 +9,6 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
-TODO.md
 TODO
 .DS_Store
 .vscode
-/tests

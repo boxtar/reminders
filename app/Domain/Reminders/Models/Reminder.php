@@ -2,17 +2,21 @@
 
 namespace App\Domain\Reminders\Models;
 
-use App\Domain\Dates\DatesSupport;
-use App\Domain\Recurrences\RecurrencesSupport;
 use App\Models\User;
-use Carbon\Carbon;
+use App\Domain\Dates\DatesSupport;
 use Illuminate\Database\Eloquent\Model;
+use App\Domain\Recurrences\RecurrencesSupport;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Reminder extends Model
 {
     use SoftDeletes;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
         'body', 'frequency',
         'day', 'date', 'month',
@@ -21,12 +25,27 @@ class Reminder extends Model
         'channels', 'is_recurring',
     ];
 
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
     protected $casts = [
         'initial_reminder_run' => 'boolean',
         'is_recurring' => 'boolean',
         'channels' => 'array'
     ];
 
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = ['reminder_date'];
+
+    /**
+     * @return User
+     */
     public function owner()
     {
         return $this->belongsTo(User::class, 'user_id');
@@ -35,7 +54,8 @@ class Reminder extends Model
     /**
      * Accessor for frequency attribute
      * 
-     * @param string $frequency
+     * @param string
+     * @return string
      */
     public function getFrequencyAttribute($frequency)
     {
@@ -48,7 +68,8 @@ class Reminder extends Model
     /**
      * Accessor for day attribute
      * 
-     * @param string $frequency
+     * @param int
+     * @return string
      */
     public function getDayAttribute($day)
     {
@@ -61,7 +82,8 @@ class Reminder extends Model
     /**
      * Accessor for date attribute
      * 
-     * @param string $frequency
+     * @param int
+     * @return string
      */
     public function getDateAttribute($date)
     {
@@ -73,14 +95,41 @@ class Reminder extends Model
     /**
      * Accessor for month attribute
      * 
-     * @param string $frequency
+     * @param int
+     * @return string
      */
     public function getMonthAttribute($month)
     {
         $month = DatesSupport::makeMonth($month);
-        if(!$month)
+        if (!$month)
             return "Invalid month";
         return ucfirst($month->getMonthName());
+    }
+
+    /**
+     * Returns the reminder Date and Time in format YYYYMMDDHHMM
+     * which is useful for sorting.
+     * 
+     * @return string
+     */
+    public function getReminderDateAttribute()
+    {
+        $attributes = (object) $this->getAttributes();
+
+        // Keys required from the Reminder instance
+        $keys = ['year', 'month', 'date', 'hour', 'minute'];
+
+        // This will be the return value. It is built below.
+        $dateTimeString = "";
+
+        // Pad the above attributes to 2 digits, if required.
+        // Build up the dateTimeString.
+        foreach ($keys as $key) {
+            $attributes->{$key} = $attributes->{$key} < 10 ? "0" . $attributes->{$key} : $attributes->{$key};
+            $dateTimeString .= (string) $attributes->{$key};
+        }
+
+        return $dateTimeString;
     }
 
     public function hasInitialReminderRun()

@@ -150,8 +150,16 @@ export default {
 
         // Add provided reminder to list
         addReminder(reminder) {
-            this.reminders.data.unshift(reminder);
+            this.reminders.data.push(reminder);
             this.notifications.add("Reminder added", types.success);
+            this.sortReminders();
+        },
+
+        // Sort reminders
+        sortReminders() {
+            this.reminders.data = this.reminders.data.sort(
+                (first, second) => parseInt(first.reminder_date) - parseInt(second.reminder_date)
+            );
         },
 
         // Remove the reminder with the provided id
