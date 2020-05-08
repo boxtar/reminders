@@ -13,7 +13,7 @@ class ReminderTest extends TestCase
     /** @test */
     public function frequency_accessor_returns_expected_result()
     {
-        $reminder = new Reminder($this->makeReminderData()->toArray());
+        $reminder = $this->makeReminder();
         $this->assertEquals("No recurrence", $reminder->frequency);
 
         $reminder->is_recurring = true;
@@ -26,7 +26,7 @@ class ReminderTest extends TestCase
     /** @test */
     public function day_accessor_returns_expected_result()
     {
-        $reminder = new Reminder($this->makeReminderData()->toArray());
+        $reminder = $this->makeReminder();
 
         $reminder->day = 7; // Invalid day - test app does not break on invalid day
         $this->assertEquals("Invalid day", $reminder->day);

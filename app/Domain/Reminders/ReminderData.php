@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Reminders;
 
 use App\Domain\Dates\DatesSupport;
+use App\Domain\Reminders\Models\Reminder;
 
 class ReminderData
 {
@@ -28,8 +29,9 @@ class ReminderData
         $this->data['frequency'] = $input['frequency'] ?? '';
 
         // These won't be part of API request as they are built in domain
+        $this->data['initial_reminder_run'] = false;
         $this->data['expression'] = '';
-        $this->data['is_recurring'] = '';
+        $this->data['is_recurring'] = false;
         $this->data['recurrence_expression'] = '';
 
         // Hardcoded to all available channels for now
@@ -42,6 +44,16 @@ class ReminderData
 
         // Figure the day of the week out
         $this->data['day'] = date('w', mktime($this->hour, $this->minute, 0, $this->month + 1, $this->date, $this->year));
+    }
+
+    /**
+     * Quick n Dirty factory for building an instance
+     * 
+     * @param array $input
+     */
+    public static function createFromArray(array $data)
+    {
+        return new self($data);
     }
 
     /**

@@ -232,6 +232,7 @@ class DatesSupportTest extends TestCase
         // Assert a date way in the past is definitely in the past.
         $this->assertTrue(DatesSupport::isDateAndTimeInThePast(2020, 01, 01));
 
+        // Subtract a minute from now
         $carbonDate->subMinute();
         $data = $this->makeReminderData($carbonDate);
         $this->assertTrue(DatesSupport::isDateAndTimeInThePast($data->year, $data->month, $data->date, $data->time));

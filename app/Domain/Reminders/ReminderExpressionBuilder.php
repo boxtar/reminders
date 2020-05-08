@@ -5,7 +5,7 @@ namespace App\Domain\Reminders;
 use App\Domain\Dates\DatesSupport;
 use App\Domain\Reminders\ReminderData;
 
-class ReminderFrequencyBuilder
+class ReminderExpressionBuilder
 {
 
     /**
@@ -29,6 +29,11 @@ class ReminderFrequencyBuilder
             'month' => $reminder->month + 1, // month is zero-based
             'year' => $reminder->year,
         ];
+    }
+
+    public static function createFromReminderData(ReminderData $data)
+    {
+        return new self($data);
     }
 
     /**

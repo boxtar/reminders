@@ -7,6 +7,23 @@ use Tests\TestCase;
 
 class ReminderDataTest extends TestCase
 {
+
+    /** @test */
+    public function can_create_from_array()
+    {
+        $data = ReminderData::createFromArray([
+            'body' => 'Test Reminder',
+            'date' => 5, // 5th
+            'month' => 3, // April
+            'year' => 2020,
+            'time' => "12:00", // Noon
+        ]);
+
+        $this->assertEquals('Test Reminder', $data->body);
+        $this->assertEquals(2020, $data->year);
+        $this->assertEquals("12:00", $data->time);
+    }
+
     /** @test */
     public function it_calculates_the_correct_day_of_the_week()
     {

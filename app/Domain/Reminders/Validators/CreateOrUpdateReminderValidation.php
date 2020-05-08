@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Reminders\Rules;
+namespace App\Domain\Reminders\Validators;
 
 use App\Domain\Dates\DatesSupport;
 use App\Domain\Reminders\ReminderData;
 
-class CreateReminderValidation
+class CreateOrUpdateReminderValidation
 {
     /**
      * @var ReminderData - Data to be validated
@@ -28,6 +28,7 @@ class CreateReminderValidation
     {
         $this->_data = $data;
     }
+    
     /**
      * Validate the data
      */

@@ -3,8 +3,18 @@
         <!-- Notifications -->
         <notifications :data="notifications.getAll()" @closeNotification="closeNotification" />
 
-        <!-- Add Reminder Component -->
-        <add-reminder :frequencies="frequencies" :csrf="csrf" @reminderAdded="addReminder" @reminderError="errorAddingReminder" />
+        <!-- Create or Update Reminder -->
+        <create-or-update-reminder
+            :method="updateInProgress ? 'PUT' : 'POST'"
+            :csrf="csrf"
+            :frequencies="frequencies"
+            :isUpdate="updateInProgress"
+            :reminder="reminderBeingUpdated"
+            @reminderAdded="onReminderAdded"
+            @reminderUpdated="onReminderUpdated"
+            @updateCancelled="clearUpdateState"
+            @formError="onCreateOrUpdateError"
+        />
 
         <!-- Reminder List -->
         <div class="p-4 pt-0 pl-0 md:flex md:flex-wrap justify-start">
@@ -13,11 +23,15 @@
                 v-for="reminder in reminders.data"
                 :key="reminder.id"
             >
-                <div class="px-4 py-6 h-full bg-white rounded shadow flex flex-col justify-between">
+                <div class="reminder-card px-4 py-6 h-full bg-white flex flex-col justify-between">
                     <!-- Body -->
                     <div class="px-4 w-full">
                         <span class="hidden mt-2 block text-xs uppercase text-gray-500">Body</span>
-                        <span class="text-xl text-gray-800">{{ reminder.body }}</span>
+                        <span
+                            class="text-lg text-gray-800 font-bold cursor-pointer hover:text-blue-500"
+                            @click="setReminderToBeUpdated(reminder)"
+                            >{{ reminder.body }}</span
+                        >
                     </div>
                     <!-- Reminder and Recurrence Information -->
                     <div class="w-full mt-4">
@@ -115,6 +129,8 @@ export default {
                 data: [],
             },
             notifications: new Notifications(),
+            updateInProgress: false,
+            reminderBeingUpdated: null,
         };
     },
     created() {},
@@ -149,13 +165,20 @@ export default {
         },
 
         // Add provided reminder to list
-        addReminder(reminder) {
+        onReminderAdded(reminder) {
             this.reminders.data.push(reminder);
             this.notifications.add("Reminder added", types.success);
             this.sortReminders();
         },
 
-        errorAddingReminder(error) {
+        onReminderUpdated(reminder) {
+            const index = this.reminders.data.map(reminder => reminder.id).indexOf(reminder.id);
+            this.reminders.data[index] = { ...reminder };
+            this.clearUpdateState();
+            this.notifications.add("Reminder updated", types.success);
+        },
+
+        onCreateOrUpdateError(error) {
             this.notifications.add(error, types.error, true);
         },
 
@@ -171,6 +194,18 @@ export default {
             this.reminders.data = this.reminders.data.filter(item => item.id !== id);
         },
 
+        // Displays the update form populated with the reminder being updated
+        setReminderToBeUpdated(reminder) {
+            this.updateInProgress = true;
+            this.reminderBeingUpdated = { ...reminder };
+        },
+
+        // Handle an update cancel
+        clearUpdateState() {
+            this.updateInProgress = false;
+            this.reminderBeingUpdated = false;
+        },
+
         // Remove the notification with the provided id
         closeNotification(id) {
             this.notifications.remove(id);
@@ -184,3 +219,12 @@ export default {
     },
 };
 </script>
+
+<style scoped>
+.reminder-card {
+    border-radius: 1.75rem;
+}
+.reminder-card span {
+    transition: color 0.1s ease-out;
+}
+</style>

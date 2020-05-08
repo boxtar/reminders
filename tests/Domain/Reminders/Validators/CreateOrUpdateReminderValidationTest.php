@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\Domain\Reminders\Rules;
+namespace Tests\Domain\Reminders\Validators;
 
-use App\Domain\Reminders\Rules\CreateReminderValidation;
+use App\Domain\Reminders\Validators\CreateOrUpdateReminderValidation;
 use Tests\TestCase;
 
-class CreateReminderValidationTest extends TestCase
+class CreateOrUpdateReminderValidationTest extends TestCase
 {
     /** @test */
     public function body_is_required()
@@ -13,13 +13,13 @@ class CreateReminderValidationTest extends TestCase
         // Should fail
         $data = $this->makeReminderData();
         $data->body = "";
-        $validator = new CreateReminderValidation($data);
+        $validator = new CreateOrUpdateReminderValidation($data);
         $this->assertTrue($validator->validate()->fails());
         $this->assertArrayHasKey('body', $validator->getErrors());
 
         // Should pass
         $data->body = "Testing validation";
-        $validator = new CreateReminderValidation($data);
+        $validator = new CreateOrUpdateReminderValidation($data);
         $this->assertTrue($validator->validate()->passes());
         $this->assertEmpty($validator->getErrors());
     }
@@ -30,20 +30,20 @@ class CreateReminderValidationTest extends TestCase
         // Should fail
         $data = $this->makeReminderData();
         $data->date = 0;
-        $validator = new CreateReminderValidation($data);
+        $validator = new CreateOrUpdateReminderValidation($data);
         $this->assertTrue($validator->validate()->fails());
         $this->assertArrayHasKey('date', $validator->getErrors());
 
         // Should fail
         $data->date = 32;
-        $validator = new CreateReminderValidation($data);
+        $validator = new CreateOrUpdateReminderValidation($data);
         $this->assertTrue($validator->validate()->fails());
         $this->assertArrayHasKey('date', $validator->getErrors());
 
         // Should pass
         foreach (range(1, 31) as $date) {
             $data->date = $date;
-            $validator = new CreateReminderValidation($data);
+            $validator = new CreateOrUpdateReminderValidation($data);
             $this->assertTrue($validator->validate()->passes());
             $this->assertEmpty($validator->getErrors());
         }
@@ -55,20 +55,20 @@ class CreateReminderValidationTest extends TestCase
         // Should fail
         $data = $this->makeReminderData();
         $data->month = -1;
-        $validator = new CreateReminderValidation($data);
+        $validator = new CreateOrUpdateReminderValidation($data);
         $this->assertTrue($validator->validate()->fails());
         $this->assertArrayHasKey('month', $validator->getErrors());
 
         // Should fail
         $data->month = 12;
-        $validator = new CreateReminderValidation($data);
+        $validator = new CreateOrUpdateReminderValidation($data);
         $this->assertTrue($validator->validate()->fails());
         $this->assertArrayHasKey('month', $validator->getErrors());
 
         // Should pass
         foreach (range(0, 11) as $month) {
             $data->month = $month;
-            $validator = new CreateReminderValidation($data);
+            $validator = new CreateOrUpdateReminderValidation($data);
             $this->assertTrue($validator->validate()->passes());
             $this->assertEmpty($validator->getErrors());
         }
@@ -80,19 +80,19 @@ class CreateReminderValidationTest extends TestCase
         // Should fail
         $data = $this->makeReminderData();
         $data->time = "";
-        $validator = new CreateReminderValidation($data);
+        $validator = new CreateOrUpdateReminderValidation($data);
         $this->assertTrue($validator->validate()->fails());
         $this->assertArrayHasKey('time', $validator->getErrors());
 
         // Should fail
         $data->time = "35:98";
-        $validator = new CreateReminderValidation($data);
+        $validator = new CreateOrUpdateReminderValidation($data);
         $this->assertTrue($validator->validate()->fails());
         $this->assertArrayHasKey('time', $validator->getErrors());
 
         // Should pass
         $data->time = "22:35";
-        $validator = new CreateReminderValidation($data);
+        $validator = new CreateOrUpdateReminderValidation($data);
         $this->assertTrue($validator->validate()->passes());
         $this->assertEmpty($validator->getErrors());
     }
@@ -102,7 +102,7 @@ class CreateReminderValidationTest extends TestCase
     {
         $data = $this->makeReminderData();
         $data->body = "";
-        $validator = (new CreateReminderValidation($data))->validate();
+        $validator = (new CreateOrUpdateReminderValidation($data))->validate();
         $this->assertEquals("You must provide a body", $validator->getError('body'));
 
         // Should return false when trying to access a non-existing error

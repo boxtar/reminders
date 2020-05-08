@@ -11,6 +11,7 @@ use Psr\Http\Message\{
     ResponseInterface as Response,
 };
 use App\Controllers\Reminders\RemindersController;
+use App\Controllers\Reminders\UpdateReminderController;
 use App\Middleware\AuthMiddleware;
 use App\Middleware\GuestMiddleware;
 use Slim\Routing\RouteCollectorProxy;
@@ -43,6 +44,8 @@ $app->group('/api', function (RouteCollectorProxy $group) {
     $group->get('/reminders', GetRemindersController::class)->setName('api.reminders.get');
     // Creates a new reminder.
     $group->post('/reminders', CreateReminderController::class)->setName('api.reminders.store');
+    // Update a reminder (PUT only - i.e. Data provided will overwrite existing reminder so must provide all required fields too).
+    $group->put('/reminders/{id}', UpdateReminderController::class)->setName('api.reminders.put');
     // Archives the reminder with the provided id.
     $group->delete('/reminders/{id}', ArchiveReminderController::class)->setName('api.reminders.archive');
 })->add(new AuthMiddleware($app->getContainer()));
@@ -54,4 +57,3 @@ $app->group('', function (RouteCollectorProxy $group) {
     $group->get('/login', LoginController::class . ':index')->setName('login.index');
     $group->post('/login', LoginController::class . ':store')->setName('login.store');
 })->add(new GuestMiddleware($app->getContainer()));
-

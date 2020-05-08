@@ -29,7 +29,7 @@ class ArchiveReminderController extends Controller
 
         // Authorise the delete attempt
         if (!$user->canUpdate($reminder)) {
-            $this->json($response, ['message' => 'Unauthorized'], 401);
+            return $this->json($response, ['errors' => ['message' => 'Unauthorized']], 401);
         }
 
         // If we get here then the user is authorised to delete the reminder

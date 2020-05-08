@@ -58,7 +58,7 @@ abstract class TestCase extends PHPUnitTestCase
     {
         if (!$date)
             $date = \Carbon\Carbon::now(new \DateTimeZone('Europe/London'));
-            
+
         return new ReminderData([
             'body' => 'Test Reminder',
             'date' => $date->day,

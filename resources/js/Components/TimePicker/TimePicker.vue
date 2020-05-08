@@ -59,6 +59,7 @@
 
 <script>
 export default {
+    props: ["time"],
     data() {
         return {
             hour: 12,
@@ -70,10 +71,12 @@ export default {
         };
     },
     mounted() {
-        const now = new Date();
-        this.hour = now.getHours();
-        this.minute = now.getMinutes();
-        this.emitTime();
+        this.setTime();
+    },
+    watch: {
+        time: function() {
+            this.setTime();
+        },
     },
     methods: {
         // Handle change to hour (@input event)
@@ -112,6 +115,18 @@ export default {
             this.constrainMinute();
             this.emitTime();
         },
+        setTime() {
+            if (!this.time) {
+                const now = new Date();
+                this.hour = now.getHours();
+                this.minute = now.getMinutes();
+            } else {
+                const [hour, minute] = this.time.split(":").map(t => parseInt(t));
+                this.hour = hour;
+                this.minute = minute;
+            }
+            this.emitTime();
+        },
         constrainHour() {
             if (this.hour < 0) this.hour = 0;
             else if (this.hour > 23) this.hour = 23;
@@ -123,7 +138,7 @@ export default {
         emitTime() {
             const hour = this.padToTwoDigits(this.hour);
             const minute = this.padToTwoDigits(this.minute);
-            this.$emit("input", `${hour}:${minute}`);
+            this.$emit("timeChanged", `${hour}:${minute}`);
         },
         padToTwoDigits(num) {
             return num < 10 ? `0${num}` : num;

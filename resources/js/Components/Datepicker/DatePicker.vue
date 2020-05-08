@@ -5,7 +5,9 @@
             class="selected-date px-4 py-3 w-full leading-tight tracking-widest bg-gray-700 text-gray-100"
             :class="{ rounded: !isActive, 'rounded-t': isActive, 'bg-teal-400': isActive }"
             @click="isActive = !isActive"
-        >{{ formattedDate }}</div>
+        >
+            {{ formattedDate }}
+        </div>
 
         <div class="dates rounded-b bg-white" :class="{ hidden: !isActive }">
             <!-- Months -->
@@ -89,7 +91,7 @@
 <script>
 const dateFunctions = require("./functions");
 export default {
-    props: ["userSelectedDate"],
+    props: ["customDate", "customMonth", "customYear"],
     data() {
         return {
             selectedDate: null,
@@ -119,22 +121,37 @@ export default {
         };
     },
     created() {
-        // If a pre-defined selected date is provided, use that.
-        if (this.userSelectedDate) {
-            this.selectedDate = this.userSelectedDate;
-        } else {
-            this.selectedDate = new Date();
-        }
-        this.selectedDay = this.selectedDate.getDate();
-        this.visibleMonth = this.selectedMonth = this.selectedDate.getMonth();
-        this.visibleYear = this.selectedYear = this.selectedDate.getFullYear();
-            this.$emit('datePicked', [this.selectedDay, this.visibleMonth, this.visibleYear])
-
+        this.setDate();
     },
-    mounted() {
-        //
+    watch: {
+        customDate: function() {
+            this.setDate();
+        },
+        customMonth: function() {
+            this.setDate();
+        },
+        customYear: function() {
+            this.setDate();
+        },
     },
     methods: {
+        setDate() {
+            const now = new Date();
+            const date = new Date(
+                this.customYear ? this.customYear : now.getFullYear(),
+                this.customMonth ? this.customMonth : now.getMonth(),
+                this.customDate ? this.customDate : now.getDate(),
+            );
+            
+            this.selectedDate = date;
+            this.selectedDay = date.getDate();
+            this.visibleMonth = this.selectedMonth = date.getMonth();
+            this.visibleYear = this.selectedYear = date.getFullYear();
+            this.emitDate();
+        },
+        emitDate() {
+            this.$emit("dateChanged", [this.selectedDay, this.visibleMonth, this.visibleYear]);
+        },
         goToNextMonth() {
             this.visibleMonth += 1;
             if (this.visibleMonth > 11) {
@@ -162,7 +179,7 @@ export default {
             this.selectedMonth = this.visibleMonth;
             this.selectedYear = this.visibleYear;
             this.isActive = false;
-            this.$emit('datePicked', [day, this.visibleMonth, this.visibleYear])
+            this.$emit("dateChanged", [day, this.visibleMonth, this.visibleYear]);
         },
 
         /**

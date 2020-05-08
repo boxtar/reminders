@@ -22,7 +22,7 @@ class RecurrenceBuilder
      * @param ReminderData
      * @param string
      */
-    public function __construct(ReminderData $reminder, string $frequency)
+    public function __construct(ReminderData $reminder)
     {
         $this->reminderData = (object) [
             'minute' => $reminder->minute,
@@ -33,7 +33,7 @@ class RecurrenceBuilder
             'year' => $reminder->year,
         ];
 
-        $this->recurrenceFrequency = $frequency;
+        $this->recurrenceFrequency = $reminder->frequency;
     }
 
     /**

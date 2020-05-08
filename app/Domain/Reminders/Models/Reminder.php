@@ -22,7 +22,7 @@ class Reminder extends Model
         'day', 'date', 'month',
         'year', 'hour', 'minute',
         'expression', 'recurrence_expression',
-        'channels', 'is_recurring',
+        'channels', 'is_recurring', 'initial_reminder_run',
     ];
 
     /**
