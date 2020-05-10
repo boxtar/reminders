@@ -5,15 +5,33 @@
         The way I'm passing props to DatePicker and TimePicker and also updating those same props based on events emitted from the very same Components theoretically means I should have an inifite feedback loop going on here. However, Vue does seems to stop this from happening. I should still look into this and make it more robust (and readable/maintainable - cognitive load is increased because of this).
 -->
 <template>
-    <div class="relative">
+    <div class="relative bg-gray-800">
         <div
             v-if="isUpdate"
             class="cancel-button bg-yellow-500 text-yellow-800 uppercase text-xs py-1 px-3 rounded-b shadow select-none"
         >
             Edit Mode
         </div>
+
+        <!-- Close button -->
+        <div class="hidden p-4 pb-0 text-gray-400 text-right hover:text-white" @click="$emit('closed')">
+            <span class="hidden text-xs uppercase">Close</span>
+            <svg
+                class="fill-current inline-block"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="24px"
+                height="24px"
+            >
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path
+                    d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"
+                />
+            </svg>
+        </div>
+
         <form class="w-full" @submit.prevent="processForm">
-            <div class="px-4 py-6 bg-gray-800">
+            <div class="px-4 py-6">
                 <!-- Body -->
                 <div class="px-4">
                     <label
@@ -37,9 +55,9 @@
                 </div>
 
                 <!-- Reminder Date, Time & Frequency -->
-                <div class="mt-3 md:flex flex-wrap">
+                <div class="mt-3">
                     <!-- Date Picker -->
-                    <div class="px-4 py-2 md:w-1/2 lg:w-1/3">
+                    <div class="px-4 py-2">
                         <label
                             class="block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2"
                             for="date-picker"
@@ -55,7 +73,7 @@
                     </div>
 
                     <!-- Time Picker -->
-                    <div class="px-4 py-2 md:w-1/2 lg:w-1/3">
+                    <div class="px-4 py-2">
                         <label
                             class="block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2"
                             for="time"
@@ -66,7 +84,7 @@
                     </div>
 
                     <!-- Recurrence -->
-                    <div class="px-4 py-2 md:w-1/2 lg:w-1/3">
+                    <div class="px-4 py-2">
                         <label
                             class="block  mb-2 uppercase tracking-wide text-gray-500 text-xs font-bold"
                             for="frequency"
@@ -104,22 +122,24 @@
                 </div>
 
                 <!-- Submit/Cancel Button -->
-                <div class="mt-4 mr-4 flex justify-end items-center">
-                    <div v-if="isUpdate" @click.prevent="cancelUpdate" class="">
-                        <a
-                            href="/"
-                            class="inline-block px-4 py-3 text-red-500 border-b-2 border-red-500 leading-tight text-sm font-medium tracking-wider uppercase cursor-pointer focus:outline-none focus:shadow-outline hover:text-red-600 hover:border-red-500"
-                        >
-                            Cancel
-                        </a>
-                    </div>
-                    <div class="ml-4">
-                        <button
-                            type="submit"
-                            class="px-6 py-3 bg-teal-400 leading-tight text-teal-100 text-sm font-medium tracking-wider uppercase rounded focus:outline-none focus:shadow-outline hover:bg-teal-500"
-                        >
-                            {{ isUpdate ? "Update" : "Create" }}
-                        </button>
+                <div class="mt-3">
+                    <div class="px-4 py-2 flex ml-auto">
+                        <div class="">
+                            <button
+                                type="submit"
+                                class="px-6 py-3 bg-teal-400 leading-tight text-teal-100 text-xs font-medium tracking-wider uppercase rounded focus:outline-none focus:shadow-outline hover:bg-teal-500"
+                            >
+                                {{ isUpdate ? "Update" : "Create" }}
+                            </button>
+                        </div>
+                        <div v-show="isUpdate" @click.prevent="cancelUpdate" class="ml-4">
+                            <a
+                                href="/"
+                                class="inline-block px-4 py-3 text-red-400 leading-tight text-xs font-medium tracking-wider uppercase cursor-pointer focus:outline-none focus:shadow-outline hover:text-red-500"
+                            >
+                                Clear
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -130,7 +150,6 @@
 <script>
 const Form = require("../Utils/Form");
 const setupAutosizingTextArea = require("../Utils/setupAutosizingTextarea");
-const smoothScroll = require("../Utils/smoothScroll");
 export default {
     props: ["method", "csrf", "frequencies", "isUpdate", "reminder"],
     data() {
@@ -205,7 +224,6 @@ export default {
             }
             this.form.set("frequency", is_recurring ? frequency : "none");
             setTimeout(this.updateSizeOfTextarea, 0);
-            smoothScroll();
         },
         updateSizeOfTextarea() {
             const element = this.$refs.body;

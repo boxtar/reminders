@@ -1,111 +1,156 @@
 <template>
-    <div>
+    <div class="relative w-full h-screen overflow-x-hidden">
         <!-- Notifications -->
         <notifications :data="notifications.getAll()" @closeNotification="closeNotification" />
 
-        <!-- Create or Update Reminder -->
-        <create-or-update-reminder
-            :method="updateInProgress ? 'PUT' : 'POST'"
-            :csrf="csrf"
-            :frequencies="frequencies"
-            :isUpdate="updateInProgress"
-            :reminder="reminderBeingUpdated"
-            @reminderAdded="onReminderAdded"
-            @reminderUpdated="onReminderUpdated"
-            @updateCancelled="clearUpdateState"
-            @formError="onCreateOrUpdateError"
-        />
+        <div class="md:flex md:flex-row-reverse">
+            <!-- Side panel (Create or Update Reminder form) -->
+            <div class="side-panel bg-gray-800" ref="sidePanel" :class="{ 'is-active': showSidePanel }">
+                <create-or-update-reminder
+                    :method="updateInProgress ? 'PUT' : 'POST'"
+                    :csrf="csrf"
+                    :frequencies="frequencies"
+                    :isUpdate="updateInProgress"
+                    :reminder="reminderBeingUpdated"
+                    @reminderAdded="onReminderAdded"
+                    @reminderUpdated="onReminderUpdated"
+                    @closed="showSidePanel = false"
+                    @updateCancelled="clearUpdateState"
+                    @formError="onCreateOrUpdateError"
+                />
+            </div>
 
-        <!-- Reminder List -->
-        <div class="p-4 pt-0 pl-0 md:flex md:flex-wrap justify-start">
-            <div
-                class="p-4 pr-0 pb-0 md:w-1/2 lg:w-1/3"
-                v-for="reminder in reminders.data"
-                :key="reminder.id"
-            >
-                <div class="reminder-card px-4 py-6 h-full bg-white flex flex-col justify-between">
-                    <!-- Body -->
-                    <div class="px-4 w-full">
-                        <span class="hidden mt-2 block text-xs uppercase text-gray-500">Body</span>
-                        <span
-                            class="text-lg text-gray-800 font-bold cursor-pointer hover:text-blue-500"
-                            @click="setReminderToBeUpdated(reminder)"
-                            >{{ reminder.body }}</span
-                        >
+            <!-- Main panel (Search box and Reminder list) -->
+            <div class="main-panel flex-1" :class="{ 'side-panel-is-active': showSidePanel }">
+                <div class="px-4 py-6 flex justify-between">
+                    <!-- Search bar -->
+                    <div class="relative">
+                        <input
+                            type="text"
+                            class="p-2 md:p-4 bg-white text-gray-500 rounded-full shadow outline-none focus:shadow-outline"
+                            name="search-reminders"
+                            id="search-reminders"
+                            placeholder="Coming soon..."
+                        />
+                        <div class="search-icon absolute top-0 left-0 text-gray-600">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                class="invisible md:visible  fill-current"
+                                width="24px"
+                                height="24px"
+                            >
+                                <path d="M0 0h24v24H0V0z" fill="none" />
+                                <path
+                                    d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+                                />
+                            </svg>
+                        </div>
                     </div>
-                    <!-- Reminder and Recurrence Information -->
-                    <div class="w-full mt-4">
-                        <div class="md:flex flex-wrap">
-                            <div class="px-4 mt-2">
-                                <!-- Initial Reminder -->
-                                <div class="flex items-center">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 24 24"
-                                        fill="#a0aec0"
-                                        width="24px"
-                                        height="24px"
-                                    >
-                                        <path d="M0 0h24v24H0V0z" fill="none" />
-                                        <path
-                                            d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6zM7.58 4.08L6.15 2.65C3.75 4.48 2.17 7.3 2.03 10.5h2c.15-2.65 1.51-4.97 3.55-6.42zm12.39 6.42h2c-.15-3.2-1.73-6.02-4.12-7.85l-1.42 1.43c2.02 1.45 3.39 3.77 3.54 6.42z"
-                                        />
-                                    </svg>
-                                    <span class="block ml-2 tracking-wider text-sm">
-                                        <span class="text-teal-400">{{
-                                            `${reminder.day.substr(0, 3)} ${
-                                                reminder.date
-                                            } ${reminder.month.substr(0, 3)} ${reminder.year} at ${pad(
-                                                reminder.hour || 0
-                                            )}:${pad(reminder.minute || 0)}`
-                                        }}</span>
-                                    </span>
-                                </div>
 
-                                <!-- Recurrence -->
-                                <div class="mt-2 flex items-center">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 24 24"
-                                        fill="#a0aec0"
-                                        width="24px"
-                                        height="24px"
-                                    >
-                                        <path d="M0 0h24v24H0V0z" fill="none" />
-                                        <path
-                                            d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z"
-                                        />
-                                    </svg>
-                                    <span class="block ml-2 tracking-wider text-sm">
-                                        <span class="text-teal-400">{{ reminder.frequency }}</span>
-                                    </span>
-                                </div>
+                    <!-- Toggle Create/Update Reminder form -->
+                    <button
+                        @click="showSidePanel = !showSidePanel"
+                        id="show-side-panel-button"
+                        class="flex items-center p-2 md:p-4 bg-white shadow rounded-full focus:outline-none focus:shadow-outline"
+                        :class="{
+                            'rotate-45': showSidePanel,
+                            'text-red-500': showSidePanel,
+                            'text-teal-400': !showSidePanel,
+                        }"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            class="fill-current"
+                            width="24px"
+                            height="24px"
+                        >
+                            <path d="M0 0h24v24H0V0z" fill="none" />
+                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+                        </svg>
+                    </button>
+                </div>
 
-                                <!-- Archive Button -->
-                                <div class="mt-2 flex items-center">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 24 24"
-                                        fill="#a0aec0"
-                                        width="24px"
-                                        height="24px"
-                                    >
-                                        <path d="M0 0h24v24H0V0z" fill="none" />
-                                        <path
-                                            d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z"
-                                        />
-                                    </svg>
-                                    <form
-                                        :action="`${reminders.archiveAction}/${reminder.id}`"
-                                        @submit="archiveReminder"
-                                    >
-                                        <button
-                                            type="submit"
-                                            class="block ml-2 tracking-wider text-sm text-red-300 hover:text-red-400"
-                                        >
-                                            Archive
-                                        </button>
-                                    </form>
+                <!-- Reminder List -->
+                <div class="p-4 pt-0 pl-0 md:flex md:flex-wrap justify-start">
+                    <div class="p-4 pr-0 pb-0 " v-for="reminder in reminders.data" :key="reminder.id">
+                        <div
+                            class="relative reminder-card px-6 py-4 h-full shadow bg-white flex flex-col justify-between"
+                        >
+                            <!-- Indicator (has initial reminder run?) -->
+                            <div class="p-4 absolute top-0 right-0">
+                                <div
+                                    class="rounded-full"
+                                    :class="{
+                                        'bg-red-400': reminder.initial_reminder_run,
+                                        'bg-green-400': !reminder.initial_reminder_run,
+                                    }"
+                                    style="width: 10px;height: 10px;"
+                                ></div>
+                            </div>
+                            <!-- Body -->
+                            <div class="px-4 w-full">
+                                <span class="hidden mt-2 block text-xs uppercase text-gray-500">Body</span>
+                                <span
+                                    class="text-gray-800 font-bold cursor-pointer"
+                                    @click="setReminderToBeUpdated(reminder)"
+                                    >{{ reminder.body }}</span
+                                >
+                            </div>
+                            <!-- Reminder and Recurrence Information -->
+                            <div class="w-full mt-1">
+                                <div class="md:flex flex-wrap">
+                                    <div class="px-4">
+                                        <!-- Initial Reminder -->
+                                        <div class="flex items-center">
+                                            <span class="block text-xs">
+                                                <span class="text-gray-500">{{
+                                                    `${reminder.day.substr(0, 3)} ${
+                                                        reminder.date
+                                                    } ${reminder.month.substr(0, 3)} ${
+                                                        reminder.year
+                                                    } at ${pad(reminder.hour || 0)}:${pad(
+                                                        reminder.minute || 0
+                                                    )}`
+                                                }}</span>
+                                            </span>
+                                        </div>
+
+                                        <!-- Recurrence -->
+                                        <div class="flex items-center">
+                                            <span class="block  text-xs">
+                                                <span class="text-gray-500">{{ reminder.frequency }}</span>
+                                            </span>
+                                        </div>
+
+                                        <!-- Archive Button -->
+                                        <div class="hidden mt-2 flex items-center">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 24 24"
+                                                fill="#a0aec0"
+                                                width="24px"
+                                                height="24px"
+                                            >
+                                                <path d="M0 0h24v24H0V0z" fill="none" />
+                                                <path
+                                                    d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z"
+                                                />
+                                            </svg>
+                                            <form
+                                                :action="`${reminders.archiveAction}/${reminder.id}`"
+                                                @submit="archiveReminder"
+                                            >
+                                                <button
+                                                    type="submit"
+                                                    class="block ml-2 tracking-wider text-sm text-red-300 hover:text-red-400"
+                                                >
+                                                    Archive
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -118,7 +163,7 @@
 
 <script>
 import { Notifications, types } from "./Notifications/Notifications";
-
+const smoothScroll = require("../Utils/smoothScroll");
 export default {
     props: ["frequencies", "csrf"],
     data() {
@@ -131,13 +176,14 @@ export default {
             notifications: new Notifications(),
             updateInProgress: false,
             reminderBeingUpdated: null,
+            showSidePanel: false,
         };
     },
     created() {},
     mounted() {
         this.getReminders(this.reminders.action).then(({ data }) => {
             this.reminders.data = Object.values(data);
-            this.notifications.add("Loaded", types.info, false, 2);
+            // this.notifications.add("Loaded", types.info, false, 2);
         });
     },
     methods: {
@@ -168,6 +214,7 @@ export default {
         onReminderAdded(reminder) {
             this.reminders.data.push(reminder);
             this.notifications.add("Reminder added", types.success);
+            this.showSidePanel = false;
             this.sortReminders();
         },
 
@@ -175,6 +222,7 @@ export default {
             const index = this.reminders.data.map(reminder => reminder.id).indexOf(reminder.id);
             this.reminders.data[index] = { ...reminder };
             this.clearUpdateState();
+            this.showSidePanel = false;
             this.notifications.add("Reminder updated", types.success);
         },
 
@@ -197,7 +245,11 @@ export default {
         // Displays the update form populated with the reminder being updated
         setReminderToBeUpdated(reminder) {
             this.updateInProgress = true;
+            this.showSidePanel = true;
             this.reminderBeingUpdated = { ...reminder };
+            setTimeout(() => {
+                smoothScroll(this.$refs.sidePanel);
+            }, 0);
         },
 
         // Handle an update cancel
@@ -226,5 +278,50 @@ export default {
 }
 .reminder-card span {
     transition: color 0.1s ease-out;
+}
+#search-reminders {
+    padding-left: 36px;
+}
+.search-icon {
+    position: absolute;
+    top: 50%;
+    left: 24px;
+    transform: translateY(-50%);
+}
+.main-panel {
+    transition: all 0.2s ease-out;
+}
+.side-panel {
+    display: none;
+    transition: all 0.2s ease-out;
+}
+.side-panel.is-active {
+    display: block;
+}
+@media screen and (min-width: 767px) {
+    #search-reminders {
+        padding-left: 72px;
+    }
+    #show-side-panel-button {
+        transition: all 0.4s ease-out;
+    }
+    .main-panel {
+        margin-right: -420px;
+        transition: all 0.4s ease-out;
+    }
+    .main-panel.side-panel-is-active {
+        margin-right: 0;
+    }
+    .side-panel {
+        display: block;
+        position: relative;
+        min-height: 100vh;
+        width: 420px;
+        right: -420px;
+        transition: right 0.4s ease-out;
+    }
+    .side-panel.is-active {
+        right: 0;
+    }
 }
 </style>

@@ -5,7 +5,7 @@ class Notifications {
     }
 
     // Add a notification
-    add(text, type = types.info, sticky = false, lifetime = 3) {
+    add(text, type = types.info, sticky = false, lifetime = 2) {
         const id = Symbol(text + type);
         this.data.push({
             id,

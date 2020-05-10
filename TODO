@@ -2,8 +2,23 @@ DEBUG AND ERROR INFORMATION:
     Make sure this isn't exposed on production. Right now it is.
     
 ORDER REMINDERS:
-    If initial reminder has run, order by recurrence.
-    
+    If initial reminder has run, order by recurrence?
+    Allow searching, sorting and filtering on frontend.
+
+CATEGORIES:
+    Categorise reminders into 'Expired', 'Today', 'Tomorrow', 'Later in week'.
+
+NOTIFICATIONS:
+    Record notifications in a new table. Things like reminder added, updated, archived and also for when reminders are due.
+    Notification types could be 'reminder', 'created', 'updated', 'deleted'.
+
+FAVORITES/PINNING:
+    Allow favoriting/pinning reminders. Click on the heart icon in sidebar to view these.
+
+CHOOSE REMINDER CHANNELS:
+    Allow users to configure the channels to use for each reminder. This should only show the channels that the user has configured.
+    Email is always available by default. Allow Users to add Telegram, SMS and possibly WhatsApp in the future. Perhaps even Messenger/Twitter DM?
+
 SCHEDULER SERVICE:
     This urgently needs tests in place. I refactored the Reminder model into a DDD style folder structure which broke the scheduler, but I never noticed until I pulled onto live server and tested using a live example.
 
@@ -14,9 +29,6 @@ LOOK INTO QUEUEING TASKS:
     Client list: https://github.com/beanstalkd/beanstalkd/wiki/Client-Libraries
     Simple client: https://github.com/mariuswilms/beanstalk/blob/master/src/Client.php
 
-UPDATE:
-    Implement updating of reminders including body, reminder date and recurrence.
-
 DELETE & RESTORE:
     Allow users to view a list of archived reminders and restore or completely delete them (ireversible).
 
@@ -25,9 +37,6 @@ REMINDER DATES IN THE PAST:
 
 DATESSUPPORT:
     Domain\Dates\DatesSupport just doesn't seem right. All those static functions can't be good. Perhaps break out into DaysSupport, DatesSupport, MonthsSupport, YearsSupport and TimesSupport and remove the static-ness of the functions.
-
-SORTING:
-    Implement custom sorting on front-end.
 
 ADD LINK TO REMINDER:
     When sending out reminder, perhaps add a link to open up the reminder in the app too? This will rely on saving destination to the session as will most likely be redirected to Login page so will want to redirect to the Reminder on successful login.
