@@ -74,7 +74,7 @@
 
                 <!-- Reminder List -->
                 <div class="p-4 pt-0 pl-0 md:flex md:flex-wrap justify-start">
-                    <div class="p-4 pr-0 pb-0 " v-for="reminder in reminders.data" :key="reminder.id">
+                    <div class="p-4 pr-0 pb-0 md:max-w-sm" v-for="reminder in reminders.data" :key="reminder.id">
                         <div
                             class="relative reminder-card px-6 py-4 h-full shadow bg-white flex flex-col justify-between"
                         >
