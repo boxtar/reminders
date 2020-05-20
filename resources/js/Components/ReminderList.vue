@@ -74,7 +74,11 @@
 
                 <!-- Reminder List -->
                 <div class="p-4 pt-0 pl-0 md:flex md:flex-wrap justify-start">
-                    <div class="p-4 pr-0 pb-0 md:max-w-sm" v-for="reminder in reminders.data" :key="reminder.id">
+                    <div
+                        class="p-4 pr-0 pb-0 w-full md:max-w-sm"
+                        v-for="reminder in reminders.data"
+                        :key="reminder.id"
+                    >
                         <div
                             class="relative reminder-card px-6 py-4 h-full shadow bg-white flex flex-col justify-between"
                         >
@@ -92,11 +96,7 @@
                             <!-- Body -->
                             <div class="px-4 w-full">
                                 <span class="hidden mt-2 block text-xs uppercase text-gray-500">Body</span>
-                                <span
-                                    class="text-gray-800 font-bold cursor-pointer"
-                                    @click="setReminderToBeUpdated(reminder)"
-                                    >{{ reminder.body }}</span
-                                >
+                                <span class="text-gray-800 font-bold">{{ reminder.body }}</span>
                             </div>
                             <!-- Reminder and Recurrence Information -->
                             <div class="w-full mt-1">
@@ -153,6 +153,53 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- Options (Edit, Archive) -->
+                            <div class="mt-1">
+                                <button
+                                    class="options-wrapper px-4 py-2 -mb-2 relative flex cursor-pointer focus:outline-none"
+                                >
+                                    <div class="rounded-full w-1 h-1 bg-gray-600" style=""></div>
+                                    <div
+                                        class="rounded-full w-1 h-1 bg-gray-600"
+                                        style="margin-left: 2px"
+                                    ></div>
+                                    <div
+                                        class="rounded-full w-1 h-1 bg-gray-600"
+                                        style="margin-left: 2px"
+                                    ></div>
+                                    <div
+                                        class="options pb-3 shadow-md text-left text-xs text-gray-600 absolute bg-white border border-gray-100 z-10"
+                                    >
+                                        <!-- Edit -->
+                                        <div class="px-5 pt-3" @click="setReminderToBeUpdated(reminder)">
+                                            <p class="tracking-wider text-blue-400 hover:text-blue-500">
+                                                Edit
+                                            </p>
+                                        </div>
+
+                                        <!-- Archive -->
+                                        <div class="px-5 pt-3">
+                                            <p
+                                                class="tracking-wider text-red-400 hover:text-red-500"
+                                                @click="archiveReminder(reminder)"
+                                            >
+                                                Archive
+                                            </p>
+                                            <!-- <form
+                                                :action="`${reminders.archiveAction}/${reminder.id}`"
+                                                @submit="archiveReminder"
+                                            >
+                                                <button
+                                                    type="submit"
+                                                    class="block tracking-wider text-red-400 hover:text-red-500"
+                                                >
+                                                    Archive
+                                                </button>
+                                            </form> -->
+                                        </div>
+                                    </div>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -194,20 +241,21 @@ export default {
         },
 
         // Archive a reminder using the API
-        async archiveReminder(e) {
-            e.preventDefault();
-            let response = await fetch(e.target.action, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    [this.csrf.name.key]: this.csrf.name.value,
-                    [this.csrf.token.key]: this.csrf.token.value,
-                    _METHOD: "DELETE",
-                }),
-            });
-            response = await response.json();
-            this.removeReminder(parseInt(response.data.id));
-            this.notifications.add("Reminder archived", types.info);
+        async archiveReminder({ body, id }) {
+            if (window.confirm(`Delete "${body}"?`)) {
+                const action = `${this.reminders.archiveAction}/${id}`;
+                await fetch(action, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        [this.csrf.name.key]: this.csrf.name.value,
+                        [this.csrf.token.key]: this.csrf.token.value,
+                        _METHOD: "DELETE",
+                    }),
+                });
+                this.removeReminder(parseInt(id));
+                this.notifications.add("Reminder archived", types.info);
+            }
         },
 
         // Add provided reminder to list
@@ -274,7 +322,7 @@ export default {
 
 <style scoped>
 .reminder-card {
-    border-radius: 1.75rem;
+    border-radius: 1rem;
 }
 .reminder-card span {
     transition: color 0.1s ease-out;
@@ -298,6 +346,14 @@ export default {
 .side-panel.is-active {
     display: block;
 }
+.options {
+    display: none;
+    top: 13px;
+}
+.options-wrapper:focus .options {
+    display: block;
+}
+
 @media screen and (min-width: 767px) {
     #search-reminders {
         padding-left: 72px;
