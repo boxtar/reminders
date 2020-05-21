@@ -27,7 +27,7 @@
                     <div class="relative">
                         <input
                             type="text"
-                            class="p-2 md:p-4 bg-white text-gray-500 rounded-full shadow outline-none focus:shadow-outline"
+                            class="p-2 md:p-4 bg-white text-gray-500 rounded-full shadow outline-none appearance-none focus:shadow-outline"
                             name="search-reminders"
                             id="search-reminders"
                             placeholder="Coming soon..."
@@ -123,82 +123,53 @@
                                                 <span class="text-gray-500">{{ reminder.frequency }}</span>
                                             </span>
                                         </div>
-
-                                        <!-- Archive Button -->
-                                        <div class="hidden mt-2 flex items-center">
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 24 24"
-                                                fill="#a0aec0"
-                                                width="24px"
-                                                height="24px"
-                                            >
-                                                <path d="M0 0h24v24H0V0z" fill="none" />
-                                                <path
-                                                    d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z"
-                                                />
-                                            </svg>
-                                            <form
-                                                :action="`${reminders.archiveAction}/${reminder.id}`"
-                                                @submit="archiveReminder"
-                                            >
-                                                <button
-                                                    type="submit"
-                                                    class="block ml-2 tracking-wider text-sm text-red-300 hover:text-red-400"
-                                                >
-                                                    Archive
-                                                </button>
-                                            </form>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <!-- Options (Edit, Archive) -->
                             <div class="mt-1">
+                                <!-- Toggle button -->
                                 <button
-                                    class="options-wrapper px-4 py-2 -mb-2 relative flex cursor-pointer focus:outline-none"
+                                    class="px-4 py-2 -mb-2 relative cursor-pointer focus:outline-none"
+                                    @click="
+                                        dialogOpenFor = dialogOpenFor === reminder.id ? false : reminder.id
+                                    "
                                 >
-                                    <div class="rounded-full w-1 h-1 bg-gray-600" style=""></div>
-                                    <div
-                                        class="rounded-full w-1 h-1 bg-gray-600"
-                                        style="margin-left: 2px"
-                                    ></div>
-                                    <div
-                                        class="rounded-full w-1 h-1 bg-gray-600"
-                                        style="margin-left: 2px"
-                                    ></div>
-                                    <div
-                                        class="options pb-3 shadow-md text-left text-xs text-gray-600 absolute bg-white border border-gray-100 z-10"
-                                    >
-                                        <!-- Edit -->
-                                        <div class="px-5 pt-3" @click="setReminderToBeUpdated(reminder)">
-                                            <p class="tracking-wider text-blue-400 hover:text-blue-500">
-                                                Edit
-                                            </p>
-                                        </div>
-
-                                        <!-- Archive -->
-                                        <div class="px-5 pt-3">
-                                            <p
-                                                class="tracking-wider text-red-400 hover:text-red-500"
-                                                @click="archiveReminder(reminder)"
-                                            >
-                                                Archive
-                                            </p>
-                                            <!-- <form
-                                                :action="`${reminders.archiveAction}/${reminder.id}`"
-                                                @submit="archiveReminder"
-                                            >
-                                                <button
-                                                    type="submit"
-                                                    class="block tracking-wider text-red-400 hover:text-red-500"
-                                                >
-                                                    Archive
-                                                </button>
-                                            </form> -->
-                                        </div>
+                                    <div v-if="dialogOpenFor === reminder.id" class="w-5 h-5 flex items-center justify-center text-gray-500 border border-gray-300 rounded-full">&cross;</div>
+                                    <div class="flex" v-else>
+                                        <div class="rounded-full w-1 h-1 bg-gray-600" style=""></div>
+                                        <div
+                                            class="rounded-full w-1 h-1 bg-gray-600"
+                                            style="margin-left: 2px"
+                                        ></div>
+                                        <div
+                                            class="rounded-full w-1 h-1 bg-gray-600"
+                                            style="margin-left: 2px"
+                                        ></div>
                                     </div>
                                 </button>
+                                <!-- Options dialog -->
+                                <div
+                                    class="options mt-4 px-4 text-left text-xs text-gray-600 bg-white "
+                                    v-show="dialogOpenFor === reminder.id"
+                                >
+                                    <!-- Edit -->
+                                    <div class="" @click="setReminderToBeUpdated(reminder)">
+                                        <p class="tracking-wider text-blue-400 cursor-pointer hover:text-blue-500">
+                                            Edit
+                                        </p>
+                                    </div>
+
+                                    <!-- Archive -->
+                                    <div class="pt-2">
+                                        <p
+                                            class="tracking-wider text-red-400 cursor-pointer hover:text-red-500"
+                                            @click="archiveReminder(reminder)"
+                                        >
+                                            Archive
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -224,6 +195,7 @@ export default {
             updateInProgress: false,
             reminderBeingUpdated: null,
             showSidePanel: false,
+            dialogOpenFor: false,
         };
     },
     created() {},
@@ -271,6 +243,7 @@ export default {
             this.reminders.data[index] = { ...reminder };
             this.clearUpdateState();
             this.showSidePanel = false;
+            this.dialogOpenFor = false;
             this.notifications.add("Reminder updated", types.success);
         },
 
@@ -344,13 +317,6 @@ export default {
     transition: all 0.2s ease-out;
 }
 .side-panel.is-active {
-    display: block;
-}
-.options {
-    display: none;
-    top: 13px;
-}
-.options-wrapper:focus .options {
     display: block;
 }
 
