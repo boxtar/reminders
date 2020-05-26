@@ -58,6 +58,7 @@
                             'text-red-500': showSidePanel,
                             'text-teal-400': !showSidePanel,
                         }"
+                        :aria-pressed="String(showSidePanel)"
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -135,9 +136,9 @@
                                         dialogOpenFor = dialogOpenFor === reminder.id ? false : reminder.id
                                     "
                                 >
-                                    <div v-if="dialogOpenFor === reminder.id" class="w-5 h-5 flex items-center justify-center text-gray-500 border border-gray-300 rounded-full">&cross;</div>
+                                    <div v-if="dialogOpenFor === reminder.id" class="w-8 h-8 flex items-center justify-center text-gray-600 border border-gray-400 rounded-full">&cross;</div>
                                     <div class="flex" v-else>
-                                        <div class="rounded-full w-1 h-1 bg-gray-600" style=""></div>
+                                        <div class="rounded-full w-1 h-1 bg-gray-600"></div>
                                         <div
                                             class="rounded-full w-1 h-1 bg-gray-600"
                                             style="margin-left: 2px"

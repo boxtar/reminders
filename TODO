@@ -1,6 +1,6 @@
 DEBUG AND ERROR INFORMATION:
     Make sure this isn't exposed on production. Right now it is.
-    
+
 ORDER REMINDERS:
     If initial reminder has run, order by recurrence?
     Allow searching, sorting and filtering on frontend.
@@ -9,8 +9,7 @@ CATEGORIES:
     Categorise reminders into 'Expired', 'Today', 'Tomorrow', 'Later in week'.
 
 NOTIFICATIONS:
-    Record notifications in a new table. Things like reminder added, updated, archived and also for when reminders are due.
-    Notification types could be 'reminder', 'created', 'updated', 'deleted'.
+    Record notifications in a new table. Things like reminder added, updated, archived and also for when reminders are due. Notification types could be 'reminder', 'created', 'updated', 'deleted'.
 
 FAVORITES/PINNING:
     Allow favoriting/pinning reminders. Click on the heart icon in sidebar to view these.
@@ -34,6 +33,7 @@ DELETE & RESTORE:
 
 REMINDER DATES IN THE PAST:
     If initial reminder date/time is in the past then set initial_reminder_run to true so that recurrence takes over.
+    I actually don't like this. I want to change cron to run every 5 minutes and process everything in the past.
 
 DATESSUPPORT:
     Domain\Dates\DatesSupport just doesn't seem right. All those static functions can't be good. Perhaps break out into DaysSupport, DatesSupport, MonthsSupport, YearsSupport and TimesSupport and remove the static-ness of the functions.

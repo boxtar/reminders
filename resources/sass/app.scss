@@ -4,9 +4,50 @@
 
 @tailwind utilities;
 
+// Messing around with a neon glow dark theme guide here:
+// https://www.codista.com/en/blog/neon-mode-building-new-dark-ui/?utm_source=CSS-Weekly&utm_campaign=Issue-411&utm_medium=email
+@mixin neon-glow($color: currentColor) {
+    color: #fff;
+    text-shadow: 0 0 0.033em #fff, 0 0 0.08em #fff, 0 0 0.1em $color, 0 0 0.2em $color, 0 0 0.3em $color,
+        0 0 1em $color, 0 0 1.5em $color;
+}
+
+// keyframe animation to abruptly toggle
+// the letter's opacity value.
+@keyframes flicker {
+    0%,
+    19.999%,
+    22%,
+    62.999%,
+    64%,
+    64.999%,
+    72%,
+    100% {
+        opacity: 1;
+    }
+    20%,
+    21.999%,
+    63%,
+    63.999%,
+    65%,
+    71.999% {
+        opacity: 0.33;
+    }
+}
+
 .brand-font {
     font-family: "Lobster Two", cursive;
+    font-size: 1.75rem;
+    font-weight: 700;
+    font-style: italic;
+
+    // Messing with neon glow dark mode stuff
+    // @include neon-glow(#3182ce);
+    // animation: flicker 3s linear forwards alternate infinite;
+    // animation-delay: 0.3s;
+    // animation-direction: alternate-reverse;
 }
+
 .rotate-45 {
     transform: rotate(45deg);
 }

@@ -3,18 +3,17 @@
 namespace Tests\Domain\Reminders\Actions;
 
 use App\Domain\Dates\DatesSupport;
-use App\Domain\Reminders\Actions\UpdateReminderAction;
+use App\Domain\Reminders\Actions\CreateOrUpdateReminderAction;
 use App\Domain\Reminders\Models\Reminder;
 use App\Domain\Reminders\ReminderData;
-use App\Models\User;
 use Tests\TestCase;
 
-class UpdateReminderActionTest extends TestCase
+class CreateOrUpdateReminderActionTest extends TestCase
 {
     /** @test */
     public function can_create_from_static_factory()
     {
-        $this->assertInstanceOf(UpdateReminderAction::class, UpdateReminderAction::create());
+        $this->assertInstanceOf(CreateOrUpdateReminderAction::class, CreateOrUpdateReminderAction::create());
     }
 
     public function sets_errors_and_status_when_validation_fails()
@@ -22,7 +21,7 @@ class UpdateReminderActionTest extends TestCase
         $reminderData = $this->makeReminderData();
         $reminder = $this->makeReminder();
         $reminderData->body = "";
-        $response = UpdateReminderAction::create()->execute($reminderData, $user, $reminder);
+        $response = CreateOrUpdateReminderAction::create()->execute($reminderData, $user, $reminder);
 
         $this->assertEquals(400, $response->getStatus());
         $this->assertCount(1, $response->getErrors());
@@ -45,7 +44,7 @@ class UpdateReminderActionTest extends TestCase
 
         // Execute updating body. However, it's all mocked...
         // Is this really proving anything?...
-        $response = UpdateReminderAction::create()->execute($reminderData, $reminder);
+        $response = CreateOrUpdateReminderAction::create()->execute($reminderData, $reminder);
 
         $this->assertEquals("Updated Reminder", $response->getData()['body']);
     }
@@ -66,7 +65,7 @@ class UpdateReminderActionTest extends TestCase
 
         // Now update the body
         $reminderData->body = "Updated Reminder";
-        $response = UpdateReminderAction::create()->execute($reminderData, $reminder);
+        $response = CreateOrUpdateReminderAction::create()->execute($reminderData, $reminder);
 
         // Build the month name
         $monthName = ucfirst(DatesSupport::makeMonth($reminderData->month)->getMonthName());
