@@ -23,6 +23,6 @@ abstract class Task
     public function isDueToRun(Carbon $date)
     {
         return CronExpression::factory($this->expression)
-            ->isDue($date);
+            ->isDue($date, 'Europe/London');
     }
 }

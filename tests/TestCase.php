@@ -4,21 +4,18 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use App\Domain\Reminders\Models\Reminder;
-use App\Domain\Reminders\ReminderData;
 use Slim\App;
-use DI\Container;
-use Dotenv\Dotenv;
 use App\Models\User;
 use Slim\Psr7\Request;
-use Slim\Factory\AppFactory;
 use Slim\Psr7\Factory\RequestFactory;
-use Psr\Http\Message\RequestInterface;
-use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 use Psr\Http\Message\ResponseInterface;
+use App\Domain\Reminders\Models\Reminder;
+use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 
 abstract class TestCase extends PHPUnitTestCase
 {
+
+    use ManagesReminders;
 
     /**
      * @var App
@@ -51,29 +48,11 @@ abstract class TestCase extends PHPUnitTestCase
             $this->app = require __DIR__ . '/../bootstrap/app.php';
         }
 
+        // Truncate models
+        User::truncate();
+        Reminder::truncate();
+        
         $this->setUpHasRun = true;
-    }
-
-    protected function makeReminderData($date = null)
-    {
-        if (!$date)
-            $date = \Carbon\Carbon::now(new \DateTimeZone('Europe/London'));
-
-        return new ReminderData([
-            'body' => 'Test Reminder',
-            'date' => $date->day,
-            // Carbon is not zero based for months, JS is so this accurately reflects
-            // how ReminderData will be instantiated from the API request.
-            'month' => $date->month - 1,
-            'year' => $date->year,
-            'time' => "{$date->hour}:{$date->minute}",
-            'frequency' => "none",
-        ]);
-    }
-
-    protected function makeReminder()
-    {
-        return new Reminder($this->makeReminderData()->toArray());
     }
 
     /**
@@ -84,18 +63,26 @@ abstract class TestCase extends PHPUnitTestCase
         if ($this->app) {
             $this->app = null;
         }
+
+        // Truncate models
+        User::truncate();
+        Reminder::truncate();
+
         $this->setUpHasRun = false;
     }
 
     protected function signIn()
     {
         // Need a session to set authenticated user
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) session_start();
         $user = new User([
-            'name' => 'Test User',
-            'email' => 'test@ayex.co.uk',
-            'password' => password_hash('admin1', PASSWORD_BCRYPT)
+            'name' => 'Johnpaul McMahon',
+            'email' => 'jmcmah15@gmail.com',
+            'password' => password_hash('admin1', PASSWORD_BCRYPT),
+            'channels' => ['mail' => ['to' => 'jmcmah15@gmail.com']]
         ]);
+
+        $user->save();
 
         $this->app->getContainer()->get('auth')->attempt($user, 'admin1');
 

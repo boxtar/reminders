@@ -2,8 +2,8 @@
 
 namespace App\Tasks;
 
-use App\Domain\Reminders\Models\Reminder;
 use App\Services\Scheduler\Task;
+use App\Domain\Reminders\Models\Reminder;
 use App\Services\Notifications\Broadcaster;
 
 class SendReminder extends Task
