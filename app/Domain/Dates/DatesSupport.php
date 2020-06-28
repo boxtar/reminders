@@ -26,24 +26,6 @@ use DateTimeZone;
 
 class DatesSupport
 {
-    // public static function months()
-    // {
-    //     return [
-    //         0 => 'January',
-    //         1 => 'February',
-    //         2 => 'March',
-    //         3 => 'April',
-    //         4 => 'May',
-    //         5 => 'June',
-    //         6 => 'July',
-    //         7 => 'August',
-    //         8 => 'September',
-    //         9 => 'October',
-    //         10 => 'November',
-    //         11 => 'December',
-    //     ];
-    // }
-
     /**
      * Returns true if provide day is valid. The valid day numbers and
      * their corresponding day are defined in the static days method.
@@ -157,14 +139,23 @@ class DatesSupport
         $month = self::makeMonth($month);
         if (!self::isValidDate($date) || !$month) {
             return false;
-        } else if ($month() == 1) {
+        } else if ($month instanceof February) {
             // February
             if ($date > 28) return false;
-        } else if (in_array($month(), [3, 5, 8, 10])) {
+        } else if (self::isMonthWith30Days($month)) {
             // Other months with 30 days
             if ($date > 30) return false;
         }
         return true;
+    }
+
+    /**
+     * @param BaseMonth $month
+     * @return bool
+     */
+    private static function isMonthWith30Days($month)
+    {
+        return in_array(get_class($month), [April::class, June::class, September::class, November::class]);
     }
 
     /**

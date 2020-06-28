@@ -55,6 +55,18 @@ class ReminderDataTest extends TestCase
     }
 
     /** @test */
+    public function sets_hour_and_minute_when_time_is_updated()
+    {
+        $data = $this->makeReminderData();
+        $hour = $data->hour + 1; // Change by 1 hour
+        $minute = $data->minute + 1; // Change by 1 minute
+        $data->time = "{$hour}:{$minute}";
+        $this->assertEquals("{$hour}:{$minute}", $data->time);
+        $this->assertEquals($hour, $data->hour);
+        $this->assertEquals($minute, $data->minute);
+    }
+
+    /** @test */
     public function can_be_cast_to_an_array()
     {
         $data = new ReminderData([

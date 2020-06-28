@@ -38,8 +38,6 @@ abstract class TestCase extends PHPUnitTestCase
     protected $response;
 
     /**
-     * Setup the test environment.
-     *
      * @return void
      */
     protected function setUp(): void

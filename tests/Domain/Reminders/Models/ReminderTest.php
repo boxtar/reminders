@@ -2,11 +2,8 @@
 
 namespace Tests\Domain\Reminders\Models;
 
-use App\Domain\Dates\DatesSupport;
-use App\Domain\Recurrences\RecurrencesSupport;
-use App\Domain\Reminders\Models\Reminder;
-use App\Models\User;
 use Tests\TestCase;
+use App\Domain\Recurrences\RecurrencesSupport;
 
 class ReminderTest extends TestCase
 {

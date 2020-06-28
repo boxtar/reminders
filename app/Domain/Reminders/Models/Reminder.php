@@ -148,6 +148,13 @@ class Reminder extends Model
         return (bool) $this->is_recurring;
     }
 
+    /**
+     * Returns the prevailing frequency.
+     * Initial Reminder Expression if initial hasn't run yet
+     * and Recurrence Expression if initial has already run.
+     * 
+     * @return string|bool
+     */
     public function getCronExpression()
     {
         if (!$this->hasInitialReminderRun()) {

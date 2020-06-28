@@ -2,6 +2,7 @@
 
 namespace App\Domain\Reminders\Actions;
 
+use App\Domain\Dates\DatesSupport;
 use App\Response;
 use App\Models\User;
 use App\Domain\Reminders\ReminderData;
@@ -60,11 +61,8 @@ class CreateOrUpdateReminderAction
         $newData->expression = (new ReminderExpressionBuilder($newData))->build();
 
         // This is only applicable for an Update.
-        // If the original expression is the same as the new expression then it isn't being updated.
-        // However, we also need to make sure that the original reminder hasn't actually run yet
-        // before we change the initial_reminder_run flag to true.
-        // Note: ReminderData defaults this flag to false.
-        if ($reminder && $reminder->initial_reminder_run && $reminder->expression === $newData->expression) {
+        // If the new date is in the past, mark the reminder as complete.
+        if ($reminder && $this->isDateInThePast($newData)) {
             $newData->initial_reminder_run = true;
         }
 
@@ -79,5 +77,19 @@ class CreateOrUpdateReminderAction
 
         // Put the updated reminder into the response and return to caller.
         return $response->setData($reminder->toArray());
+    }
+
+    /**
+     * @param ReminderData $data
+     * @return bool
+     */
+    private function isDateInThePast(ReminderData $data)
+    {
+        return DatesSupport::isDateAndTimeInThePast(
+            $data->year,
+            $data->month,
+            $data->date,
+            $data->time
+        );
     }
 }

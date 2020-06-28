@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Domain\Reminders;
 
 use App\Domain\Dates\DatesSupport;
-use App\Domain\Reminders\Models\Reminder;
 
 class ReminderData
 {
@@ -38,9 +37,7 @@ class ReminderData
         $this->data['channels'] = ["telegram", "mail", "sms"];
 
         // Extract hour and minute from the time value
-        [$hour, $minute] = DatesSupport::extractTimeValues($this->time);
-        $this->data['hour'] = $hour;
-        $this->data['minute'] = $minute;
+        $this->updateTime($this->time);
 
         // Figure the day of the week out
         $this->data['day'] = date('w', mktime($this->hour, $this->minute, 0, $this->month + 1, $this->date, $this->year));
@@ -69,10 +66,28 @@ class ReminderData
 
     public function __set($name, $value)
     {
-        // $this->data[$name] = $value;
         if (array_key_exists($name, $this->data)) {
             $this->data[$name] = $value;
+
+            if ($name == 'time') $this->updateTime($value);
         }
+    }
+
+    protected function updateTime($time)
+    {
+        // Must access directly or we'll end up re-calling this function from __get
+        $this->data['time'] = $time;
+
+        // Default to midnight if no time passed in
+        if (!$time) $this->data['time'] = '00:00';
+
+        // Extract hour and minute from the time value
+        [$hour, $minute] = DatesSupport::extractTimeValues($this->time);
+        
+        // Accessing directly as it is not guaranteed that 'hour' and 'minute' keys
+        // will exist on the data array when this is invoked.
+        $this->data['hour'] = $hour;
+        $this->data['minute'] = $minute;
     }
 
     public function toArray()

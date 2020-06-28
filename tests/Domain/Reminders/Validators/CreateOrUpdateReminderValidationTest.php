@@ -77,12 +77,11 @@ class CreateOrUpdateReminderValidationTest extends TestCase
     /** @test */
     public function time_must_be_valid()
     {
-        // Should fail
+        // When no time is passed in, defaults to midnight
         $data = $this->makeReminderData();
         $data->time = "";
         $validator = new CreateOrUpdateReminderValidation($data);
-        $this->assertTrue($validator->validate()->fails());
-        $this->assertArrayHasKey('time', $validator->getErrors());
+        $this->assertTrue($validator->validate()->passes());
 
         // Should fail
         $data->time = "35:98";

@@ -2,9 +2,8 @@
 
 namespace Tests\Domain\Reminders;
 
-use App\Domain\Reminders\ReminderData;
-use App\Domain\Reminders\ReminderExpressionBuilder;
 use Tests\TestCase;
+use App\Domain\Reminders\ReminderExpressionBuilder;
 
 class ReminderExpressionBuilderTest extends TestCase
 {
