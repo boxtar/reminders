@@ -10,6 +10,7 @@
                     :method="updateInProgress ? 'PUT' : 'POST'"
                     :csrf="csrf"
                     :frequencies="frequencies"
+                    :channels="channels"
                     :isUpdate="updateInProgress"
                     :reminder="reminderBeingUpdated"
                     @reminderAdded="onReminderAdded"
@@ -24,7 +25,7 @@
             <div class="main-panel flex-1" :class="{ 'side-panel-is-active': showSidePanel }">
                 <div class="px-4 py-6 flex justify-between">
                     <!-- Search bar -->
-                    <div class="relative">
+                    <div class="relative hidden">
                         <input
                             type="text"
                             class="p-2 md:p-4 bg-white text-gray-500 rounded-full shadow outline-none appearance-none focus:shadow-outline"
@@ -184,7 +185,7 @@
 import { Notifications, types } from "./Notifications/Notifications";
 const smoothScroll = require("../Utils/smoothScroll");
 export default {
-    props: ["frequencies", "csrf"],
+    props: ["channels", "frequencies", "csrf"],
     data() {
         return {
             reminders: {

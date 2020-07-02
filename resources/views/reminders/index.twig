@@ -5,7 +5,8 @@
 <div id="root">
     <div class="flex overflow-hidden">
         <div class="h-screen overflow-hidden">{% include "includes/_menu.twig" %}</div>
-        <reminder-list :frequencies="{{ frequencies | json_encode }}" :csrf="{{ csrf.data | json_encode }}" />
+        <reminder-list :channels={{ auth.user.channels | keys | json_encode }}
+            :frequencies="{{ frequencies | json_encode }}" :csrf="{{ csrf.data | json_encode }}" />
     </div>
 </div>
 {% endblock %}

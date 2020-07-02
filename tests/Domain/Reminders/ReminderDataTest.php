@@ -87,4 +87,25 @@ class ReminderDataTest extends TestCase
         $reminder->is_recurring = true;
         $this->assertTrue($reminder->is_recurring);
     }
+
+    /** @test */
+    public function can_set_desired_channels()
+    {
+        // Set on instantiation
+        $reminderData = ReminderData::createFromArray([
+            'body' => 'Test Reminder',
+            'date' => 5, // 5th
+            'month' => 3, // April
+            'year' => 2020,
+            'time' => "12:00", // Noon
+            'channels' => ['email'], // Only email channel
+        ]);
+        $this->assertCount(1, $reminderData->channels);
+        $this->assertEquals('email', $reminderData->channels[0]);
+
+        // Set after instantiation 
+        $reminderData->channels = ['email', 'sms'];
+        $this->assertCount(2, $reminderData->channels);
+        $this->assertEquals('sms', $reminderData->channels[1]);
+    }
 }

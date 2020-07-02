@@ -35,7 +35,10 @@ module.exports = class Form {
 
     send() {
         if (this.action) {
-            return fetch(this.action, {
+            // Activate pre-send hook if set by user
+            if (this.preSend && typeof this.preSend == "function") this.preSend();
+
+            const result = fetch(this.action, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -52,6 +55,11 @@ module.exports = class Form {
                     }
                     return data;
                 });
+
+            // Activate post-send hook if set by user
+            if (this.postSend && typeof this.postSend == "function") this.postSend();
+
+            return result;
         }
         return Promise.reject(new Error("You must set an action before sending a form"));
     }

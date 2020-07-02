@@ -177,6 +177,24 @@ class CreateOrUpdateReminderActionTest extends TestCase
         $this->assertEquals(200, $response->getStatus());
         $this->assertEquals(true, $reminder->is_recurring);
         $this->assertEquals(RecurrencesSupport::frequencies()[$newData->frequency], $reminder->frequency);
+    }
 
+    /** @test */
+    public function can_update_channels()
+    {
+        // Original reminder - This defaults to only mail channel
+        $reminder = $this->createReminderFor($user = $this->signIn());
+        $this->assertCount(1, $reminder->channels);
+        $this->assertEquals('mail', $reminder->channels[0]);
+
+        // Updated data with recurrence
+        $newData = $this->makeReminderData();
+        $newData->channels = ['mail', 'sms'];
+        $response = CreateOrUpdateReminderAction::create()->execute($newData, $user, $reminder);
+
+        $this->assertEquals(200, $response->getStatus());
+        $this->assertCount(2, $reminder->channels);
+        $this->assertEquals('mail', $reminder->channels[0]);
+        $this->assertEquals('sms', $reminder->channels[1]);
     }
 }

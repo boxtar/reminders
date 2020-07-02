@@ -26,6 +26,7 @@ trait ManagesReminders
             'year' => $date->year,
             'time' => "{$date->hour}:{$date->minute}",
             'frequency' => "none",
+            'channels' => ['mail'],
         ]);
     }
 

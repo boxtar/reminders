@@ -6,6 +6,7 @@
 -->
 <template>
     <div class="relative bg-gray-800">
+        <!-- Edit Mode flag -->
         <div
             v-if="isUpdate"
             class="cancel-button bg-yellow-500 text-yellow-800 uppercase text-xs py-1 px-3 rounded-b shadow select-none"
@@ -119,6 +120,29 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Channels -->
+                    <div class="px-4 py-2">
+                        <span class="block mb-2 uppercase tracking-wide text-gray-500 text-xs font-bold">
+                            Remind me using
+                        </span>
+                        <div class="" v-for="channel in channels" :key="channel">
+                            <label class="mb-2 inline-flex items-center">
+                                <!-- <input
+                                    type="checkbox"
+                                    class="form-checkbox"
+                                    v-model="form.data.selectedChannels[channel]"
+                                /> -->
+                                <input
+                                    type="checkbox"
+                                    class="form-checkbox"
+                                    :value="channel"
+                                    v-model="form.data.channels"
+                                />
+                                <span class="ml-2 uppercase text-xs text-white">{{ channel }}</span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Submit/Cancel Button -->
@@ -151,7 +175,7 @@
 const Form = require("../Utils/Form");
 const setupAutosizingTextArea = require("../Utils/setupAutosizingTextarea");
 export default {
-    props: ["method", "csrf", "frequencies", "isUpdate", "reminder"],
+    props: ["method", "channels", "csrf", "frequencies", "isUpdate", "reminder"],
     data() {
         return {
             actionBase: window.App.routes["api.reminders.put"],
@@ -201,7 +225,7 @@ export default {
             return num < 10 ? `0${num}` : num;
         },
         setupForReminder(reminder) {
-            const { id, body, reminder_date, is_recurring } = reminder;
+            const { id, body, reminder_date, is_recurring, channels } = reminder;
             let { frequency } = reminder; // Yeah, we need to overwrite this with the key
 
             this.form.setAction(`${this.actionBase}/${id}`);
@@ -213,7 +237,10 @@ export default {
             this.hour = this.padToTwoDigits(parseInt(reminder_date.substring(8, 10)));
             this.minute = this.padToTwoDigits(parseInt(reminder_date.substring(10, 12)));
             this.form.set("time", `${this.hour}:${this.minute}`);
+            this.form.set("channels", [...channels]);
+
             // We need the frequency to be equal to the key for binding to the select form element.
+            this.form.set("frequency", "none"); // Default to no recurrence
             if (is_recurring) {
                 const flippedFrequencies = Object.entries(this.frequencies).reduce((ret, entry) => {
                     const [key, value] = entry;
@@ -221,8 +248,10 @@ export default {
                     return ret;
                 }, {});
                 frequency = flippedFrequencies[frequency];
+                this.form.set("frequency", frequency);
             }
-            this.form.set("frequency", is_recurring ? frequency : "none");
+
+            // Make textarea fit the reminder's body
             setTimeout(this.updateSizeOfTextarea, 0);
         },
         updateSizeOfTextarea() {
@@ -235,12 +264,14 @@ export default {
                 {
                     body: "",
                     frequency: "none",
+                    channels: this.channels.length ? [this.channels[0]] : [], // First channel checked by default
                     [this.csrf.name.key]: this.csrf.name.value,
                     [this.csrf.token.key]: this.csrf.token.value,
                 },
                 this.actionBase,
                 this.method
             );
+
             // To get defaults from Datepicker and Timepicker back
             this.$forceUpdate();
             setTimeout(this.updateSizeOfTextarea, 0);

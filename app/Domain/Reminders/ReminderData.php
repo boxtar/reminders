@@ -26,15 +26,13 @@ class ReminderData
         $this->data['year'] = $input['year'] ?? '';
         $this->data['time'] = $input['time'] ?? '';
         $this->data['frequency'] = $input['frequency'] ?? '';
+        $this->data['channels'] = $input['channels'] ?? [];
 
         // These won't be part of API request as they are built in domain
         $this->data['initial_reminder_run'] = false;
         $this->data['expression'] = '';
         $this->data['is_recurring'] = false;
         $this->data['recurrence_expression'] = '';
-
-        // Hardcoded to all available channels for now
-        $this->data['channels'] = ["telegram", "mail", "sms"];
 
         // Extract hour and minute from the time value
         $this->updateTime($this->time);
