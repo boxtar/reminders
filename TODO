@@ -1,3 +1,6 @@
+MOVE CREATE AND UPDATE VALIDATION TO REMINDER DATA
+LOOK INTO MOVING VALIDATION LOGIC INTO RULES
+
 DEBUG AND ERROR INFORMATION:
     Make sure this isn't exposed on production. Right now it is.
 
@@ -5,7 +8,10 @@ ORDER REMINDERS:
     If initial reminder has run, order by recurrence?
     Allow searching, sorting and filtering on frontend.
 
-CATEGORIES:
+TAGS:
+    Allow adding tags to categorise reminders
+
+CATEGORISATION:
     Categorise reminders into 'Expired', 'Today', 'Tomorrow', 'Later in week'.
 
 NOTIFICATIONS:
@@ -15,11 +21,32 @@ FAVORITES/PINNING:
     Allow favoriting/pinning reminders. Click on the heart icon in sidebar to view these.
 
 CHOOSE REMINDER CHANNELS:
-    Allow users to configure the channels to use for each reminder. This should only show the channels that the user has configured.
-    Email is always available by default. Allow Users to add Telegram, SMS and possibly WhatsApp in the future. Perhaps even Messenger/Twitter DM?
+    Allow Users to Edit their Email address and add Telegram, SMS and possibly WhatsApp channels in the future. Perhaps even Messenger/Twitter DM?
+
+ADD EXTRA DATA TO THE MESSAGE THAT IS SENT WITH EACH REMINDER:
+    Send the recurrence info. This is good for knowing if you need to forward manually.
+    Send a link to the reminder. When sending out reminder, perhaps add a link to open up the reminder in the app too? This will rely on saving destination to the session as will most likely be redirected to Login page so will want to redirect to the Reminder on successful login.
+
+ADD MORE RECURRENCES:
+    Would like hourly, weekdays and weekends recurrences.
+    However, it would be so much better to add custom recurrence builder. I have notes on that somewhere...
+
+MAKE DATE PICKER ACCESSIBLE:
+    Could try using native browser dates (input type date). Sounds like this doesn't work in Safari on desktops though.
+    There's a tool called Cleave JS that could help with formatting inputs for manually typing in dates and times.
+
+CHROME APP:
+    Look into making this a Chrome app similar to Codecourse and Office apps.
 
 SCHEDULER SERVICE:
+    Currently, the scheduler runs every minute. This is required because we decide if the Reminder should run based on the cron expression. This is BRITTLE. I would rather decide if the reminder should be sent based on if the date and time is in the past. It doesn't matter if it's 1 minute, 1 hour or 1 day in the past! If it's in the past and the initial reminder has not run yet then the reminder should be sent.
+    Then for the recurrences, I would like to update the cron expression everytime! So re-use the same expression. Could be tricky to implement.
+
     This urgently needs tests in place. I refactored the Reminder model into a DDD style folder structure which broke the scheduler, but I never noticed until I pulled onto live server and tested using a live example.
+
+GIVE REMINDERS A SUBJECT:
+    Allow adding a subject to reminders. This could be useful if you want the body to have a lot of info on a given subject.
+    e.g. Laravel DDD as subject then body full of notes and links related to the subject.
 
 LOOK INTO QUEUEING TASKS:
     I think this is needed urgently so that the process doesn't need to wait on lengthy processes like sending email.
@@ -38,9 +65,6 @@ REMINDER DATES IN THE PAST:
 DATESSUPPORT:
     Domain\Dates\DatesSupport just doesn't seem right. All those static functions can't be good. Perhaps break out into DaysSupport, DatesSupport, MonthsSupport, YearsSupport and TimesSupport and remove the static-ness of the functions.
 
-ADD LINK TO REMINDER:
-    When sending out reminder, perhaps add a link to open up the reminder in the app too? This will rely on saving destination to the session as will most likely be redirected to Login page so will want to redirect to the Reminder on successful login.
-
 REDIRECT TO INTENDED PAGE:
     If user tries to view a specific page, but is redirected (e.g. to login) then I would like to be able to redirect them back to their intended page after performing the required action (e.g. log in).
 
@@ -49,6 +73,3 @@ REMEMBER ME:
 
 LOGGING SERVICE:
     Bring in a logging service to log when reminders are sent and updated etc. in SendReminders.
-
-ALLOW A REMINDER TO BE SENT TO A CUSTOM EMAIL ADDRESS:
-    E.g. Setup a reminder to remind colleague to do things. Potentially very dangerous! Probably not going to implement this.
