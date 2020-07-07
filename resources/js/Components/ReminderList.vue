@@ -3,6 +3,7 @@
         <!-- Notifications -->
         <notifications :data="notifications.getAll()" @closeNotification="closeNotification" />
 
+        <!-- Main Panel & Side Panel (Create or Update) -->
         <div class="md:flex md:flex-row-reverse">
             <!-- Side panel (Create or Update Reminder form) -->
             <div class="side-panel bg-gray-800" ref="sidePanel" :class="{ 'is-active': showSidePanel }">
@@ -23,7 +24,7 @@
 
             <!-- Main panel (Search box and Reminder list) -->
             <div class="main-panel flex-1" :class="{ 'side-panel-is-active': showSidePanel }">
-                <div class="px-4 py-6 flex justify-between">
+                <div class="px-4 py-6 flex justify-end">
                     <!-- Search bar -->
                     <div class="relative hidden">
                         <input
@@ -75,105 +76,17 @@
                 </div>
 
                 <!-- Reminder List -->
-                <div class="p-4 pt-0 pl-0 md:flex md:flex-wrap justify-start">
+                <div class="p-4 pt-0 pl-0 md:flex md:flex-wrap justify-start items-start">
                     <div
                         class="p-4 pr-0 pb-0 w-full md:max-w-sm"
                         v-for="reminder in reminders.data"
                         :key="reminder.id"
                     >
-                        <div
-                            class="relative reminder-card px-6 py-4 h-full shadow bg-white flex flex-col justify-between"
-                        >
-                            <!-- Indicator (has initial reminder run?) -->
-                            <div class="p-4 absolute top-0 right-0">
-                                <div
-                                    class="rounded-full"
-                                    :class="{
-                                        'bg-red-400': reminder.initial_reminder_run,
-                                        'bg-green-400': !reminder.initial_reminder_run,
-                                    }"
-                                    style="width: 10px;height: 10px;"
-                                ></div>
-                            </div>
-                            <!-- Body -->
-                            <div class="px-4 w-full">
-                                <span class="hidden mt-2 block text-xs uppercase text-gray-500">Body</span>
-                                <span class="text-gray-800 font-bold">{{ reminder.body }}</span>
-                            </div>
-                            <!-- Reminder and Recurrence Information -->
-                            <div class="w-full mt-1">
-                                <div class="md:flex flex-wrap">
-                                    <div class="px-4">
-                                        <!-- Initial Reminder -->
-                                        <div class="flex items-center">
-                                            <span class="block text-xs">
-                                                <span class="text-gray-500">{{
-                                                    `${reminder.day.substr(0, 3)} ${
-                                                        reminder.date
-                                                    } ${reminder.month.substr(0, 3)} ${
-                                                        reminder.year
-                                                    } at ${pad(reminder.hour || 0)}:${pad(
-                                                        reminder.minute || 0
-                                                    )}`
-                                                }}</span>
-                                            </span>
-                                        </div>
-
-                                        <!-- Recurrence -->
-                                        <div class="flex items-center">
-                                            <span class="block  text-xs">
-                                                <span class="text-gray-500">{{ reminder.frequency }}</span>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Options (Edit, Archive) -->
-                            <div class="mt-1">
-                                <!-- Toggle button -->
-                                <button
-                                    class="px-4 py-2 -mb-2 relative cursor-pointer focus:outline-none"
-                                    @click="
-                                        dialogOpenFor = dialogOpenFor === reminder.id ? false : reminder.id
-                                    "
-                                >
-                                    <div v-if="dialogOpenFor === reminder.id" class="w-8 h-8 flex items-center justify-center text-gray-600 border border-gray-400 rounded-full">&cross;</div>
-                                    <div class="flex" v-else>
-                                        <div class="rounded-full w-1 h-1 bg-gray-600"></div>
-                                        <div
-                                            class="rounded-full w-1 h-1 bg-gray-600"
-                                            style="margin-left: 2px"
-                                        ></div>
-                                        <div
-                                            class="rounded-full w-1 h-1 bg-gray-600"
-                                            style="margin-left: 2px"
-                                        ></div>
-                                    </div>
-                                </button>
-                                <!-- Options dialog -->
-                                <div
-                                    class="options mt-4 px-4 text-left text-xs text-gray-600 bg-white "
-                                    v-show="dialogOpenFor === reminder.id"
-                                >
-                                    <!-- Edit -->
-                                    <div class="" @click="setReminderToBeUpdated(reminder)">
-                                        <p class="tracking-wider text-blue-400 cursor-pointer hover:text-blue-500">
-                                            Edit
-                                        </p>
-                                    </div>
-
-                                    <!-- Archive -->
-                                    <div class="pt-2">
-                                        <p
-                                            class="tracking-wider text-red-400 cursor-pointer hover:text-red-500"
-                                            @click="archiveReminder(reminder)"
-                                        >
-                                            Archive
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <reminder
+                            :reminder="reminder"
+                            @setReminderToBeUpdated="setReminderToBeUpdated"
+                            @archiveReminder="archiveReminder"
+                        />
                     </div>
                 </div>
             </div>
@@ -197,7 +110,6 @@ export default {
             updateInProgress: false,
             reminderBeingUpdated: null,
             showSidePanel: false,
-            dialogOpenFor: false,
         };
     },
     created() {},
@@ -240,12 +152,12 @@ export default {
             this.sortReminders();
         },
 
+        // Set updated reminder's data and reset some state
         onReminderUpdated(reminder) {
             const index = this.reminders.data.map(reminder => reminder.id).indexOf(reminder.id);
             this.reminders.data[index] = { ...reminder };
             this.clearUpdateState();
             this.showSidePanel = false;
-            this.dialogOpenFor = false;
             this.notifications.add("Reminder updated", types.success);
         },
 
@@ -268,11 +180,12 @@ export default {
         // Displays the update form populated with the reminder being updated
         setReminderToBeUpdated(reminder) {
             this.updateInProgress = true;
-            this.showSidePanel = true;
             this.reminderBeingUpdated = { ...reminder };
+            this.showSidePanel = true;
+
             setTimeout(() => {
                 smoothScroll(this.$refs.sidePanel);
-            }, 0);
+            }, 500);
         },
 
         // Handle an update cancel
@@ -285,23 +198,11 @@ export default {
         closeNotification(id) {
             this.notifications.remove(id);
         },
-
-        // Pad a number to 2 digits
-        pad(number) {
-            if (number < 10) return "0" + number.toString();
-            else return number;
-        },
     },
 };
 </script>
 
 <style scoped>
-.reminder-card {
-    border-radius: 1rem;
-}
-.reminder-card span {
-    transition: color 0.1s ease-out;
-}
 #search-reminders {
     padding-left: 36px;
 }

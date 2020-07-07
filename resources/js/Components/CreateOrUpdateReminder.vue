@@ -151,7 +151,7 @@
                         <div class="">
                             <button
                                 type="submit"
-                                class="px-6 py-3 bg-teal-400 leading-tight text-teal-100 text-xs font-medium tracking-wider uppercase rounded focus:outline-none focus:shadow-outline hover:bg-teal-500"
+                                class="px-6 py-3 bg-blue-600 leading-tight text-teal-100 text-xs font-medium tracking-wider uppercase rounded focus:outline-none focus:shadow-outline hover:bg-blue-700"
                             >
                                 {{ isUpdate ? "Update" : "Create" }}
                             </button>

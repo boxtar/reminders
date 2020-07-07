@@ -1,5 +1,6 @@
 import Vue from "vue";
 
+Vue.component("reminder", require("./Components/Reminder.vue").default);
 Vue.component("reminderList", require("./Components/ReminderList.vue").default);
 Vue.component("createOrUpdateReminder", require("./Components/CreateOrUpdateReminder.vue").default);
 Vue.component("datePicker", require("./Components/DatePicker/DatePicker.vue").default);
