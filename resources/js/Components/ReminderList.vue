@@ -8,6 +8,7 @@
             <!-- Side panel (Create or Update Reminder form) -->
             <div class="side-panel bg-gray-800" ref="sidePanel" :class="{ 'is-active': showSidePanel }">
                 <create-or-update-reminder
+                    :class="{ 'invisible': !showSidePanel }"
                     :method="updateInProgress ? 'PUT' : 'POST'"
                     :csrf="csrf"
                     :frequencies="frequencies"
@@ -76,7 +77,7 @@
                 </div>
 
                 <!-- Reminder List -->
-                <div class="p-4 pt-0 pl-0 md:flex md:flex-wrap justify-start items-start">
+                <div class="p-4 pt-0 pl-0 md:flex md:flex-wrap justify-start">
                     <div
                         class="p-4 pr-0 pb-0 w-full md:max-w-sm"
                         v-for="reminder in reminders.data"

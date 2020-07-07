@@ -1,10 +1,12 @@
 <template>
-    <div class="date-picker rounded " :class="{ 'shadow-outline': isActive }">
+    <div class="date-picker rounded" :class="{ 'shadow-outline': isActive }">
         <div
             id="date-picker-formatted-date"
-            class="selected-date px-4 py-3 w-full leading-tight tracking-widest bg-gray-700 text-gray-100"
+            class="selected-date px-4 py-3 w-full leading-tight tracking-widest bg-gray-700 text-gray-100 focus:outline-none focus:shadow-outline"
             :class="{ rounded: !isActive, 'rounded-t': isActive, 'bg-teal-400': isActive }"
             @click="isActive = !isActive"
+            @keydown.enter="isActive = !isActive"
+            tabindex="0"
         >
             {{ formattedDate }}
         </div>
@@ -14,8 +16,10 @@
             <div class="month-picker">
                 <!-- Previous month arrow -->
                 <div
-                    class="arrows prev-month hover:bg-teal-200 hover:text-white"
+                    class="arrows prev-month hover:bg-teal-200 hover:text-white focus:outline-none focus:shadow-outline"
                     @click="goToPreviousMonth()"
+                    @keydown.enter="goToPreviousMonth()"
+                    tabindex="0"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
                         <path d="M0 0h24v24H0V0z" fill="none" opacity=".87" />
@@ -27,7 +31,12 @@
                 <div class="month">{{ `${month} ${year}` }}</div>
 
                 <!-- Next month arrow -->
-                <div class="arrows next-month hover:bg-teal-200 hover:text-white" @click="goToNextMonth()">
+                <div
+                    class="arrows next-month hover:bg-teal-200 hover:text-white focus:outline-none focus:shadow-outline"
+                    @click="goToNextMonth()"
+                    @keydown.enter="goToNextMonth()"
+                    tabindex="0"
+                >
                     <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
                         <path d="M24 24H0V0h24v24z" fill="none" opacity=".87" />
                         <path d="M6.49 20.13l1.77 1.77 9.9-9.9-9.9-9.9-1.77 1.77L14.62 12l-8.13 8.13z" />
@@ -57,6 +66,12 @@
 
                 <!-- Days -->
                 <div
+                    v-for="day in getDaysInMonth(visibleMonth, visibleYear)"
+                    :key="day"
+                    @click="selectDate(day)"
+                    @keydown.enter="selectDate(day)"
+                    :tabindex="!dateInPast(day, visibleMonth, visibleYear) ? '0' : '-1'"
+                    style="--aspect-ratio: 1/1;"
                     class="day border border-transparent cursor-pointer "
                     :class="{
                         'bg-teal-300 border-teal-500':
@@ -76,10 +91,6 @@
                             visibleYear
                         ),
                     }"
-                    style="--aspect-ratio: 1/1;"
-                    v-for="day in getDaysInMonth(visibleMonth, visibleYear)"
-                    :key="day"
-                    @click="selectDate(day)"
                 >
                     {{ day }}
                 </div>
@@ -140,9 +151,9 @@ export default {
             const date = new Date(
                 this.customYear ? this.customYear : now.getFullYear(),
                 this.customMonth ? this.customMonth : now.getMonth(),
-                this.customDate ? this.customDate : now.getDate(),
+                this.customDate ? this.customDate : now.getDate()
             );
-            
+
             this.selectedDate = date;
             this.selectedDay = date.getDate();
             this.visibleMonth = this.selectedMonth = date.getMonth();

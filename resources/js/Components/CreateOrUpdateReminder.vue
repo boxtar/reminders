@@ -9,7 +9,7 @@
         <!-- Edit Mode flag -->
         <div
             v-if="isUpdate"
-            class="cancel-button bg-yellow-500 text-yellow-800 uppercase text-xs py-1 px-3 rounded-b shadow select-none"
+            class="cancel-button bg-yellow-400 text-gray-900 uppercase text-xs py-1 px-3 rounded-b shadow select-none"
         >
             Edit Mode
         </div>
@@ -31,6 +31,7 @@
             </svg>
         </div>
 
+        <!-- Form -->
         <form class="w-full" @submit.prevent="processForm">
             <div class="px-4 py-6">
                 <!-- Body -->

@@ -80,7 +80,7 @@
             >
                 <button
                     @click.stop.prevent="toggleOptionsDialog"
-                    class="toggle-button pt-1 focus:outline-none focus:shadow-outline"
+                    class="toggle-button mt-1 rounded-full focus:outline-none focus:shadow-outline"
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
