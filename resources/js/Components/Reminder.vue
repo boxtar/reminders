@@ -3,8 +3,8 @@
         <!-- Body and other Info -->
         <div class="px-6 pt-4 pb-10">
             <!-- Indicator (has initial reminder run?) -->
-            <div class="absolute p-4 top-0 right-0">
-                <div class="relative h-8 w-8">
+            <div class="absolute p-1 top-0 right-0">
+                <div class="relative flex justify-center items-center h-8 w-8">
                     <div class="indicator-dot absolute">
                         <div
                             class="rounded-full"
@@ -202,10 +202,11 @@ export default {
     transition: background-color 0.2s;
 }
 .options-dialog .toggle-container .toggle-button svg {
+    transform: rotate(180deg);
     transition: transform 0.4s ease-out;
 }
 .options-dialog.is-active .toggle-container .toggle-button svg {
-    transform: rotate(180deg);
+    transform: rotate(0deg);
 }
 .options-dialog .toggle-container .toggle-button:focus svg,
 .options-dialog .toggle-container .toggle-button:hover svg {

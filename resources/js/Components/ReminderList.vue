@@ -8,7 +8,7 @@
             <!-- Side panel (Create or Update Reminder form) -->
             <div class="side-panel bg-gray-800" ref="sidePanel" :class="{ 'is-active': showSidePanel }">
                 <create-or-update-reminder
-                    :class="{ 'invisible': !showSidePanel }"
+                    :class="{ invisible: !showSidePanel }"
                     :method="updateInProgress ? 'PUT' : 'POST'"
                     :csrf="csrf"
                     :frequencies="frequencies"
@@ -76,12 +76,51 @@
                     </button>
                 </div>
 
-                <!-- Reminder List -->
+                <!-- Upcoming reminders -->
+                <h2 class="px-8 font-bold text-xs uppercase text-gray-700" v-show="upcomingReminders.length">
+                    Upcoming ({{ upcomingReminders.length }})
+                </h2>
                 <div class="p-4 pt-0 pl-0 md:flex md:flex-wrap justify-start">
                     <div
                         class="p-4 pr-0 pb-0 w-full md:max-w-sm"
-                        v-for="reminder in reminders.data"
-                        :key="reminder.id"
+                        v-for="reminder in upcomingReminders"
+                        :key="reminder.id + reminder.date"
+                    >
+                        <reminder
+                            :reminder="reminder"
+                            @setReminderToBeUpdated="setReminderToBeUpdated"
+                            @archiveReminder="archiveReminder"
+                        />
+                    </div>
+                </div>
+
+                <!-- Recurring reminders -->
+                <h2 class="px-8 mt-4 font-bold text-xs uppercase text-gray-700"  v-show="recurringReminders.length">
+                    On Recurrence ({{ recurringReminders.length }})
+                </h2>
+                <div class="p-4 pt-0 pl-0 md:flex md:flex-wrap justify-start">
+                    <div
+                        class="p-4 pr-0 pb-0 w-full md:max-w-sm"
+                        v-for="reminder in recurringReminders"
+                        :key="reminder.id + reminder.date"
+                    >
+                        <reminder
+                            :reminder="reminder"
+                            @setReminderToBeUpdated="setReminderToBeUpdated"
+                            @archiveReminder="archiveReminder"
+                        />
+                    </div>
+                </div>
+
+                <!-- Completed reminders -->
+                <h2 class="px-8 mt-4 font-bold text-xs uppercase text-gray-700"  v-show="doneReminders.length">
+                    Finito ({{ doneReminders.length }})
+                </h2>
+                <div class="p-4 pt-0 pl-0 md:flex md:flex-wrap justify-start">
+                    <div
+                        class="p-4 pr-0 pb-0 w-full md:max-w-sm"
+                        v-for="reminder in doneReminders"
+                        :key="reminder.id + reminder.date"
                     >
                         <reminder
                             :reminder="reminder"
@@ -113,7 +152,6 @@ export default {
             showSidePanel: false,
         };
     },
-    created() {},
     mounted() {
         this.getReminders(this.reminders.action).then(({ data }) => {
             this.reminders.data = Object.values(data);
@@ -155,8 +193,8 @@ export default {
 
         // Set updated reminder's data and reset some state
         onReminderUpdated(reminder) {
-            const index = this.reminders.data.map(reminder => reminder.id).indexOf(reminder.id);
-            this.reminders.data[index] = { ...reminder };
+            this.reminders.data = this.reminders.data.filter(r => r.id !== reminder.id);
+            this.reminders.data.push({ ...reminder });
             this.clearUpdateState();
             this.showSidePanel = false;
             this.notifications.add("Reminder updated", types.success);
@@ -198,6 +236,21 @@ export default {
         // Remove the notification with the provided id
         closeNotification(id) {
             this.notifications.remove(id);
+        },
+    },
+    computed: {
+        upcomingReminders: function() {
+            return this.reminders.data.filter(reminder => !reminder.initial_reminder_run);
+        },
+        recurringReminders: function() {
+            return this.reminders.data.filter(
+                reminder => reminder.initial_reminder_run && reminder.is_recurring
+            );
+        },
+        doneReminders: function() {
+            return this.reminders.data.filter(
+                reminder => reminder.initial_reminder_run && !reminder.is_recurring
+            );
         },
     },
 };
