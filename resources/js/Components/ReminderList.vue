@@ -25,30 +25,49 @@
 
             <!-- Main panel (Search box and Reminder list) -->
             <div class="main-panel flex-1" :class="{ 'side-panel-is-active': showSidePanel }">
-                <div class="px-4 py-6 flex justify-end">
+                <!-- Search bar and Toggle button -->
+                <div class="px-4 py-6 flex justify-between">
                     <!-- Search bar -->
-                    <div class="relative hidden">
+                    <div class="relative">
+                        <div class="search-icon flex top-0 left-0 text-gray-600">
+                            <div v-show="!this.searchTerm">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    class="invisible md:visible  fill-current"
+                                    width="24px"
+                                    height="24px"
+                                >
+                                    <path d="M0 0h24v24H0V0z" fill="none" />
+                                    <path
+                                        d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+                                    />
+                                </svg>
+                            </div>
+                            <button v-show="this.searchTerm" @click.stop.prevent="searchTerm=''">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    class="fill-current"
+                                    width="24px"
+                                    height="24px"
+                                >
+                                    <path d="M0 0h24v24H0V0z" fill="none" />
+                                    <path
+                                        d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"
+                                    />
+                                </svg>
+                            </button>
+                        </div>
                         <input
                             type="text"
                             class="p-2 md:p-4 bg-white text-gray-500 rounded-full shadow outline-none appearance-none focus:shadow-outline"
                             name="search-reminders"
                             id="search-reminders"
-                            placeholder="Coming soon..."
+                            placeholder="Search..."
+                            v-model="searchTerm"
+                            ref="searchForm"
                         />
-                        <div class="search-icon absolute top-0 left-0 text-gray-600">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                class="invisible md:visible  fill-current"
-                                width="24px"
-                                height="24px"
-                            >
-                                <path d="M0 0h24v24H0V0z" fill="none" />
-                                <path
-                                    d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
-                                />
-                            </svg>
-                        </div>
                     </div>
 
                     <!-- Toggle Create/Update Reminder form -->
@@ -95,7 +114,10 @@
                 </div>
 
                 <!-- Recurring reminders -->
-                <h2 class="px-8 mt-4 font-bold text-xs uppercase text-gray-700"  v-show="recurringReminders.length">
+                <h2
+                    class="px-8 mt-4 font-bold text-xs uppercase text-gray-700"
+                    v-show="recurringReminders.length"
+                >
                     On Recurrence ({{ recurringReminders.length }})
                 </h2>
                 <div class="p-4 pt-0 pl-0 md:flex md:flex-wrap justify-start">
@@ -113,7 +135,7 @@
                 </div>
 
                 <!-- Completed reminders -->
-                <h2 class="px-8 mt-4 font-bold text-xs uppercase text-gray-700"  v-show="doneReminders.length">
+                <h2 class="px-8 mt-4 font-bold text-xs uppercase text-gray-700" v-show="doneReminders.length">
                     Finito ({{ doneReminders.length }})
                 </h2>
                 <div class="p-4 pt-0 pl-0 md:flex md:flex-wrap justify-start">
@@ -136,6 +158,7 @@
 
 <script>
 import { Notifications, types } from "./Notifications/Notifications";
+import Fuse from "fuse.js";
 const smoothScroll = require("../Utils/smoothScroll");
 export default {
     props: ["channels", "frequencies", "csrf"],
@@ -150,12 +173,14 @@ export default {
             updateInProgress: false,
             reminderBeingUpdated: null,
             showSidePanel: false,
+            fuse: null,
+            searchTerm: "",
         };
     },
     mounted() {
         this.getReminders(this.reminders.action).then(({ data }) => {
             this.reminders.data = Object.values(data);
-            // this.notifications.add("Loaded", types.info, false, 2);
+            this.setupSearch();
         });
     },
     methods: {
@@ -195,6 +220,7 @@ export default {
         onReminderUpdated(reminder) {
             this.reminders.data = this.reminders.data.filter(r => r.id !== reminder.id);
             this.reminders.data.push({ ...reminder });
+            this.sortReminders();
             this.clearUpdateState();
             this.showSidePanel = false;
             this.notifications.add("Reminder updated", types.success);
@@ -237,18 +263,25 @@ export default {
         closeNotification(id) {
             this.notifications.remove(id);
         },
+
+        setupSearch() {
+            this.fuse = new Fuse(this.reminders.data, { keys: ["body"], threshold: 0.4 });
+        },
     },
     computed: {
+        reminderData: function() {
+            return this.searchTerm ? this.fuse.search(this.searchTerm).map(i => i.item) : this.reminders.data;
+        },
         upcomingReminders: function() {
-            return this.reminders.data.filter(reminder => !reminder.initial_reminder_run);
+            return this.reminderData.filter(reminder => !reminder.initial_reminder_run);
         },
         recurringReminders: function() {
-            return this.reminders.data.filter(
+            return this.reminderData.filter(
                 reminder => reminder.initial_reminder_run && reminder.is_recurring
             );
         },
         doneReminders: function() {
-            return this.reminders.data.filter(
+            return this.reminderData.filter(
                 reminder => reminder.initial_reminder_run && !reminder.is_recurring
             );
         },

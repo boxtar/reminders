@@ -4,15 +4,8 @@ LOOK INTO MOVING VALIDATION LOGIC INTO RULES
 DEBUG AND ERROR INFORMATION:
     Make sure this isn't exposed on production. Right now it is.
 
-ORDER REMINDERS:
-    If initial reminder has run, order by recurrence?
-    Allow searching, sorting and filtering on frontend.
-
 TAGS:
     Allow adding tags to categorise reminders
-
-CATEGORISATION:
-    Categorise reminders into 'Expired', 'Today', 'Tomorrow', 'Later in week'.
 
 NOTIFICATIONS:
     Record notifications in a new table. Things like reminder added, updated, archived and also for when reminders are due. Notification types could be 'reminder', 'created', 'updated', 'deleted'.
@@ -30,10 +23,6 @@ ADD EXTRA DATA TO THE MESSAGE THAT IS SENT WITH EACH REMINDER:
 ADD MORE RECURRENCES:
     Would like hourly, weekdays and weekends recurrences.
     However, it would be so much better to add custom recurrence builder. I have notes on that somewhere...
-
-MAKE DATE PICKER ACCESSIBLE:
-    Could try using native browser dates (input type date). Sounds like this doesn't work in Safari on desktops though.
-    There's a tool called Cleave JS that could help with formatting inputs for manually typing in dates and times.
 
 CHROME APP:
     Look into making this a Chrome app similar to Codecourse and Office apps.
