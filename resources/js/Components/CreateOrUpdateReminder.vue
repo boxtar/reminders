@@ -15,20 +15,24 @@
         </div>
 
         <!-- Close button -->
-        <div class="hidden p-4 pb-0 text-gray-400 text-right hover:text-white" @click="$emit('closed')">
-            <span class="hidden text-xs uppercase">Close</span>
-            <svg
-                class="fill-current inline-block"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                width="24px"
-                height="24px"
+        <div class="p-4 pb-0 flex justify-end items-center" id="create-or-update-close-button">
+            <button
+                @click="$emit('closed')"
+                class="flex items-center p-2 md:p-4 bg-transparent rounded-full text-red-500 hover:text-white focus:outline-none focus:shadow-outline"
             >
-                <path d="M0 0h24v24H0V0z" fill="none" />
-                <path
-                    d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"
-                />
-            </svg>
+                <svg
+                    class="fill-current inline-block"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    width="24px"
+                    height="24px"
+                >
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path
+                        d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"
+                    />
+                </svg>
+            </button>
         </div>
 
         <!-- Form -->

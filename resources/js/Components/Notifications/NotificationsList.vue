@@ -1,5 +1,5 @@
 <template>
-    <div class="notifications px-2 pt-2 fixed top-0 right-0 w-1/2 z-50 lg:w-1/3">
+    <div class="notifications px-2 pt-2 fixed top-0 right-0 w-full md:w-1/2 lg:w-1/3 z-50">
         <div
             v-for="notification in data"
             :key="notification.id"
