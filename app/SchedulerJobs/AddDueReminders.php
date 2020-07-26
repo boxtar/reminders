@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Jobs;
+namespace App\SchedulerJobs;
 
 use DI\Container;
 use App\Tasks\SendReminder;
 use App\Services\Scheduler\Kernel;
 use App\Domain\Reminders\Models\Reminder;
+use Carbon\Carbon;
 
-class SendDueReminders
+class AddDueReminders
 {
     /**
      * This is provided through the constructor.
@@ -28,18 +29,16 @@ class SendDueReminders
 
     public function run()
     {
-        // Loop through every Reminder... 
-        // Wouldn't it be better to scope them to reminders not in the future?
-        // To be safe, perhaps an hour into future?
-        Reminder::all()->each(function (Reminder $reminder) {
-            // If the initial reminder hasn't yet run
-            // or, if it has and the reminder is recurring
-            // then we need to send the reminder out.
-            if (!$reminder->hasInitialReminderRun() || $reminder->isRecurring()) {
+        // @todo: I need to figure out the whole timezone thing...
+        Reminder::canBeSent()
+            ->with('owner')
+            ->get()
+            ->each(function (Reminder $reminder) {
+                // Add SendReminder task to Scheduler for execution
+                // @todo: re-write without the kernel/scheduler?
                 $this->kernel
                     ->add(new SendReminder($reminder, $this->container->get('notifications.broadcaster')))
-                    ->cron($reminder->getCronExpression());
-            }
-        });
+                    ->cron("* * * * *");
+            });
     }
 }

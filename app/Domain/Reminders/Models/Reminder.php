@@ -4,6 +4,7 @@ namespace App\Domain\Reminders\Models;
 
 use App\Models\User;
 use App\Domain\Dates\DatesSupport;
+use App\Domain\Recurrences\Exceptions\InvalidRecurrenceException;
 use Illuminate\Database\Eloquent\Model;
 use App\Domain\Recurrences\RecurrencesSupport;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -23,6 +24,7 @@ class Reminder extends Model
         'year', 'hour', 'minute',
         'expression', 'recurrence_expression',
         'channels', 'is_recurring', 'initial_reminder_run',
+        'next_run'
     ];
 
     /**
@@ -33,8 +35,10 @@ class Reminder extends Model
     protected $casts = [
         'initial_reminder_run' => 'boolean',
         'is_recurring' => 'boolean',
-        'channels' => 'array'
+        'channels' => 'array',
     ];
+
+    protected $dates = ['next_run'];
 
     /**
      * The accessors to append to the model's array form.
@@ -42,6 +46,26 @@ class Reminder extends Model
      * @var array
      */
     protected $appends = ['reminder_date'];
+
+    /**
+     * Scope a query to only include reminders that can be sent.
+     * Reminders can only be sent if:
+     * their next run date is in the past
+     * AND
+     * (initial reminder is false OR is recurring is true)
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeCanBeSent($query)
+    {
+        return $query->where('next_run', '<', \Carbon\Carbon::now('Europe/London'))
+            ->where(function ($query) {
+                $query
+                    ->where('initial_reminder_run', false)
+                    ->orWhere('is_recurring', true);
+            });
+    }
 
     /**
      * @return User
@@ -132,6 +156,11 @@ class Reminder extends Model
         return $dateTimeString;
     }
 
+    public function getIsRecurringAttribute($is_recurring)
+    {
+        return (bool) $is_recurring;
+    }
+
     public function hasInitialReminderRun()
     {
         return (bool) $this->initial_reminder_run;
@@ -143,9 +172,54 @@ class Reminder extends Model
         $this->save();
     }
 
+    /**
+     * Proxies to getIsRecurringAttribute accessor
+     * 
+     * @return bool
+     */
     public function isRecurring()
     {
-        return (bool) $this->is_recurring;
+        return $this->is_recurring;
+    }
+
+    /**
+     * Set the recurrence frequency.
+     * 
+     * @param string $frequency
+     * @return self
+     * @throws InvalidRecurrenceException
+     */
+    public function setRecurrenceFrequency($frequency)
+    {
+        if (!RecurrencesSupport::isFrequencyValid($frequency))
+            throw new InvalidRecurrenceException("$frequency is not a valid frequency");
+
+        $this->is_recurring = true;
+        $this->frequency = $frequency;
+        $this->save();
+        return $this;
+    }
+
+    /**
+     * Removes recurrence
+     * 
+     * @return self
+     */
+    public function removeRecurrence()
+    {
+        $this->is_recurring = false;
+        $this->frequency = 'none';
+        $this->save();
+        return $this;
+    }
+
+    /**
+     * @return self
+     */
+    public function forwardNextRunDate()
+    {
+        $this->next_run = (new RecurrencesSupport)->forwardDateByRecurrence($this->next_run, $this->attributes['frequency']);
+        return $this;
     }
 
     /**

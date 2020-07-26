@@ -3,6 +3,7 @@
 namespace Tests\Domain\Reminders;
 
 use App\Domain\Reminders\ReminderData;
+use Carbon\Carbon;
 use Tests\TestCase;
 
 class ReminderDataTest extends TestCase
@@ -107,5 +108,17 @@ class ReminderDataTest extends TestCase
         $reminderData->channels = ['email', 'sms'];
         $this->assertCount(2, $reminderData->channels);
         $this->assertEquals('sms', $reminderData->channels[1]);
+    }
+
+    /** @test */
+    public function it_sets_the_next_run_date()
+    {
+        $dt = Carbon::now('Europe/London');
+        $reminderData = $this->makeReminderData($dt);
+        $this->assertEquals($dt->day, $reminderData->next_run->day);
+        $this->assertEquals($dt->month, $reminderData->next_run->month);
+        $this->assertEquals($dt->year, $reminderData->next_run->year);
+        $this->assertEquals($dt->hour, $reminderData->next_run->hour);
+        $this->assertEquals($dt->minute, $reminderData->next_run->minute);
     }
 }

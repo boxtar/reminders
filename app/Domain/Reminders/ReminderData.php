@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Reminders;
 
 use App\Domain\Dates\DatesSupport;
+use Carbon\Carbon;
 
 class ReminderData
 {
@@ -37,8 +38,16 @@ class ReminderData
         // Extract hour and minute from the time value
         $this->updateTime($this->time);
 
+        // Build a Carbon date
+        $timestamp = mktime($this->hour, $this->minute, 0, $this->month + 1, $this->date, $this->year);
+        $timezone = 'Europe/London';
+        $date = Carbon::parse($timestamp, $timezone);
+
         // Figure the day of the week out
-        $this->data['day'] = date('w', mktime($this->hour, $this->minute, 0, $this->month + 1, $this->date, $this->year));
+        $this->data['day'] = $date->dayOfWeek;
+
+        // Set the next_run field to the carbon instance
+        $this->data['next_run'] = $date;
     }
 
     /**
@@ -81,7 +90,7 @@ class ReminderData
 
         // Extract hour and minute from the time value
         [$hour, $minute] = DatesSupport::extractTimeValues($this->time);
-        
+
         // Accessing directly as it is not guaranteed that 'hour' and 'minute' keys
         // will exist on the data array when this is invoked.
         $this->data['hour'] = $hour;

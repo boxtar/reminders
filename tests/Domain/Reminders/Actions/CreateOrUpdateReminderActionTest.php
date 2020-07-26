@@ -33,6 +33,14 @@ class CreateOrUpdateReminderActionTest extends TestCase
     }
 
     /** @test */
+    public function creating_a_reminder_sets_the_next_run_date()
+    {
+        $reminderDate = Carbon::now('Europe/London')->addDays(1);
+        $reminder = $this->createReminderFor($this->signIn(), 1, $reminderDate);
+        $this->assertEquals($reminderDate->format('Y-m-d H:i'), $reminder->next_run->format('Y-m-d H:i'));
+    }
+
+    /** @test */
     public function body_is_required_when_updating()
     {
         // Original reminder
@@ -115,22 +123,23 @@ class CreateOrUpdateReminderActionTest extends TestCase
         $reminder->markInitialReminderComplete();
 
         // Updated data - Use a date 1 year in the future
-        $now = Carbon::now('Europe/London');
-        $updatedData = $this->makeReminderData($now->addYear());
+        $oneYearInFuture = Carbon::now('Europe/London')->addYear();
+        $updatedData = $this->makeReminderData($oneYearInFuture);
 
         // Update the date and time of the reminder. This should update the expression
         // and the initial_reminder_run flag to false (as the date has been moved on to a future date).
         $response = CreateOrUpdateReminderAction::create()->execute($updatedData, $user, $reminder);
-
+        
         $this->assertEquals(200, $response->getStatus());
         // The reminder should have the updated attributes now
         $this->assertEquals($reminder->body, $response->getData()['body']);
-        $this->assertEquals($now->ordinal('day'), $reminder->date);
-        $this->assertEquals($now->monthName, $reminder->month);
-        $this->assertEquals($now->year, $reminder->year);
-        $this->assertEquals($now->hour, $reminder->hour);
-        $this->assertEquals($now->minute, $reminder->minute);
-        $this->assertEquals("{$now->minute} {$now->hour} {$now->day} {$now->month} *", $reminder->expression);
+        $this->assertEquals($oneYearInFuture->ordinal('day'), $reminder->date);
+        $this->assertEquals($oneYearInFuture->monthName, $reminder->month);
+        $this->assertEquals($oneYearInFuture->year, $reminder->year);
+        $this->assertEquals($oneYearInFuture->hour, $reminder->hour);
+        $this->assertEquals($oneYearInFuture->minute, $reminder->minute);
+        $this->assertEquals($oneYearInFuture->format('Y-m-d H:i'), $reminder->next_run->format('Y-m-d H:i'));
+        $this->assertEquals("{$oneYearInFuture->minute} {$oneYearInFuture->hour} {$oneYearInFuture->day} {$oneYearInFuture->month} *", $reminder->expression);
         $this->assertEquals(false, $reminder->initial_reminder_run);
     }
 

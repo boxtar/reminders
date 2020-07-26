@@ -38,8 +38,7 @@ class SendReminder extends Task
         $this->send(
             $this->getChannels()
         );
-        $this->logReminderSent();
-        $this->reminderMaintenance();
+        $this->postSend();
     }
 
     /**
@@ -60,7 +59,7 @@ class SendReminder extends Task
     }
 
     /**
-     * Ask Mr. Notification Manager to do its thing.
+     * Ask the Broadcaster to send the reminder through the provided channels
      * 
      * @param array $channels Array of channels with key as valid id and value as array of settings
      */
@@ -72,20 +71,31 @@ class SendReminder extends Task
             ->send();
     }
 
+    protected function postSend()
+    {
+        $this->log();
+        $this->reminderMaintenance();
+    }
+
+    /**
+     * Perform any reminder maintenance here.
+     * e.g. updating next run date and time
+     */
     protected function reminderMaintenance()
     {
-        if (!$this->reminder->hasInitialReminderRun()) {
+        if (!$this->reminder->hasInitialReminderRun())
             $this->reminder->markInitialReminderComplete();
-            $this->logInitialReminderHasRun();
-        }
+
+        if ($this->reminder->isRecurring())
+            $this->reminder->forwardNextRunDate();
+
+            return $this;
     }
 
-    public function logReminderSent()
-    {
-        return $this;
-    }
-
-    public function logInitialReminderHasRun()
+    /**
+     * Perform any necessary logging here
+     */
+    public function log()
     {
         return $this;
     }

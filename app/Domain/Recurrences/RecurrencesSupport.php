@@ -2,6 +2,9 @@
 
 namespace App\Domain\Recurrences;
 
+use App\Domain\Recurrences\Exceptions\InvalidRecurrenceException;
+use Carbon\Carbon;
+
 class RecurrencesSupport
 {
 
@@ -15,11 +18,12 @@ class RecurrencesSupport
     public static function frequencies()
     {
         return [
+            'hourly' => 'Every hour',
             'daily' => 'Every day',
             'weekly' => 'Every week',
             'monthly' => 'Every month',
             'quarterly' => "Every 3 months",
-            'yearly' => "Every year"
+            'yearly' => 'Every year'
         ];
     }
 
@@ -32,5 +36,84 @@ class RecurrencesSupport
     public static function isFrequencyValid($frequency)
     {
         return in_array($frequency, array_keys(self::frequencies()));
+    }
+
+    /**
+     * @param Carbon $date
+     * @param string $recurrence
+     * @return Carbon
+     */
+    public function forwardDateByRecurrence(Carbon $date, string $recurrence)
+    {
+        if (!method_exists($this, $recurrence)) {
+            throw new InvalidRecurrenceException("$recurrence is not a valid recurrence");
+        }
+        return $this->{$recurrence}($date);
+    }
+
+    /**
+     * Forward provided datetime on by 1 hour
+     * 
+     * @param Carbon $date 
+     * @return Carbon
+     */
+    protected function hourly(Carbon $date)
+    {
+        return $date->copy()->addHour();
+    }
+
+    /**
+     * Forward provided date on by 1 day
+     * 
+     * @param Carbon $date 
+     * @return Carbon
+     */
+    protected function daily(Carbon $date)
+    {
+        return $date->copy()->addDay();
+    }
+
+    /**
+     * Forward provided date on by 1 week
+     * 
+     * @param Carbon $date 
+     * @return Carbon
+     */
+    protected function weekly(Carbon $date)
+    {
+        return $date->copy()->addWeek();
+    }
+
+    /**
+     * Forward provided date on by 1 month
+     * 
+     * @param Carbon $date 
+     * @return Carbon
+     */
+    protected function monthly(Carbon $date)
+    {
+        return $date->copy()->addMonth();
+    }
+
+    /**
+     * Forward provided date on by 3 months
+     * 
+     * @param Carbon $date 
+     * @return Carbon
+     */
+    protected function quarterly(Carbon $date)
+    {
+        return $date->copy()->addQuarter();
+    }
+
+    /**
+     * Forward provided date on by 1 year
+     * 
+     * @param Carbon $date 
+     * @return Carbon
+     */
+    protected function yearly(Carbon $date)
+    {
+        return $date->copy()->addYear();
     }
 }

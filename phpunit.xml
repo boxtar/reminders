@@ -33,5 +33,6 @@
     <php>
         <env name="APP_ENV" value="testing"/>
         <env name="DB_DRIVER" value="mysql"/>
+        <env name="DB_DATABASE" value="test_reminders"/>
     </php>
 </phpunit>
