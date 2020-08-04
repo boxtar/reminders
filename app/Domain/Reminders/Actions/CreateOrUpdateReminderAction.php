@@ -2,14 +2,11 @@
 
 namespace App\Domain\Reminders\Actions;
 
-use App\Domain\Dates\DatesSupport;
 use App\Response;
 use App\Models\User;
 use App\Domain\Reminders\ReminderData;
 use App\Domain\Reminders\Models\Reminder;
-use App\Domain\Recurrences\RecurrenceBuilder;
 use App\Domain\Recurrences\RecurrencesSupport;
-use App\Domain\Reminders\ReminderExpressionBuilder;
 use App\Domain\Reminders\Validators\CreateOrUpdateReminderValidation;
 
 class CreateOrUpdateReminderAction
@@ -37,10 +34,16 @@ class CreateOrUpdateReminderAction
     public function execute(ReminderData $newData, User $user, Reminder $reminder = null)
     {
         // Create the response that will be built in this action and returned to caller.
+        /** 
+         * @todo: refactor away from this. Instead, have the code return a domain
+         * specific response (UnauthorizedResponse, ValidationErrorsResponse, 
+         * ReminderCreatedResponse, ReminderUpdateResponse...)
+         */
         $response = Response::create();
 
         // This is only applicable for an Update.
         // Authorise update attempt
+        /** @todo: change this so that it returns a UnauthorizedResponse object */
         if ($reminder && !$user->canUpdate($reminder)) {
             $response->setStatus(401); // Bad Request
             $response->setErrors(['message' => 'Unauthorized']); // Set Errors
@@ -51,45 +54,35 @@ class CreateOrUpdateReminderAction
         $validator = (new CreateOrUpdateReminderValidation($newData))->validate();
 
         // If there are validation errors, set them into response and return to caller.
+        /** @todo: change this so that it returns a ValidationErrorsResponse object */
         if ($validator->fails()) {
             $response->setStatus(400); // Bad Request
             $response->setErrors($validator->getErrors()); // Set Errors
             return $response;
         }
 
-        // Calculate new reminder expression (may not have changed)
-        $newData->expression = (new ReminderExpressionBuilder($newData))->build();
-
-        // This is only applicable for an Update.
-        // If the new date is in the past, mark the reminder as complete.
-        if ($reminder && $this->isDateInThePast($newData)) {
-            $newData->initial_reminder_run = true;
+        /**
+         * If this is an update and the reminder date is not changing
+         * then make sure we are keeping the initial reminder run
+         * flag the same as it currently is.
+         */
+        if ($reminder && $reminder->next_run == $newData->next_run) {
+            $newData->initial_reminder_run = $reminder->hasInitialReminderRun();
         }
 
-        // Update Frequency Expression
+        // Set/Update recurrence flag
         $newData->is_recurring = RecurrencesSupport::isFrequencyValid($newData->frequency);
-        $newData->recurrence_expression = (new RecurrenceBuilder($newData))->build();
 
-        // Create/Update the reminder (persists) - I really want this to be a Repository interaction.
+        /** 
+         * Create/Update the reminder (persists)
+         * 
+         * @todo: I really want this to be a Repository interaction.
+         */
         $reminder = $reminder ?
             tap($reminder)->update($newData->toArray()) :
             $user->reminders()->create($newData->toArray());
 
         // Put the updated reminder into the response and return to caller.
         return $response->setData($reminder->toArray());
-    }
-
-    /**
-     * @param ReminderData $data
-     * @return bool
-     */
-    private function isDateInThePast(ReminderData $data)
-    {
-        return DatesSupport::isDateAndTimeInThePast(
-            $data->year,
-            $data->month,
-            $data->date,
-            $data->time
-        );
     }
 }

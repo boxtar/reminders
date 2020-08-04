@@ -273,22 +273,28 @@ export default {
 
         // Opens up the side panel which exposes the create/update form
         toggleSidePanel() {
-            this.showSidePanel = !this.showSidePanel;
+            // If is is currently open, close it, else open it.
+            this.showSidePanel ? this.closeSidePanel() : this.openSidePanel()
+        },
 
-            // If we've toggled it open then focus on the body element
-            if (this.showSidePanel) {
-                // Delay the focus to allow for side panel to transition in
-                setTimeout(() => {
-                    this.$refs.createOrUpdateForm.$refs.body.focus();
-                }, 500);
-            }
+        openSidePanel() {
+            this.showSidePanel = true;
+            // Focus body element of the side panel form.
+            // Delay the focus to allow for side panel to transition in
+            setTimeout(() => {
+                this.$refs.createOrUpdateForm.$refs.body.focus();
+            }, 500);
+        },
+
+        closeSidePanel() {
+            this.showSidePanel = false
         },
 
         // Displays the update form populated with the reminder being updated
         setReminderToBeUpdated(reminder) {
             this.updateInProgress = true;
             this.reminderBeingUpdated = { ...reminder };
-            this.toggleSidePanel();
+            this.openSidePanel();
 
             // Smoothly scroll the top of the form into view
             setTimeout(() => {
