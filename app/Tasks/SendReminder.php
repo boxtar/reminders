@@ -83,13 +83,15 @@ class SendReminder extends Task
      */
     protected function reminderMaintenance()
     {
-        if (!$this->reminder->hasInitialReminderRun())
+        if (!$this->reminder->hasInitialReminderRun()) {
             $this->reminder->markInitialReminderComplete();
+        }
 
-        if ($this->reminder->isRecurring())
+        if ($this->reminder->isRecurring()) {
             $this->reminder->forwardNextRunDate();
+        }
 
-            return $this;
+        return $this;
     }
 
     /**

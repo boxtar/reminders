@@ -237,7 +237,8 @@ export default {
             this.form.setMethod(this.method);
             this.form.set("body", body);
             this.form.set("year", parseInt(reminder_date.substring(0, 4)));
-            this.form.set("month", parseInt(reminder_date.substring(4, 6)));
+            // Month coming from backend is 1 based, JS needs 0 based, so subtract 1.
+            this.form.set("month", parseInt(reminder_date.substring(4, 6)) - 1);
             this.form.set("date", parseInt(reminder_date.substring(6, 8)));
             this.hour = this.padToTwoDigits(parseInt(reminder_date.substring(8, 10)));
             this.minute = this.padToTwoDigits(parseInt(reminder_date.substring(10, 12)));

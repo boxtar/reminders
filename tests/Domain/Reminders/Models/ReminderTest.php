@@ -36,15 +36,17 @@ class ReminderTest extends TestCase
     {
         $reminder = $this->makeReminder();
 
-        $reminder->day = 7; // Invalid day - test app does not break on invalid day
-        $this->assertEquals("Invalid day", $reminder->day);
-
-        $reminder->day = 0; // Sunday
+        // Sunday 19th July 2020 GMT - Ava!
+        $reminder->next_run = Carbon::create(2020, 7, 19, 6, 0, 0, 'Europe/London');
         $this->assertEquals("Sunday", $reminder->day);
 
-        $reminder->day = 1; // Monday
-        $this->assertEquals("Monday", $reminder->day);
-        // Etc. This is not a days test. That is for the Dates domain
+        // Saturday 01st August 2020 GMT - Day on which I'm updating this test.
+        $reminder->next_run = Carbon::create(2020, 8, 1, 10, 13, 0, 'Europe/London');
+        $this->assertEquals("Saturday", $reminder->day);
+
+        // Thursday 05th November 2020 GMT - Bonfire night!
+        $reminder->next_run = Carbon::create(2020, 11, 5, 18, 30, 0, 'Europe/London');
+        $this->assertEquals("Thursday", $reminder->day);
     }
 
     /** @test */
@@ -52,16 +54,17 @@ class ReminderTest extends TestCase
     {
         $reminder = $this->makeReminder();
 
-        // If date is falsy, assert false is return and app does not break.
-        $reminder->date = null;
-        $this->assertEquals("Invalid date", $reminder->date);
+        // Sunday 19th July 2020 GMT - Ava!
+        $reminder->next_run = Carbon::create(2020, 7, 19, 6, 0, 0, 'Europe/London');
+        $this->assertEquals("19th", $reminder->date);
 
-        $reminder->date = 1; // 1st
+        // Saturday 01st August 2020 GMT - Day on which I'm updating this test.
+        $reminder->next_run = Carbon::create(2020, 8, 1, 10, 13, 0, 'Europe/London');
         $this->assertEquals("1st", $reminder->date);
 
-        $reminder->date = 2; // 2nd
-        $this->assertEquals("2nd", $reminder->date);
-        // Etc.. this is NOT an ordinal date test
+        // Thursday 05th November 2020 GMT - Bonfire night!
+        $reminder->next_run = Carbon::create(2020, 11, 5, 18, 30, 0, 'Europe/London');
+        $this->assertEquals("5th", $reminder->date);
     }
 
     /** @test */
@@ -69,28 +72,86 @@ class ReminderTest extends TestCase
     {
         $reminder = $this->makeReminder();
 
-        // Falsy month should not break app.
-        $reminder->month = null;
-        $this->assertEquals("Invalid month", $reminder->month);
-        $reminder->month = false;
-        $this->assertEquals("Invalid month", $reminder->month);
+        // Sunday 19th July 2020 GMT - Ava!
+        $reminder->next_run = Carbon::create(2020, 7, 19, 6, 0, 0, 'Europe/London');
+        $this->assertEquals("July", $reminder->month);
 
-        $reminder->month = 0;
-        $this->assertEquals("January", $reminder->month);
-        $reminder->month = 11;
-        $this->assertEquals("December", $reminder->month);
+        // Saturday 01st August 2020 GMT - Day on which I'm updating this test.
+        $reminder->next_run = Carbon::create(2020, 8, 1, 10, 13, 0, 'Europe/London');
+        $this->assertEquals("August", $reminder->month);
+
+        // Thursday 05th November 2020 GMT - Bonfire night!
+        $reminder->next_run = Carbon::create(2020, 11, 5, 18, 30, 0, 'Europe/London');
+        $this->assertEquals("November", $reminder->month);
+    }
+
+    /** @test */
+    public function test_reminder_year_accessor()
+    {
+        $reminder = $this->makeReminder();
+        $reminder->setRecurrenceFrequency("yearly");
+
+        // Sunday 19th July 2020 GMT - Ava!
+        $reminder->next_run = Carbon::create(2020, 7, 19, 6, 0, 0, 'Europe/London');
+        $this->assertEquals(2020, $reminder->year);
+
+        $reminder->forwardNextRunDate();
+        $this->assertEquals(2021, $reminder->year);
+
+    }
+
+    /** @test */
+    public function test_reminder_hour_accessor()
+    {
+        $reminder = $this->makeReminder();
+
+        // Sunday 19th July 2020 GMT - Ava!
+        $reminder->next_run = Carbon::create(2020, 7, 19, 6, 0, 0, 'Europe/London');
+        $this->assertEquals(6, $reminder->hour);
+
+        // Saturday 01st August 2020 GMT - Day on which I'm updating this test.
+        $reminder->next_run = Carbon::create(2020, 8, 1, 10, 13, 0, 'Europe/London');
+        $this->assertEquals(10, $reminder->hour);
+
+        // Thursday 05th November 2020 GMT - Bonfire night!
+        $reminder->next_run = Carbon::create(2020, 11, 5, 18, 30, 0, 'Europe/London');
+        $this->assertEquals(18, $reminder->hour);
+    }
+
+    /** @test */
+    public function test_reminder_minute_accessor()
+    {
+        $reminder = $this->makeReminder();
+
+        // Sunday 19th July 2020 GMT - Ava!
+        $reminder->next_run = Carbon::create(2020, 7, 19, 6, 0, 0, 'Europe/London');
+        $this->assertEquals(0, $reminder->minute);
+
+        // Saturday 01st August 2020 GMT - Day on which I'm updating this test.
+        $reminder->next_run = Carbon::create(2020, 8, 1, 10, 13, 0, 'Europe/London');
+        $this->assertEquals(13, $reminder->minute);
+
+        // Thursday 05th November 2020 GMT - Bonfire night!
+        $reminder->next_run = Carbon::create(2020, 11, 5, 18, 30, 0, 'Europe/London');
+        $this->assertEquals(30, $reminder->minute);
     }
 
     /** @test */
     public function test_reminder_date_accessor()
     {
         $reminder = $this->makeReminder();
-        $reminder->year = 2020;
-        $reminder->month = 6;
-        $reminder->date = 8;
-        $reminder->hour = 9;
-        $reminder->minute = 0;
-        $this->assertEquals("202006080900", $reminder->reminderDate);
+
+        // Sunday 19th July 2020 GMT - Ava!
+        $reminder->next_run = Carbon::create(2020, 7, 19, 6, 0, 0, 'Europe/London');
+        $this->assertEquals("202007190600", $reminder->reminderDate);
+
+        // Saturday 01st August 2020 GMT - Day on which I'm updating this test.
+        $reminder->next_run = Carbon::create(2020, 8, 1, 10, 13, 0, 'Europe/London');
+        $this->assertEquals("202008011013", $reminder->reminderDate);
+
+        // Thursday 05th November 2020 GMT - Bonfire night!
+        $reminder->next_run = Carbon::create(2020, 11, 5, 18, 30, 0, 'Europe/London');
+        $this->assertEquals("202011051830", $reminder->reminderDate);
     }
 
     /** @test */
@@ -256,24 +317,45 @@ class ReminderTest extends TestCase
     public function can_update_next_run_based_on_frequency()
     {
         $initialDate = Carbon::now('Europe/London');
+        $initialDate = Carbon::parse($initialDate->format("Y/m/d H:i"));
         $reminder = $this->createReminder(1, $initialDate);
 
         // Try a day first
         $reminder->setRecurrenceFrequency("daily");
         $reminder->forwardNextRunDate();
         $this->assertEquals(
-            $initialDate->addDay()->format('Y-m-d h:m'),
-            $reminder->next_run->format('Y-m-d h:m')
+            $initialDate->addDay(),
+            $reminder->next_run
         );
 
         // Now try a week
         $reminder->setRecurrenceFrequency("weekly");
         $reminder->forwardNextRunDate();
         $this->assertEquals(
-            $initialDate->addWeek()->format('Y-m-d h:m'),
-            $reminder->next_run->format('Y-m-d h:m')
+            $initialDate->addWeek(),
+            $reminder->next_run
         );
 
         // That's good enough. We've already tested the forwarding logic in RecurrenceSupport.
     }
+
+    /** @test */
+    public function if_forwarded_date_is_in_past_then_forward_based_on_current_time()
+    {
+        // A week ago
+        $initialDate = Carbon::now('Europe/London')->subWeek();
+        $initialDate = Carbon::parse($initialDate->format("Y/m/d H:i"));
+        $reminder = $this->createReminder(1, $initialDate);
+
+        // Set daily recurrence so that when it is forwarded, it's still in the past
+        $reminder->setRecurrenceFrequency("daily");
+        $reminder->forwardNextRunDate();
+
+        $expectedNewDate = Carbon::parse(
+            Carbon::now('Europe/London')->addDay()->format("Y/m/d H:i")
+        );
+
+        $this->assertEquals($expectedNewDate, $reminder->next_run);
+    }
+
 }

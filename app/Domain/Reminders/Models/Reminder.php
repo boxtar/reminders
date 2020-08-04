@@ -7,6 +7,7 @@ use App\Domain\Dates\DatesSupport;
 use App\Domain\Recurrences\Exceptions\InvalidRecurrenceException;
 use Illuminate\Database\Eloquent\Model;
 use App\Domain\Recurrences\RecurrencesSupport;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Reminder extends Model
@@ -92,68 +93,81 @@ class Reminder extends Model
     /**
      * Accessor for day attribute
      * 
-     * @param int
      * @return string
      */
-    public function getDayAttribute($day)
+    public function getDayAttribute()
     {
-        $day = DatesSupport::makeDay($day);
-        if (!$day)
+        if (!$day = DatesSupport::makeDay($this->next_run->dayOfWeek)) {
             return "Invalid day";
+        }
+
         return ucfirst($day->getDayName());
     }
 
     /**
      * Accessor for date attribute
      * 
-     * @param int
      * @return string
      */
-    public function getDateAttribute($date)
+    public function getDateAttribute()
     {
-        if (!DatesSupport::isValidDate($date))
+        if (!DatesSupport::isValidDate($this->next_run->day))
             return "Invalid date";
-        return DatesSupport::makeOrdinal($date);
+        return DatesSupport::makeOrdinal($this->next_run->day);
     }
 
     /**
      * Accessor for month attribute
      * 
-     * @param int
      * @return string
      */
-    public function getMonthAttribute($month)
+    public function getMonthAttribute()
     {
-        $month = DatesSupport::makeMonth($month);
+        $month = DatesSupport::makeMonth($this->next_run->month - 1);
         if (!$month)
             return "Invalid month";
         return ucfirst($month->getMonthName());
     }
 
     /**
-     * Returns the reminder Date and Time in format YYYYMMDDHHMM
+     * Accessor for year attribute
+     * 
+     * @return int
+     */
+    public function getYearAttribute()
+    {
+        return $this->next_run->year;
+    }
+
+    /**
+     * Accessor for hour attribute
+     * 
+     * @return int
+     */
+    public function getHourAttribute()
+    {
+        return $this->next_run->hour;
+    }
+
+    /**
+     * Accessor for minute attribute
+     * 
+     * @return int
+     */
+    public function getMinuteAttribute()
+    {
+        return $this->next_run->minute;
+    }
+
+    /**
+     * Returns the reminder Date and Time in format YmdHi
      * which is useful for sorting.
      * 
      * @return string
      */
     public function getReminderDateAttribute()
     {
-        $attributes = (object) $this->getAttributes();
-
-        // Keys required from the Reminder instance
-        $keys = ['year', 'month', 'date', 'hour', 'minute'];
-
-        // This will be the return value. It is built below.
-        $dateTimeString = "";
-
-        // Pad the above attributes to 2 digits, if required.
-        // Build up the dateTimeString.
-        foreach ($keys as $key) {
-            $attributes->{$key} = $attributes->{$key} < 10 ? "0" . $attributes->{$key} : $attributes->{$key};
-            $dateTimeString .= (string) $attributes->{$key};
-        }
-
-        return $dateTimeString;
+        return $this->next_run->format('YmdHi');
     }
 
     public function getIsRecurringAttribute($is_recurring)
@@ -214,11 +228,25 @@ class Reminder extends Model
     }
 
     /**
+     * Forwards next_run date on according to frequency attribute
+     * 
      * @return self
      */
     public function forwardNextRunDate()
     {
-        $this->next_run = (new RecurrencesSupport)->forwardDateByRecurrence($this->next_run, $this->attributes['frequency']);
+        // Forward next_run date based on frequency
+        $this->next_run = (new RecurrencesSupport)
+            ->forwardDateByRecurrence($this->next_run, $this->attributes['frequency']);
+
+        // If the new next_run date is in past, then update again based on now
+        $now = Carbon::parse(Carbon::now('Europe/London')->format("Y/m/d H:i"));
+        if ($this->next_run < $now) {
+            $this->next_run = (new RecurrencesSupport)
+                ->forwardDateByRecurrence($now, $this->attributes['frequency']);
+        }
+
+
+        $this->save();
         return $this;
     }
 
