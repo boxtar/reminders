@@ -1,6 +1,9 @@
 MOVE CREATE AND UPDATE VALIDATION TO REMINDER DATA
 LOOK INTO MOVING VALIDATION LOGIC INTO RULES
 
+CreateOrUpdateReminderAction & CreateOrUpdateReminderValidation:
+    I think it would be better to break these out into separate actions/validations for Create and Update. Any shared logic can be pulled up and re-used.
+
 DEBUG AND ERROR INFORMATION:
     Make sure this isn't exposed on production. Right now it is.
 
