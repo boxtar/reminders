@@ -39,9 +39,7 @@ class ReminderData
         $this->updateTime($this->time);
 
         // Build a Carbon date
-        $timestamp = mktime($this->hour, $this->minute, 0, $this->month + 1, $this->date, $this->year);
-        $timezone = 'Europe/London';
-        $date = Carbon::parse($timestamp, $timezone);
+        $date = Carbon::create($this->year, $this->month + 1, $this->date, $this->hour, $this->minute, 0);
 
         // Figure the day of the week out
         $this->data['day'] = $date->dayOfWeek;
