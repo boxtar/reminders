@@ -20,9 +20,6 @@ class RemindersController extends Controller
      */
     public function index(Request $request, Response $response, $args)
     {
-        $reminders = $this->auth->check() ? $this->auth->user()->reminders->sortByDesc('updated_at') : [];
-        return $this
-            ->view
-            ->render($response, 'reminders/index.twig', compact('reminders'));
+        return $this->view->render($response, 'reminders/index.twig');
     }
 }

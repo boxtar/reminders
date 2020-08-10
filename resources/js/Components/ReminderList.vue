@@ -112,7 +112,7 @@
                     <div
                         class="p-4 pr-0 pb-0 w-full md:max-w-sm"
                         v-for="reminder in upcomingReminders"
-                        :key="reminder.id + reminder.date"
+                        :key="reminder.id"
                     >
                         <reminder
                             :reminder="reminder"

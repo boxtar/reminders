@@ -123,9 +123,6 @@ class CreateOrUpdateReminderActionTest extends TestCase
         $reminder = Reminder::find(1);
 
         // Set date in the past and setup so that initial reminder has already run
-        $reminder->date = 1;
-        $reminder->month = 0;
-        $reminder->year = 2020;
         $reminder->markInitialReminderComplete();
 
         // Updated data will be a clone of the original data so that we can make sure
@@ -138,17 +135,9 @@ class CreateOrUpdateReminderActionTest extends TestCase
 
         // Assert body was updated
         $this->assertEquals("Updated Reminder", $response->getData()['body']);
-
+        
         // Assert other attributes remains unchanged
-        $this->assertEquals($reminder->day, $response->getData()['day']);
-        $this->assertEquals($reminder->date, $response->getData()['date']);
-        $this->assertEquals($reminder->month, $response->getData()['month']);
-        $this->assertEquals($reminder->year, $response->getData()['year']);
-        $this->assertEquals($reminder->hour, $response->getData()['hour']);
-        $this->assertEquals($reminder->minute, $response->getData()['minute']);
-        $this->assertEquals($reminder->expression, $response->getData()['expression']);
         $this->assertEquals($reminder->initial_reminder_run, $response->getData()['initial_reminder_run']);
-        $this->assertEquals($reminder->recurrence_expression, $response->getData()['recurrence_expression']);
         $this->assertEquals($reminder->is_recurring, $response->getData()['is_recurring']);
         $this->assertEquals($reminder->channels, $response->getData()['channels']);
     }

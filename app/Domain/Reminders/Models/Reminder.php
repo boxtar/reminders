@@ -21,11 +21,8 @@ class Reminder extends Model
      */
     protected $fillable = [
         'body', 'frequency',
-        'day', 'date', 'month',
-        'year', 'hour', 'minute',
-        'expression', 'recurrence_expression',
-        'channels', 'is_recurring', 'initial_reminder_run',
-        'next_run'
+        'channels', 'is_recurring',
+        'initial_reminder_run', 'next_run',
     ];
 
     /**
@@ -39,6 +36,11 @@ class Reminder extends Model
         'channels' => 'array',
     ];
 
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
     protected $dates = ['next_run'];
 
     /**
@@ -46,7 +48,10 @@ class Reminder extends Model
      *
      * @var array
      */
-    protected $appends = ['reminder_date'];
+    protected $appends = [
+        'reminder_date', 'day', 'date',
+        'month', 'year', 'hour', 'minute'
+    ];
 
     /**
      * Scope a query to only include reminders that can be sent.
@@ -244,27 +249,7 @@ class Reminder extends Model
             $this->next_run = (new RecurrencesSupport)
                 ->forwardDateByRecurrence($now, $this->attributes['frequency']);
         }
-
-
         $this->save();
         return $this;
-    }
-
-    /**
-     * Returns the prevailing frequency.
-     * Initial Reminder Expression if initial hasn't run yet
-     * and Recurrence Expression if initial has already run.
-     * 
-     * @return string|bool
-     */
-    public function getCronExpression()
-    {
-        if (!$this->hasInitialReminderRun()) {
-            return $this->expression;
-        } else if ($this->isRecurring()) {
-            return $this->recurrence_expression;
-        } else {
-            return false;
-        }
     }
 }

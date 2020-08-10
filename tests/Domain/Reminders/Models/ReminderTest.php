@@ -173,28 +173,6 @@ class ReminderTest extends TestCase
     }
 
     /** @test */
-    public function returns_initial_reminder_expression_if_initial_has_not_run_yet()
-    {
-        $initialExpression = "0 9 1 1 *"; // 1st Jan at 9am
-
-        $reminder = $this->makeReminder();
-        $reminder->expression = $initialExpression;
-
-
-        // As initial reminder hasn't run this should return the initial expression
-        $this->assertEquals($initialExpression, $reminder->getCronExpression());
-
-        // Mark initial reminder as complete.
-        // is_recurring is null, so this should return false now.
-        $reminder->initial_reminder_run = true;
-        $this->assertFalse($reminder->getCronExpression());
-
-        // Now set is_recurring to true. This should cause the
-        // recurring expression to return.
-        $reminder->is_recurring = true;
-    }
-
-    /** @test */
     public function has_initial_reminder_run_works_correctly()
     {
         $reminder = $this->createReminder();
