@@ -189,6 +189,7 @@ export default {
     mounted() {
         this.getReminders(this.reminders.action).then(({ data }) => {
             this.reminders.data = Object.values(data);
+            this.sortReminders();
             this.setupSearch();
         });
     },
