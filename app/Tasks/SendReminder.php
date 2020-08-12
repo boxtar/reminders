@@ -34,9 +34,12 @@ class SendReminder extends Task
     public function handle()
     {
         // Get the notification channels required for the given reminder.
+        // Add a subject to the mail channel, if it exists.
         // Then pass them to the send function.
         $this->send(
-            $this->getChannels()
+            $this->addSubjectToChannelSettings(
+                $this->getChannels()
+            )
         );
         $this->postSend();
     }
@@ -59,6 +62,42 @@ class SendReminder extends Task
     }
 
     /**
+     * Builds up the body of the message to be sent
+     * 
+     * @return string
+     */
+    protected function buildMessage()
+    {
+        // Get recurrence string
+        $recurrence = $this->reminder->isRecurring() ?
+            "\n\n(Recurs {$this->reminder->frequency})" :
+            "\n\nThis reminder won't recur";
+
+        // Concat body and recurrence info
+        return "{$this->reminder->body}{$recurrence}";
+    }
+
+    protected function addSubjectToChannelSettings($channels)
+    {
+        // Max length of subject excerpt
+        $maxLength = 35;
+
+        // Set subject to full body, initially
+        $subject = $this->reminder->body;
+
+        // If subject is greater than max length, cap it
+        if (strlen($subject) > $maxLength) 
+            $subject = substr($subject, 0, $maxLength) . "...";
+
+        // Map over every channel and add the subject.
+        // This is only used in the Mail channel (atm).
+        return array_map(function ($channelSettings) use ($subject) {
+            $channelSettings['subject'] = "Jabit: {$subject}";
+            return $channelSettings;
+        }, $channels);
+    }
+
+    /**
      * Ask the Broadcaster to send the reminder through the provided channels
      * 
      * @param array $channels Array of channels with key as valid id and value as array of settings
@@ -66,7 +105,7 @@ class SendReminder extends Task
     protected function send($channels)
     {
         $this->broadcaster
-            ->message($this->reminder->body)
+            ->message($this->buildMessage())
             ->settings($channels)
             ->send();
     }
