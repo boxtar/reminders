@@ -33,7 +33,7 @@
             </div>
 
             <!-- Body -->
-            <div class="px-4 w-full">
+            <div class="body-container px-4 w-full">
                 <span class="hidden mt-2 text-xs uppercase text-gray-500">Body</span>
                 <span class="text-gray-800 font-bold">{{ reminder.body }}</span>
             </div>
@@ -173,6 +173,10 @@ export default {
 }
 .reminder-card span {
     transition: color 0.1s ease-out;
+}
+.body-container {
+    overflow-wrap: anywhere;
+    word-wrap: anywhere;
 }
 .indicator-dot {
     top: 50%;
