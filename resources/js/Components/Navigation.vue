@@ -1,8 +1,8 @@
 <template>
-    <div class="px-6 py-6 h-full flex flex-col items-center bg-gray-900 text-white md:px-10">
+    <div class="py-6 h-full flex flex-col items-center bg-gray-900 text-white">
 
         <!-- Brand -->
-        <div class="brand-font text-2xl tracking-tighter">
+        <div class="brand-font text-2xl tracking-tighter leading-none">
             J
         </div>
 
@@ -106,4 +106,5 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+</style>

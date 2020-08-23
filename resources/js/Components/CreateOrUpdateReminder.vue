@@ -5,7 +5,7 @@
         The way I'm passing props to DatePicker and TimePicker and also updating those same props based on events emitted from the very same Components theoretically means I should have an inifite feedback loop going on here. However, Vue does seems to stop this from happening. I should still look into this and make it more robust (and readable/maintainable - cognitive load is increased because of this).
 -->
 <template>
-    <div class="relative bg-gray-800">
+    <div class="relative bg-gray-800" @keydown.esc="$emit('closed')">
         <!-- Edit Mode flag -->
         <div
             v-if="isUpdate"
@@ -18,7 +18,7 @@
         <div class="p-4 pb-0 flex justify-end items-center" id="create-or-update-close-button">
             <button
                 @click="$emit('closed')"
-                class="flex items-center p-2 md:p-4 bg-transparent rounded-full text-red-500 hover:text-white focus:outline-none focus:shadow-outline"
+                class="flex items-center p-2 md:p-4 bg-transparent border-2 border-gray-600 rounded-full text-gray-600 hover:text-red-500 hover:border-red-500 focus:outline-none focus:shadow-outline"
             >
                 <svg
                     class="fill-current inline-block"
