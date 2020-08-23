@@ -1,5 +1,7 @@
 import Vue from "vue";
 
+Vue.component("app", require("./Components/App.vue").default);
+Vue.component("navigation", require("./Components/Nav.vue").default);
 Vue.component("reminder", require("./Components/Reminder.vue").default);
 Vue.component("reminderList", require("./Components/ReminderList.vue").default);
 Vue.component("createOrUpdateReminder", require("./Components/CreateOrUpdateReminder.vue").default);
