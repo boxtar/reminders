@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- Navigation menu -->
-        <div class="nav-panel h-screen overflow-x-hidden overflow-y-scroll">
+        <div class="nav-panel">
             <navigation :auth="auth" :csrf="csrf" />
         </div>
 
@@ -20,22 +20,29 @@ export default {
 
 <style>
 :root {
-    --navigation-width: 50px;
+    --navigation-width: 100%;
 }
 .nav-panel {
-    position: absolute;
-    top: 0;
-    left: 0;
     width: var(--navigation-width);
 }
 .content-panel {
-    width: calc(100% - var(--navigation-width));
-    margin-left: var(--navigation-width);
+    width: 100%;
 }
 
 @media screen and (min-width: 767px) {
     :root {
         --navigation-width: 80px;
+    }
+    .nav-panel {
+        position: absolute;
+        height: 100vh;
+        top: 0;
+        left: 0;
+        overflow-x: hidden;
+    }
+    .content-panel {
+        width: calc(100% - var(--navigation-width));
+        margin-left: var(--navigation-width);
     }
 }
 </style>

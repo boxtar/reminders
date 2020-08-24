@@ -1,13 +1,12 @@
 <template>
-    <div class="py-6 h-full flex flex-col items-center bg-gray-900 text-white">
-
+    <div class="nav-container p-4 bg-gray-900 text-white">
         <!-- Brand -->
-        <div class="brand-font text-2xl tracking-tighter leading-none">
-            J
+        <div class="top-section">
+            <div class="brand-font text-2xl tracking-tighter leading-none">J</div>
         </div>
 
         <!-- Middle Items -->
-        <div class="mt-16 flex flex-col items-center">
+        <div class="middle-section">
             <div class="py-2">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -70,32 +69,34 @@
         </div>
 
         <!-- End Items -->
-        <div class="flex-1 mt-2 flex items-end">
-            <form v-if="auth" action="/reminders/logout" method="post">
-                <input type="hidden" :name="csrf.name.key" :value="csrf.name.value">
-                <input type="hidden" :name="csrf.token.key" :value="csrf.token.value">
-                <label for="logout-submit-input" class="text-white">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        class="fill-current opacity-75 cursor-pointer hover:opacity-100"
-                        width="24px"
-                        height="24px"
-                    >
-                        <path d="M0 0h24v24H0V0z" fill="none" />
-                        <path
-                            d="M13 3h-2v10h2V3zm4.83 2.17l-1.42 1.42C17.99 7.86 19 9.81 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2.19 1.01-4.14 2.58-5.42L6.17 5.17C4.23 6.82 3 9.26 3 12c0 4.97 4.03 9 9 9s9-4.03 9-9c0-2.74-1.23-5.18-3.17-6.83z"
+        <div class="end-section">
+            <div>
+                <form v-if="auth" action="/reminders/logout" method="post">
+                    <input type="hidden" :name="csrf.name.key" :value="csrf.name.value" />
+                    <input type="hidden" :name="csrf.token.key" :value="csrf.token.value" />
+                    <label for="logout-submit-input" class="text-white">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            class="fill-current opacity-75 cursor-pointer hover:opacity-100"
+                            width="24px"
+                            height="24px"
+                        >
+                            <path d="M0 0h24v24H0V0z" fill="none" />
+                            <path
+                                d="M13 3h-2v10h2V3zm4.83 2.17l-1.42 1.42C17.99 7.86 19 9.81 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2.19 1.01-4.14 2.58-5.42L6.17 5.17C4.23 6.82 3 9.26 3 12c0 4.97 4.03 9 9 9s9-4.03 9-9c0-2.74-1.23-5.18-3.17-6.83z"
+                            />
+                        </svg>
+                        <input
+                            class="hidden bg-transparent focus:outline-none focus:shadow-outline"
+                            type="submit"
+                            value="Logout"
+                            id="logout-submit-input"
                         />
-                    </svg>
-                    <input
-                        class="hidden bg-transparent focus:outline-none focus:shadow-outline"
-                        type="submit"
-                        value="Logout"
-                        id="logout-submit-input"
-                    />
-                </label>
-            </form>
-            <a v-else href="/login">Login</a>
+                    </label>
+                </form>
+                <a v-else href="/login">Login</a>
+            </div>
         </div>
     </div>
 </template>
@@ -106,5 +107,59 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.top-section > div {
+    padding-left: 1rem;
+}
+.middle-section {
+    display: flex;
+    justify-content: center;
+}
+.middle-section > div {
+    padding: 0 0.25rem;
+}
+.end-section > div {
+    padding-right: 0.5rem;
+}
+
+@media screen and (min-width: 767px) {
+    .nav-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        height: 100%;
+        padding-top: 1.5rem;
+    }
+    .top-section {
+        height: 56px;
+        display: flex;
+        align-items: center;
+    }
+    .top-section > div {
+        padding-left: 0;
+    }
+    .middle-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 3.75rem;
+    }
+    .middle-section > div {
+        padding: 0.5rem;
+    }
+    .end-section {
+        flex: 1 1 0%;
+        display: flex;
+        align-items: flex-end;
+    }
+    .end-section > div {
+        padding-right: 0;
+    }
+}
 </style>
