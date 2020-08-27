@@ -20,21 +20,7 @@ CHOOSE REMINDER CHANNELS:
     Allow Users to Edit their Email address and add Telegram, SMS and possibly WhatsApp channels in the future. Perhaps even Messenger/Twitter DM?
 
 ADD EXTRA DATA TO THE MESSAGE THAT IS SENT WITH EACH REMINDER:
-    Send the recurrence info. This is good for knowing if you need to forward manually.
     Send a link to the reminder. When sending out reminder, perhaps add a link to open up the reminder in the app too? This will rely on saving destination to the session as will most likely be redirected to Login page so will want to redirect to the Reminder on successful login.
-
-ADD MORE RECURRENCES:
-    Would like hourly, weekdays and weekends recurrences.
-    However, it would be so much better to add custom recurrence builder. I have notes on that somewhere...
-
-CHROME APP:
-    Look into making this a Chrome app similar to Codecourse and Office apps.
-
-SCHEDULER SERVICE:
-    Currently, the scheduler runs every minute. This is required because we decide if the Reminder should run based on the cron expression. This is BRITTLE. I would rather decide if the reminder should be sent based on if the date and time is in the past. It doesn't matter if it's 1 minute, 1 hour or 1 day in the past! If it's in the past and the initial reminder has not run yet then the reminder should be sent.
-    Then for the recurrences, I would like to update the cron expression everytime! So re-use the same expression. Could be tricky to implement.
-
-    This urgently needs tests in place. I refactored the Reminder model into a DDD style folder structure which broke the scheduler, but I never noticed until I pulled onto live server and tested using a live example.
 
 GIVE REMINDERS A SUBJECT:
     Allow adding a subject to reminders. This could be useful if you want the body to have a lot of info on a given subject.
@@ -49,10 +35,6 @@ LOOK INTO QUEUEING TASKS:
 
 DELETE & RESTORE:
     Allow users to view a list of archived reminders and restore or completely delete them (ireversible).
-
-REMINDER DATES IN THE PAST:
-    If initial reminder date/time is in the past then set initial_reminder_run to true so that recurrence takes over.
-    I actually don't like this. I want to change cron to run every 5 minutes and process everything in the past.
 
 DATESSUPPORT:
     Domain\Dates\DatesSupport just doesn't seem right. All those static functions can't be good. Perhaps break out into DaysSupport, DatesSupport, MonthsSupport, YearsSupport and TimesSupport and remove the static-ness of the functions.

@@ -2,8 +2,8 @@
 
 namespace App\Domain\Recurrences;
 
-use App\Domain\Recurrences\Exceptions\InvalidRecurrenceException;
 use Carbon\Carbon;
+use App\Domain\Recurrences\Exceptions\InvalidRecurrenceException;
 
 class RecurrencesSupport
 {
@@ -20,6 +20,7 @@ class RecurrencesSupport
         return [
             'hourly' => 'Every hour',
             'daily' => 'Every day',
+            'weekdays' => 'Weekdays only',
             'weekly' => 'Every week',
             'monthly' => 'Every month',
             'quarterly' => "Every 3 months",
@@ -71,6 +72,19 @@ class RecurrencesSupport
     protected function daily(Carbon $date)
     {
         return $date->copy()->addDay();
+    }
+
+    /**
+     * Forward provided date on by 1 day, but skip weekends.
+     * 
+     * @param Carbon $date 
+     * @return Carbon
+     */
+    protected function weekdays(Carbon $date)
+    {
+        $date = $date->copy()->addDay();
+        while ($date->isWeekend()) $date->addDay();
+        return $date;
     }
 
     /**

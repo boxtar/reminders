@@ -52,6 +52,36 @@ class RecurrenceSupportTest extends TestCase
     }
 
     /** @test */
+    public function weekdays_recurrence_forwards_given_date_by_one_day_but_skips_over_weekends()
+    {
+        $recurrence = 'weekdays';
+        // Thursday, 27th Aug
+        $dateBefore = Carbon::create(2020, 8, 27);
+        // Expect to be updated to Friday, 28th Aug
+        $dateAfter = Carbon::create(2020, 8, 28);
+
+        // Assert date has been forwarded correctly
+        $this->assertDatesEqual(
+            $dateAfter,
+            (new RecurrencesSupport())->forwardDateByRecurrence($dateBefore, $recurrence)
+        );
+
+        // Also assert that original date has not been altered
+        $this->assertDatesEqual($dateAfter->subDay(), $dateBefore);
+
+        // Friday, 28th Aug
+        $dateBefore = Carbon::create(2020, 8, 28);
+        // Expect to be updated to Monday, 31st Aug (skip the weekend)
+        $dateAfter = Carbon::create(2020, 8, 31);
+
+        // Assert date has been forwarded correctly
+        $this->assertDatesEqual(
+            $dateAfter,
+            (new RecurrencesSupport())->forwardDateByRecurrence($dateBefore->addDay(), $recurrence)
+        );
+    }
+
+    /** @test */
     public function weekly_recurrence_forwards_given_date_by_one_week()
     {
         $recurrence = 'weekly';
