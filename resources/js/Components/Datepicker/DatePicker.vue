@@ -150,7 +150,8 @@ export default {
             const now = new Date();
             const date = new Date(
                 this.customYear ? this.customYear : now.getFullYear(),
-                this.customMonth ? this.customMonth : now.getMonth(),
+                // need to be more specific here has January = 0 which is falsy
+                this.customMonth !== undefined ? this.customMonth : now.getMonth(),
                 this.customDate ? this.customDate : now.getDate()
             );
 
